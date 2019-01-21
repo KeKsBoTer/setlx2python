@@ -1,0 +1,6 @@
+x := 2;
+print(x);
+print("test");
+test := [2,1];
+print(*test);
+print(test);

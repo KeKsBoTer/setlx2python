@@ -1,0 +1,20 @@
+class Test(a,b){
+    mA := a;
+    mB := b;
+
+    foo := procedure(x) {
+        return x+this.mA;
+    };
+
+    static{
+        className := "test";
+
+        name := procedure(){
+            return Test.className;
+        };
+    }
+}
+
+t := Test(1,2);
+print(t.foo(10));
+print(Test.name());
