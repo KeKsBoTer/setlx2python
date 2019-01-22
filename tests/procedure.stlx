@@ -5,3 +5,15 @@ p := procedure(x,y) {
 
 x := p(1,2);
 print(x);
+
+[a,b] := [
+    procedure(){
+        print("a");
+    },
+    procedure(){
+        print("b");
+    }
+];
+
+a();
+b();

@@ -9,6 +9,15 @@ class Variable:
         return self.id
 
 
+class AssignableList:
+    def __init__(self, assignables):
+        self.assignables = assignables
+
+    def to_code(self, indent=0):
+        assignables = [a.to_code(indent) for a in self.assignables]
+        return f"[{', '.join(assignables)}]"
+
+
 class PyFraction(Fraction):
 
     def to_code(self, indent=0):
@@ -66,3 +75,21 @@ class Parameter:
         else:
             default = self.default.to_code(indent)
             return f"{id} := {default}"
+
+
+class PyList:
+    def __init__(self, expr):
+        self.expr = expr
+
+    def to_code(self, indent=0):
+        expr = self.expr.to_code(indent)if self.expr != None else ""
+        return f"[{expr}]"
+
+
+class ExplicitList:
+    def __init__(self, exprs):
+        self.exprs = exprs
+
+    def to_code(self, indent=0):
+        exprs = [e.to_code(indent) for e in self.exprs]
+        return ", ".join(exprs)

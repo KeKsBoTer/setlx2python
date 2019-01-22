@@ -238,6 +238,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#collectionBuilder.
+    def enterCollectionBuilder(self, ctx:SetlXgrammarParser.CollectionBuilderContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#collectionBuilder.
+    def exitCollectionBuilder(self, ctx:SetlXgrammarParser.CollectionBuilderContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#iteratorChain.
     def enterIteratorChain(self, ctx:SetlXgrammarParser.IteratorChainContext):
         pass

@@ -275,7 +275,7 @@ class Procedure:
         if self.name == None:
             proc_name = f"procedure_{state.procedure_counter}"
 
-            state.before_stmnts += [py_stmt.Function(proc_name, params, block)]
+            state.before_stmnts.append(py_stmt.Function(proc_name, params, block))
 
             state.procedure_counter += 1
             return py_type.Variable(proc_name)

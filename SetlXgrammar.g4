@@ -280,12 +280,16 @@ $ex = None
     | /* epsilon */;
 
 value [enableIgnore]
-    returns[v]:
-    /* TODO '[' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? ']'
-                            {$v = new SetListConstructor(CollectionType.LIST, cb);  }
-    | '{' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? '}'
+    returns[v]
+	@init {
+cb = None
+    }:
+    '[' (
+        collectionBuilder[$enableIgnore] {cb = $collectionBuilder.cb; } 
+    )? ']' {$v = SetlXList(cb) }
+    /* TODO | '{' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? '}'
                             {$v = new SetListConstructor(CollectionType.SET, cb);   }
-    |*/ STRING               {$v = SetlXString($STRING.text) }
+    */| STRING               {$v = SetlXString($STRING.text) }
     | LITERAL              {$v = SetlXLiteral($LITERAL.text) }
     // TODO | matrix               {$v = new ValueOperator($matrix.m);                     }
     // TODO | vector               {$v = new ValueOperator($vector.v);                     }
@@ -293,6 +297,31 @@ value [enableIgnore]
     | {$enableIgnore}? '_' {$v = VariableIgnore() }
     ;
 
+collectionBuilder[enableIgnore]
+	returns[cb]
+	@init {
+exprs = []
+    }:
+	e1 = expr[$enableIgnore] (
+		',' e2 = expr[$enableIgnore] (
+			RANGE_SIGN e3 = expr[$enableIgnore] {$cb = Range($e1.ex, $e2.ex, $e3.ex) }
+			| {exprs.append($e1.ex); exprs.append($e2.ex) } (
+				',' e3 = expr[$enableIgnore] {exprs.append($e3.ex) }
+			)* (
+				'|' e4 = expr[False] {$cb = ExplicitListWithRest(exprs, $e4.ex) }
+				| /* epsilon */ {$cb = ExplicitList(exprs)         }
+			)
+		)
+		| RANGE_SIGN e3 = expr[$enableIgnore] {$cb = Range($e1.ex, None, $e3.ex) }
+		| {exprs.append($e1.ex) } (
+			'|' e2 = expr[False] {$cb = ExplicitListWithRest(exprs, $e2.ex) }
+			| /* epsilon */ {$cb = ExplicitList(exprs)         }
+		)
+		| ':' iteratorChain[$enableIgnore] (
+			'|' c1 = condition {$cb = SetlIteration($e1.ex, $iteratorChain.ic, $c1.cnd) }
+			| /* epsilon */ {$cb = SetlIteration($e1.ex, $iteratorChain.ic, None) }
+		)
+	);
 
 iteratorChain[enableIgnore]
 	returns[ic]
