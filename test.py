@@ -17,7 +17,8 @@ def main(argv):
     tree = parser.block()
     if parser.getNumberOfSyntaxErrors() > 0: # TODO better error handling
         return
-    var_dump(tree.blk)
+    # var_dump(tree.blk.to_python())
+    print(tree.blk.to_python().to_code())
 
 
 if __name__ == '__main__':

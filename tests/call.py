@@ -1,3 +1,2 @@
-x = 2
-print(x)
-print("test")
+x = "py"
+print("setlx",2,x)

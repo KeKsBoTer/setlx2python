@@ -31,6 +31,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#assignmentOther.
+    def enterAssignmentOther(self, ctx:SetlXgrammarParser.AssignmentOtherContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#assignmentOther.
+    def exitAssignmentOther(self, ctx:SetlXgrammarParser.AssignmentOtherContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#assignmentDirect.
     def enterAssignmentDirect(self, ctx:SetlXgrammarParser.AssignmentDirectContext):
         pass
@@ -166,6 +175,42 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#procedure.
+    def enterProcedure(self, ctx:SetlXgrammarParser.ProcedureContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#procedure.
+    def exitProcedure(self, ctx:SetlXgrammarParser.ProcedureContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#procedureParameters.
+    def enterProcedureParameters(self, ctx:SetlXgrammarParser.ProcedureParametersContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#procedureParameters.
+    def exitProcedureParameters(self, ctx:SetlXgrammarParser.ProcedureParametersContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#procedureParameter.
+    def enterProcedureParameter(self, ctx:SetlXgrammarParser.ProcedureParameterContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#procedureParameter.
+    def exitProcedureParameter(self, ctx:SetlXgrammarParser.ProcedureParameterContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#procedureDefaultParameter.
+    def enterProcedureDefaultParameter(self, ctx:SetlXgrammarParser.ProcedureDefaultParameterContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#procedureDefaultParameter.
+    def exitProcedureDefaultParameter(self, ctx:SetlXgrammarParser.ProcedureDefaultParameterContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#call.
     def enterCall(self, ctx:SetlXgrammarParser.CallContext):
         pass
@@ -193,6 +238,24 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#iteratorChain.
+    def enterIteratorChain(self, ctx:SetlXgrammarParser.IteratorChainContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#iteratorChain.
+    def exitIteratorChain(self, ctx:SetlXgrammarParser.IteratorChainContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#iterator.
+    def enterIterator(self, ctx:SetlXgrammarParser.IteratorContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#iterator.
+    def exitIterator(self, ctx:SetlXgrammarParser.IteratorContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#atomicValue.
     def enterAtomicValue(self, ctx:SetlXgrammarParser.AtomicValueContext):
         pass
@@ -208,6 +271,15 @@ class SetlXgrammarListener(ParseTreeListener):
 
     # Exit a parse tree produced by SetlXgrammarParser#variable.
     def exitVariable(self, ctx:SetlXgrammarParser.VariableContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#condition.
+    def enterCondition(self, ctx:SetlXgrammarParser.ConditionContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#condition.
+    def exitCondition(self, ctx:SetlXgrammarParser.ConditionContext):
         pass
 
 

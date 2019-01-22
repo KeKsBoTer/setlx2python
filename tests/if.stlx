@@ -1,0 +1,10 @@
+x := 1;
+y := 3;
+z := x;
+if (x == y || x == z){
+    print("if");
+} else if (x != z){
+    print("else if");
+} else {
+    print("else");
+}
