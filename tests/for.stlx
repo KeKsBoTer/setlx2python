@@ -1,5 +1,9 @@
 x := "ab_";
 y := "xy_";
+for(a in x | a != '_'){
+    print(a);
+}
+/*
 for(a in x, b in y){
     print(a,b);
 }
@@ -7,3 +11,4 @@ for(a in x, b in y){
 for(a in x, b in y | a != b ){
     print(a,b);
 }
+*/

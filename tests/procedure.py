@@ -1,6 +1,7 @@
-def p(x,y):
+def procedure_0(x, y):
     print(y)
     return x
-
-x = p(1,2)
+    
+p = procedure_0
+x = p(1, 2)
 print(x)

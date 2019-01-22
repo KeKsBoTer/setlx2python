@@ -7,5 +7,5 @@ class Block:
 
     def to_code(self, indent=0):
         stmnts = [indent * Block.Indent + # indent before line
-                  s.to_code(indent+1) for s in self.stmnts]
+                  s.to_code(indent) for s in self.stmnts]
         return "\n".join(stmnts)

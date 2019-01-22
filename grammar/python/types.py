@@ -42,10 +42,27 @@ class Literal:
 
 class PyNone:
     def to_code(self, indent=0):
-        return f"None"
+        return "None"
+
+
+class PyTrue:
+    def to_code(self, indent=0):
+        return "True"
+
+
+class PyFalse:
+    def to_code(self, indent=0):
+        return "False"
 
 
 class Parameter:
     def __init__(self, id, default=None):
         self.id = id
         self.default = default
+
+    def to_code(self, indent=0):
+        if self.default == None:
+            return self.id
+        else:
+            default = self.default.to_code(indent)
+            return f"{id} := {default}"

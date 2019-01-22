@@ -54,8 +54,14 @@ assignmentOther
 
 
 assignmentDirect
-	returns[Assignment assign]:
-	assignable[False] ':=' (
+	returns[assign]:
+    // special case for transpiler: name := procedure(){...}
+    variable ':=' procedure
+    {
+$procedure.pd.name = $variable.v.id
+$assign = $procedure.pd
+    }
+	| assignable[False] ':=' (
 		assignmentDirect {$assign = Assignment($assignable.a, $assignmentDirect.assign)
 			}
 		| exprContent[False] {$assign = Assignment($assignable.a, $exprContent.ex)}
@@ -307,8 +313,8 @@ atomicValue
 	NUMBER {$av = SetlXFraction($NUMBER.text) }
 	| DOUBLE {$av = float($DOUBLE.text) }
 	| 'om' {$av = SetlXOm() }
-	| 'True' {$av = TRUE }
-	| 'False' {$av = FALSE };
+	| 'True' {$av = SetlXTrue() }
+	| 'False' {$av = SetlXFalse() };
 
 variable
 	returns[Variable v]: ID {$v = Variable($ID.text) };

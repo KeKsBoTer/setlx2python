@@ -14,8 +14,10 @@
 - Terms
 - vector
 - matrix
-- closure
+- closure 
 - cached procedure
 - read/write procedure param
 - procedureListParameter
 - only print round brackets when needed (not every time)
+- calculate necessary imports
+- support multiple iterators in for loop

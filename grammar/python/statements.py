@@ -107,7 +107,7 @@ class Conjunction(InfixOperator):
 
 class Not(PrefixOperator):
     def __init__(self, expr):
-        PrefixOperator.__init__(self, expr, "!")
+        PrefixOperator.__init__(self, expr, "not")
 
 
 class Difference(InfixOperator):
@@ -145,6 +145,7 @@ class IfThenElseIfBranch:
         block = self.block.to_code(indent+1)
         return f"elif {condition}:\n{block}"
 
+
 class IfThenElseBranch:
     def __init__(self, block):
         self.block = block
@@ -167,6 +168,11 @@ class While:
         self.condition = condition
         self.block = block
 
+    def to_code(self, indent=0):
+        condition = self.condition.to_code(indent)
+        block = self.block.to_code(indent+1)
+        return f"while {condition}:\n{block}"
+
 
 class DoWhile:
     def __init__(self, condition, block):
@@ -179,11 +185,13 @@ class Backtrack:
 
 
 class Break:
-    pass
+    def to_code(self, indent=0):
+        return "break"
 
 
 class Continue:
-    pass
+    def to_code(self, indent=0):
+        return "continue"
 
 
 class Exit:
@@ -194,12 +202,31 @@ class Return:
     def __init__(self, expression):
         self.expression = expression
 
+    def to_code(self, indent=0):
+        expression = self.expression.to_code(indent)
+        return f"return {expression}"
+
 
 class For:
-    def __init__(self, iteratorChain, condition, block):
-        self.iteratorChain = iteratorChain
-        self.condition = condition
+    def __init__(self, iterator, block):
+        self.iterator = iterator
         self.block = block
+
+    def to_code(self, indent=0):
+        iterator = self.iterator.to_code(indent)
+        block = self.block.to_code(indent+1)
+        return f"for {iterator}:\n{block}"
+
+
+class PyIterator:
+    def __init__(self, assignable, expression):
+        self.assignable = assignable
+        self.expression = expression
+
+    def to_code(self, indent=0):
+        assignable = self.assignable.to_code(indent)
+        expression = self.expression.to_code(indent)
+        return f"{assignable} in {expression}"
 
 
 class SetlIterator:
@@ -208,7 +235,13 @@ class SetlIterator:
         self.expression = expression
 
 
-class Procedure:
-    def __init__(self, params, block):
+class Function:
+    def __init__(self, id, params, block):
         self.params = params
         self.block = block
+        self.id = id
+
+    def to_code(self, indent=0):
+        params = [p.to_code(indent) for p in self.params]
+        block = self.block.to_code(indent+1)
+        return f"def {self.id}({', '.join(params)}):\n{block}"
