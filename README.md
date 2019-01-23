@@ -1,4 +1,4 @@
-# setlx2py - Convert setlx code to python
+# setlx2python - Convert setlx code to python
 
 # TODO
 - [ ] implement native setlx functions like print
