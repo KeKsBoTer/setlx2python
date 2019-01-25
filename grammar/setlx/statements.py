@@ -1,6 +1,7 @@
 import grammar.python.statements as py_stmt
 import grammar.python.types as py_type
 import grammar.python.block as py_block
+from grammar.setlx.types import WithLevel
 
 
 class Assignment:
@@ -273,9 +274,9 @@ class Procedure:
         block = self.block.to_python(state)
 
         if self.name == None:
-            proc_name = f"procedure_{state.procedure_counter}"
+            proc_name = f"procedure_{state.level}_{state.procedure_counter}" # TODO find better naming 
 
-            state.before_stmnts.append(py_stmt.Function(proc_name, params, block))
+            state.before_stmnts.append(WithLevel(state.level,py_stmt.Function(proc_name, params, block)))
 
             state.procedure_counter += 1
             return py_type.Variable(proc_name)

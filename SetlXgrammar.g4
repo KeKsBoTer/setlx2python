@@ -169,7 +169,7 @@ setlxReduce [enableIgnore]
     returns[r]:
     p1 = prefixOperation[$enableIgnore] {$r =$p1.p}
     /* TODO  (
-            '+/' prefixOperation[$enableIgnore, $operators] { operators.add(SumOfMembersBinary.SOMB    ); }
+        '+/' prefixOperation[$enableIgnore, $operators] { operators.add(SumOfMembersBinary.SOMB    ); }
         | '*\(remove this backslash)/' prefixOperation[$enableIgnore, $operators] { operators.add(ProductOfMembersBinary.POMB); }
         )*
     */
@@ -259,11 +259,30 @@ procedureDefaultParameter
 
 call[enableIgnore]
 	returns[c]:
-	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params, $callParameters.ex) };
-	/* TODO | '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.params) 
-	//	}
+	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params, $callParameters.ex) }
+	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p)};
+	/* TODO
 	| '{' expr[$enableIgnore] '}' {$c = CollectMap($expr.ex)                             };
   */
+
+
+collectionAccessParams[enableIgnore]
+	returns[p]
+	@init {
+params = []
+    }:
+	e1 = expr[$enableIgnore] (
+		RANGE_SIGN (
+			  e2 = expr[$enableIgnore] {$p = Range($e1.ex,$e2.ex) }
+            | {$p = Range($e1.ex,None) }
+		)
+		| (
+			',' e3 = expr[False] {params.append($e3.ex) }
+		)+ {$p = params }
+        | {$p = $e1.ex }
+	)
+	| RANGE_SIGN expr[$enableIgnore] {$p = Range(None,$expr.ex) };
+
 
 callParameters[enableIgnore]
 	returns[ params, ex]

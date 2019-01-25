@@ -5,7 +5,7 @@ from antlr4 import FileStream,CommonTokenStream
 from grammar.setlx.antlr.SetlXgrammarParser import SetlXgrammarParser
 from grammar.setlx.antlr.SetlXgrammarLexer import SetlXgrammarLexer
 from grammar.setlx.antlr.SetlXgrammarListener import SetlXgrammarListener
-from var_dump import var_dump
+# from var_dump import var_dump
 
 from grammar.setlx.state import SetlxState
 

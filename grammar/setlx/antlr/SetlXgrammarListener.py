@@ -220,6 +220,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#collectionAccessParams.
+    def enterCollectionAccessParams(self, ctx:SetlXgrammarParser.CollectionAccessParamsContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#collectionAccessParams.
+    def exitCollectionAccessParams(self, ctx:SetlXgrammarParser.CollectionAccessParamsContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#callParameters.
     def enterCallParameters(self, ctx:SetlXgrammarParser.CallParametersContext):
         pass

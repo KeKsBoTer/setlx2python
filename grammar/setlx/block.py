@@ -11,12 +11,19 @@ class Block:
 
         stmnts = []
         for s in self.stmnts:
+            level = state.level
+            state.level+=1 # next depth level
             stmnt = s.to_python(state)
+            state.level = level
 
             if len(state.before_stmnts) > 0:
                 # prepend statements that need to be executed before statement (e.g. function declaration)
-                stmnts += state.before_stmnts
-                state.before_stmnts = []
+                before, not_before = [], []
+                for x in state.before_stmnts:
+                    (not_before, before)[x.level > state.level].append(x) # only append before statements that were generated in higher levels
+
+                stmnts += before
+                state.before_stmnts = not_before
 
             stmnts.append(stmnt)
         

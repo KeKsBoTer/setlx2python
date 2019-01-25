@@ -96,3 +96,12 @@ class ExplicitList:
     def to_python(self, state):
         exprs = [e.to_python(state) for e in self.exprs]
         return py_type.ExplicitList(exprs)
+
+
+class WithLevel:
+    def __init__(self,level,code):
+        self.code = code
+        self.level = level
+
+    def to_code(self,indent=0):
+        return self.code.to_code(indent)
