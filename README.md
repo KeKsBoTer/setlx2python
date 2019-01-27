@@ -22,3 +22,4 @@
 - [ ] calculate necessary imports
 - [ ] support multiple iterators in for loop
 - [x] bug when transpiling tests/procedure.stlx
+- [ ] type based operators ("-" does not work for lists in pyhton. maybe implement own list?)

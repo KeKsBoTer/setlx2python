@@ -1,5 +1,6 @@
 from fractions import Fraction
 import grammar.python.types as py_type
+import grammar.python.statements as py_stmnt
 
 
 class AssignableVariable:
@@ -99,9 +100,33 @@ class ExplicitList:
 
 
 class WithLevel:
-    def __init__(self,level,code):
+    def __init__(self, level, code):
         self.code = code
         self.level = level
 
-    def to_code(self,indent=0):
+    def to_code(self, indent=0):
         return self.code.to_code(indent)
+
+
+class ListRange:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    def to_pyton(self, state):
+        start = self.start.to_python(state)
+        end = self.end.to_python(state)
+        return py_type.ListRange(start, end)
+
+
+class Range:
+    def __init__(self, start, step, end):
+        self.start = start
+        self.step = step
+        self.end = end
+
+    def to_python(self, state):
+        start = self.start.to_python(state)
+        end = self.end.to_python(state)
+        step = self.step.to_python(state) if self.step != None else None
+        return py_type.Range(start, step, end)

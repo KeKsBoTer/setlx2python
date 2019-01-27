@@ -132,6 +132,11 @@ class Difference(InfixOperator):
         InfixOperator.__init__(self, left, right, py_stmt.Difference)
 
 
+class Product(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, py_stmt.Product)
+
+
 class IfThen:
     def __init__(self, if_list=[]):
         self.if_list = if_list
@@ -231,6 +236,19 @@ class Return:
         expression = self.expression.to_python(state)
         return py_stmt.Return(expression)
 
+def iterator_from_chain(state,iter_chain):
+    # add import for list product
+    state.imports.add("itertools", "product")
+
+    assignables = [i.assignable.to_python(
+        state) for i in iter_chain]
+    assignable = py_type.PyList(py_type.ExplicitList(assignables))
+
+    exprs = [e.expression.to_python(state) for e in iter_chain]
+    list_product = py_stmt.FunctionCall(
+        py_type.Variable("product"), exprs)
+
+    return py_stmt.PyIterator(assignable, list_product)
 
 class For:
     def __init__(self, iteratorChain, condition, block):
@@ -239,11 +257,11 @@ class For:
         self.block = block
 
     def to_python(self, state):
-        # see tests/for.py
-        if len(self.iteratorChain) > 1:
-            raise "more than one iterator chain in for loop is not supported yet"
         block = self.block.to_python(state)
-        iterator = self.iteratorChain[0].to_python(state)
+        if len(self.iteratorChain) > 1:
+            iterator = iterator_from_chain(state,self.iteratorChain)
+        else:
+            iterator = self.iteratorChain[0].to_python(state)
         # add condition as if statement in branch
         if self.condition != None:
             condition = self.condition.to_python(state)
@@ -274,11 +292,43 @@ class Procedure:
         block = self.block.to_python(state)
 
         if self.name == None:
-            proc_name = f"procedure_{state.level}_{state.procedure_counter}" # TODO find better naming 
+            # TODO find better naming
+            proc_name = f"procedure_{state.level}_{state.procedure_counter}"
 
-            state.before_stmnts.append(WithLevel(state.level,py_stmt.Function(proc_name, params, block)))
+            state.before_stmnts.append(
+                WithLevel(state.level, py_stmt.Function(proc_name, params, block)))
 
             state.procedure_counter += 1
             return py_type.Variable(proc_name)
         else:
             return py_stmt.Function(self.name, params, block)
+
+
+class CollectionAccess:
+    def __init__(self, params):
+        self.params = params
+        self.callable = None
+
+    def to_python(self, state):
+        callable = self.callable.to_python(
+            state) if self.callable != None else None
+        params = [p.to_python(state) for p in self.params]
+        return py_stmt.CollectionAccess(params, callable)
+
+
+class SetlIteration:
+    def __init__(self, expr, iter_chain, condition):
+        self.expr = expr
+        self.iter_chain = iter_chain
+        self.condition = condition
+
+    def to_python(self, state):
+        
+        if len(self.iter_chain) > 1:
+            iterator = iterator_from_chain(state,self.iter_chain)
+        else:
+            iterator = self.iter_chain[0].to_python(state)
+        expr = self.expr.to_python(state)
+        condition = self.condition.to_python(
+            state) if self.condition != None else None
+        return py_stmt.Iteration(expr, iterator, condition)

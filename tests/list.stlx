@@ -1,7 +1,12 @@
 x := [];
 x := [1,2,3,"test"];
-print(x[0]);
-y := x[x[0]];
+print(x[1]);
+y := x[x[1]];
 
 a := [1..10];
-b := a-x;
+b := [1,2..10];
+print(a);
+print(b);
+a := [x: x in a | x > 2];
+a := [c*d: c in a, d in b | c > 2];
+print(a);

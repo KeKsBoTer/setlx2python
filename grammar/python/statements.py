@@ -1,3 +1,6 @@
+from collections.abc import Iterable
+
+
 class Assignment:
     def __init__(self, assignable, rightHandSide, operator="="):
         self.assignable = assignable
@@ -113,6 +116,11 @@ class Not(PrefixOperator):
 class Difference(InfixOperator):
     def __init__(self, left, right):
         InfixOperator.__init__(self, left, right, "-")
+
+
+class Product(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, "*")
 
 
 class IfThen:
@@ -245,3 +253,40 @@ class Function:
         params = [p.to_code(indent) for p in self.params]
         block = self.block.to_code(indent+1)
         return f"def {self.id}({', '.join(params)}):\n{block}"
+
+
+class CollectionAccess:
+    def __init__(self, params, callable):
+        self.params = params
+        self.callable = callable
+
+    def to_code(self, indent=0):
+        params = [p.to_code(indent) for p in self.params]
+        callable = self.callable.to_code(
+            indent) if self.callable != None else ''
+        return f"{callable}[{','.join(params)}]"
+
+
+class Iteration:
+    def __init__(self, expr, iter_chain, condition):
+        self.expr = expr
+        self.iter_chain = iter_chain
+        self.condition = condition
+
+    def to_code(self, indent=0):
+        expr = self.expr.to_code(indent)
+        # [i.to_python(state) for i in self.iter_chain]
+        ic = self.iter_chain.to_code(indent)
+        cond = self.condition.to_code(
+            indent) if self.condition != None else None
+
+        return f"{expr} for {ic} {'if' + cond if cond != None else ''}"
+
+
+class Import:
+    def __init__(self, module, objects):
+        self.module = module
+        self.objects = objects
+
+    def to_code(self, indent=0):
+        return f"from {self.module} import {', '.join(self.objects)}"

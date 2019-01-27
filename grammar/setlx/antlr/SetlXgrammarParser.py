@@ -2508,11 +2508,11 @@ class SetlXgrammarParser ( Parser ):
                     if la_ == 1:
                         self.state = 490
                         localctx.e2 = self.expr(localctx.enableIgnore)
-                        localctx.p = Range(localctx.e1.ex,localctx.e2.ex) 
+                        localctx.p = ListRange(localctx.e1.ex,localctx.e2.ex) 
                         pass
 
                     elif la_ == 2:
-                        localctx.p = Range(localctx.e1.ex,None) 
+                        localctx.p = ListRange(localctx.e1.ex,None) 
                         pass
 
 
@@ -2536,7 +2536,7 @@ class SetlXgrammarParser ( Parser ):
                     localctx.p = params 
                     pass
                 elif token in [SetlXgrammarParser.T__25]:
-                    localctx.p = localctx.e1.ex 
+                    localctx.p = [localctx.e1.ex] 
                     pass
                 else:
                     raise NoViableAltException(self)
@@ -2549,7 +2549,7 @@ class SetlXgrammarParser ( Parser ):
                 self.match(SetlXgrammarParser.RANGE_SIGN)
                 self.state = 510
                 localctx._expr = self.expr(localctx.enableIgnore)
-                localctx.p = Range(None,localctx._expr.ex) 
+                localctx.p = ListRange(None,localctx._expr.ex) 
                 pass
 
 
