@@ -94,16 +94,16 @@ $exprs = []
 exprContent[enableIgnore]
 	returns[ex]:
 	// TODO : lambdaProcedure          { operators.add(new ProcedureConstructor($lambdaProcedure.lp)); }
-	implication[$enableIgnore] {$ex = $implication.i}
-	/* TODO ( '<==>' implication[$enableIgnore, $operators] { operators.add(BooleanEqual.BE); } |
-	 '<!=>' implication[$enableIgnore, $operators] { operators.add(BooleanNotEqual.BNE); } )?
-	 */;
+	implication[$enableIgnore] {$ex = $implication.i} (
+		'<==>' implication[$enableIgnore] {$ex = BooleanEqual($ex,$implication.i) }
+		| '<!=>' implication[$enableIgnore] {$ex = BooleanNotEqual($ex,$implication.i) }
+	)?;
 
 implication[enableIgnore]
 	returns[i]:
-	disjunction[$enableIgnore] {$i = $disjunction.d}
-	/* TODO( '=>' implication[$enableIgnore] {$i = Implication($i,$implication) } )?
-	 */;
+	disjunction[$enableIgnore] {$i = $disjunction.d} (
+		'=>' implication[$enableIgnore] {$i = Implication($i, $implication.i) }
+	)?;
 
 disjunction[enableIgnore]
 	returns[d]:

@@ -236,7 +236,8 @@ class Return:
         expression = self.expression.to_python(state)
         return py_stmt.Return(expression)
 
-def iterator_from_chain(state,iter_chain):
+
+def iterator_from_chain(state, iter_chain):
     # add import for list product
     state.imports.add("itertools", "product")
 
@@ -250,6 +251,7 @@ def iterator_from_chain(state,iter_chain):
 
     return py_stmt.PyIterator(assignable, list_product)
 
+
 class For:
     def __init__(self, iteratorChain, condition, block):
         self.iteratorChain = iteratorChain
@@ -259,7 +261,7 @@ class For:
     def to_python(self, state):
         block = self.block.to_python(state)
         if len(self.iteratorChain) > 1:
-            iterator = iterator_from_chain(state,self.iteratorChain)
+            iterator = iterator_from_chain(state, self.iteratorChain)
         else:
             iterator = self.iteratorChain[0].to_python(state)
         # add condition as if statement in branch
@@ -312,7 +314,8 @@ class CollectionAccess:
     def to_python(self, state):
         callable = self.callable.to_python(
             state) if self.callable != None else None
-        params = [p.to_python(state) for p in self.params]
+        params = [py_stmt.Difference(p.to_python(
+            state), py_type.PyFraction(1, 1)) for p in self.params]
         return py_stmt.CollectionAccess(params, callable)
 
 
@@ -323,12 +326,48 @@ class SetlIteration:
         self.condition = condition
 
     def to_python(self, state):
-        
+
         if len(self.iter_chain) > 1:
-            iterator = iterator_from_chain(state,self.iter_chain)
+            iterator = iterator_from_chain(state, self.iter_chain)
         else:
             iterator = self.iter_chain[0].to_python(state)
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
         return py_stmt.Iteration(expr, iterator, condition)
+
+
+class BooleanEqual(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, None)
+
+    def to_python(self, state):
+        left_cond = self.left.to_python(state)
+        right_cond = self.right.to_python(state)
+        left = to_bool(left_cond)
+        right = to_bool(right_cond)
+        return py_stmt.Equal(left, right)
+
+
+def to_bool(expr):
+    return py_stmt.FunctionCall(py_type.Variable("bool"), [expr])
+
+
+class BooleanNotEqual(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, None)
+
+    def to_python(self, state):
+        left_cond = self.left.to_python(state)
+        right_cond = self.right.to_python(state)
+        return py_stmt.NotEqual(to_bool(left_cond), to_bool(right_cond))
+
+
+class Implication(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, None)
+
+    def to_python(self, state):
+        left = py_stmt.Not(self.left.to_python(state))
+        right = self.right.to_python(state)
+        return py_stmt.Disjunction(left, right)

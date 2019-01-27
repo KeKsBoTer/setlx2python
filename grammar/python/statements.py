@@ -118,6 +118,11 @@ class Difference(InfixOperator):
         InfixOperator.__init__(self, left, right, "-")
 
 
+class Sum(InfixOperator):
+    def __init__(self, left, right):
+        InfixOperator.__init__(self, left, right, "+")
+
+
 class Product(InfixOperator):
     def __init__(self, left, right):
         InfixOperator.__init__(self, left, right, "*")

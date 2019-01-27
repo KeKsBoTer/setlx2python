@@ -109,6 +109,7 @@ class WithLevel:
 
 
 class ListRange:
+    # range for list access
     def __init__(self, start, end):
         self.start = start
         self.end = end
@@ -120,6 +121,7 @@ class ListRange:
 
 
 class Range:
+    # range for creating lings
     def __init__(self, start, step, end):
         self.start = start
         self.step = step
@@ -127,6 +129,8 @@ class Range:
 
     def to_python(self, state):
         start = self.start.to_python(state)
-        end = self.end.to_python(state)
-        step = self.step.to_python(state) if self.step != None else None
+        end = py_stmnt.Sum(self.end.to_python(state), py_type.PyFraction(1, 1))
+        step = None
+        if self.step != None:
+            step = py_stmnt.Difference(self.step.to_python(state), start)
         return py_type.Range(start, step, end)

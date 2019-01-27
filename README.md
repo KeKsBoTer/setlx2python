@@ -8,9 +8,9 @@
 - [ ] sets,lists
 - [ ] classes
 - [ ] unpack procedure parameters
-- [ ] implication (=>)
-- [ ] boolean equal
-- [ ] CartesianProduct
+- [x] implication (=>)
+- [x] boolean equal
+- [x] CartesianProduct
 - [ ] Terms
 - [ ] vector
 - [ ] matrix
@@ -19,7 +19,8 @@
 - [ ] read/write procedure param
 - [ ] procedureListParameter
 - [ ] only print round brackets when needed (not every time)
-- [ ] calculate necessary imports
-- [ ] support multiple iterators in for loop
+- [x] calculate necessary imports
+- [x] support multiple iterators in for loop
 - [x] bug when transpiling tests/procedure.stlx
-- [ ] type based operators ("-" does not work for lists in pyhton. maybe implement own list?)
+- [ ] implement own range function that behaves like setlx ranges
+- [ ] condition problems (python does not requires booleans in conditions. e.g (None or 2) == 2. convert everything to bool?)
