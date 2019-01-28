@@ -1,5 +1,6 @@
 
 import grammar.python.block as py
+import ast
 
 class Block:
     def __init__(self,stmnts):
@@ -8,7 +9,7 @@ class Block:
     def to_python(self, state):
         procedure_counter = state.procedure_counter
         state.procedure_counter = 0
-
+        """
         stmnts = []
         for s in self.stmnts:
             level = state.level
@@ -28,4 +29,8 @@ class Block:
             stmnts.append(stmnt)
         
         state.procedure_counter = procedure_counter
-        return py.Block(stmnts)
+        # return py.Block(stmnts)
+        """
+        stmnts = [x.to_python(state) for x in self.stmnts]
+        mod = ast.Module(body=stmnts)
+        return mod

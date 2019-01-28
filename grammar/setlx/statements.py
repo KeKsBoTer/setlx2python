@@ -4,6 +4,7 @@ import grammar.python.block as py_block
 from grammar.setlx.types import WithLevel
 import grammar.setlx.utils as utils
 
+import ast
 
 
 class InfixOperator:
@@ -14,57 +15,73 @@ class InfixOperator:
 
     def to_python(self, state):
         [left, right] = utils.to_python(state, [self.left, self.right])
-        return (self.py_target_type)(left, right)
+        # return (self.py_target_type)(left, right)
+        return ast.Assign([left], right)
 
 
-class Assignment(InfixOperator):
-    def __init__(self, assignable, right_hand_side, target_type=py_stmnt.Assignment):
-        InfixOperator.__init__(self,assignable, right_hand_side, target_type)
-
-
-class SumAssignment(Assignment):
+class Assignment:
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(
-            self, assignable, right_hand_side, py_stmnt.SumAssignment)
+        self.assignable = assignable
+        self.right_hand_side = right_hand_side
+
+    def to_python(self, state):
+        [left, right] = utils.to_python(
+            state, [self.assignable, self.right_hand_side])
+        # return (self.py_target_type)(left, right)
+        return ast.Assign([left], right)
 
 
-class DifferenceAssignment(Assignment):
+class AssignmentOther:
+    def __init__(self, assignable, right_hand_side, operator):
+        self.assignable = assignable
+        self.right_hand_side = right_hand_side
+        self.operator = operator
+
+    def to_python(self, state):
+        [target, rhs] = utils.to_python(
+            state, [self.assignable, self.right_hand_side])
+        return ast.AugAssign(target, self.operator, rhs)
+
+
+class SumAssignment(AssignmentOther):
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmnt.DifferenceAssignment)
+        AssignmentOther.__init__(
+            self, assignable, right_hand_side, ast.Add())
 
 
-class ProductAssignment(Assignment):
+class DifferenceAssignment(AssignmentOther):
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmnt.ProductAssignment)
+        AssignmentOther.__init__(self, assignable, right_hand_side, ast.Sub())
 
 
-class QuotientAssignment(Assignment):
+class ProductAssignment(AssignmentOther):
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmnt.QuotientAssignment)
+        AssignmentOther.__init__(self, assignable, right_hand_side, ast.Mult())
 
 
-class IntegerDivisionAssignment(Assignment):
+class QuotientAssignment(AssignmentOther):
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmnt.IntegerDivisionAssignment)
+        AssignmentOther.__init__(self, assignable, right_hand_side, ast.Div())
 
 
-class ModuloAssignment(Assignment):
+class IntegerDivisionAssignment(AssignmentOther):
     def __init__(self, assignable, right_hand_side):
-        Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmnt.ModuloAssignment)
+        AssignmentOther.__init__(
+            self, assignable, right_hand_side, ast.FloorDiv())
+
+
+class ModuloAssignment(AssignmentOther):
+    def __init__(self, assignable, right_hand_side):
+        AssignmentOther.__init__(self, assignable, right_hand_side, ast.Mod())
 
 
 class Factorial:
     def __init__(self, expr):
         self.expr = expr
 
-    def to_python(self,state):
+    def to_python(self, state):
         expr = self.expr.to_python(state)
-        return utils.call_function("factorial",[expr])
+        return utils.call_function("factorial", [expr])
 
 
 class FunctionCall:
@@ -77,7 +94,8 @@ class FunctionCall:
     def to_python(self, state):
         # TODO expression (unpack param)
         params = [p.to_python(state) for p in self.params]
-        return py_stmnt.FunctionCall(self.callable.to_python(state), params)
+        expr = self.callable.to_python(state)
+        return ast.Expr(ast.Call(expr, params, []))
 
 
 class Call:
@@ -92,37 +110,49 @@ class PrefixOperator:
 
     def to_python(self, state):
         expr = self.expr.to_python(state)
-        return (self.py_target_type)(expr)
+        return utils.call_function(self.py_target_type, [expr])
 
 
-class Equal(InfixOperator):
+class Compare:
+    def __init__(self,left,right,operator):
+        self.left = left
+        self.right = right
+        self.operator = operator
+    
+    def to_python(self,state):
+        left = self.left.to_python(state)
+        right = self.right.to_python(state)
+        return ast.Compare(left=left, ops=[self.operator], comparators=[right])
+
+
+class Equal(Compare):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.Equal)
+        Compare.__init__(self, left, right, ast.Eq())
 
 
-class GreaterThan(InfixOperator):
+class GreaterThan(Compare):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.GreaterThan)
+        Compare.__init__(self, left, right, ast.Gt())
 
 
-class NotEqual(InfixOperator):
+class NotEqual(Compare):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.NotEqual)
+        Compare.__init__(self, left, right, ast.NotEq())
 
 
-class Disjunction(InfixOperator):
+class Disjunction(Compare):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.Disjunction)
+        Compare.__init__(self, left, right, ast.Or())
 
 
-class Conjunction(InfixOperator):
+class Conjunction(Compare):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.Conjunction)
+        Compare.__init__(self, left, right, ast.And())
 
 
 class Not(PrefixOperator):
     def __init__(self, expr):
-        PrefixOperator.__init__(self, expr, py_stmnt.Not)
+        PrefixOperator.__init__(self, expr, "not")
 
 
 class Difference(InfixOperator):
@@ -339,7 +369,7 @@ class BooleanEqual(InfixOperator):
             state, [self.left, self.right])
         left = utils.call_function("bool", [left_cond])
         right = utils.call_function("bool", [right_cond])
-        return py_stmnt.Equal(left, right)
+        return ast.Compare(left=left, ops=[ast.Eq()], comparators=[right])
 
 
 class BooleanNotEqual(InfixOperator):
@@ -351,7 +381,7 @@ class BooleanNotEqual(InfixOperator):
             state, [self.left, self.right])
         left = utils.call_function("bool", [left_cond])
         right = utils.call_function("bool", [right_cond])
-        return py_stmnt.NotEqual(left, right)
+        return ast.Compare(left=left, ops=[ast.NotEq()], comparators=[right])
 
 
 class Implication(InfixOperator):
@@ -360,4 +390,5 @@ class Implication(InfixOperator):
 
     def to_python(self, state):
         [left, right] = utils.to_python(state, [self.left, self.right])
-        return py_stmnt.Disjunction(py_stmnt.Not(left), right)
+        not_left = utils.call_function("not", [left])
+        return ast.Compare(left=not_left, ops=[ast.Or()], comparators=[right])

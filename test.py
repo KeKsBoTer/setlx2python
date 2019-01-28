@@ -17,8 +17,8 @@ def main(argv):
     t = Transpiler(parser)
     code = t.transpile()
     print(code)
-    print("\n###### executing generated code ########")
-    exec(code, {})
+    #print("\n###### executing generated code ########")
+    #exec(code, {})
 
 
 if __name__ == '__main__':

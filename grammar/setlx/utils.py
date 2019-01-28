@@ -1,5 +1,6 @@
 import grammar.python.statements as py_stmnt
 import grammar.python.types as py_type
+import ast
 
 
 def iterator_from_chain(state, iter_chain):
@@ -18,7 +19,7 @@ def iterator_from_chain(state, iter_chain):
 
 
 def call_function(name, params):
-    return py_stmnt.FunctionCall(py_type.Variable(name), params)
+    return ast.Call(ast.Name(name),params,[])
 
 
 def to_python(state, objects):

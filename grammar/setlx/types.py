@@ -1,6 +1,7 @@
 from fractions import Fraction
 import grammar.python.types as py_type
 import grammar.python.statements as py_stmnt
+import ast
 
 
 class AssignableVariable:
@@ -8,7 +9,7 @@ class AssignableVariable:
         self.id = id
 
     def to_python(self, state):
-        return py_type.Variable(self.id)
+        return ast.Name(self.id)
 
 
 class AssignableList:
@@ -22,7 +23,7 @@ class AssignableList:
 
 class SetlXFraction(Fraction):
     def to_python(self, state):
-        return py_type.PyFraction(self)
+        return ast.Num(self.numerator)
 
 
 class Variable:
@@ -30,7 +31,7 @@ class Variable:
         self.id = id
 
     def to_python(self, state):
-        return py_type.Variable(self.id)
+        return ast.Name(self.id)
 
 
 class SetlXString:
@@ -41,7 +42,7 @@ class SetlXString:
             self.value = value
 
     def to_python(self, state):
-        return py_type.String(self.value)
+        return ast.Str(self.value)
 
 
 class SetlXLiteral:
@@ -57,7 +58,7 @@ class SetlXLiteral:
 
 class SetlXOm:
     def to_python(self, state):
-        return py_type.PyNone()
+        return ast.NameConstant(None)
 
 
 class Parameter:

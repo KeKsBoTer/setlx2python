@@ -1,3 +1,2 @@
-import setlx
-
-setlx.to_bool(None)
+x = 'py'
+print('setlx', 2, x)

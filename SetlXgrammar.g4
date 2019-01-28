@@ -75,7 +75,7 @@ assignable[enableIgnore]
 	| {$enableIgnore}? '_' {$a = AssignableIgnore()};
 
 assignableVariable
-	returns[AssignableVariable v]:
+	returns[v]:
 	ID {$v = AssignableVariable($ID.text) };
 
 expr[enableIgnore]
