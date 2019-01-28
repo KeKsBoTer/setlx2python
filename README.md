@@ -18,8 +18,9 @@
 - [ ] procedureListParameter
 - [ ] load setlx files
 - [ ] switch case
+# tasks daniel
 - [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
-
+- [ ] create list 
 # Features that will not be supported
 - execute / eval
 - scan
