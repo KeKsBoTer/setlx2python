@@ -4,10 +4,11 @@ import grammar.python.statements as py_stmt
 class SetlxState:
     def __init__(self):
         # current statement
-        self.statement = None
         self.before_stmnts = []
         self.procedure_counter = 0
+        # scope level
         self.level = 0
+        # modules that need to be imported
         self.imports = ImportList()
 
 
