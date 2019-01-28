@@ -17,3 +17,4 @@
 - [ ] read/write procedure param
 - [ ] procedureListParameter
 - [ ] load setlx files
+- [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
