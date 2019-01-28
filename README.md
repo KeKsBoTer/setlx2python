@@ -24,3 +24,4 @@
 - [x] bug when transpiling tests/procedure.stlx
 - [ ] implement own range function that behaves like setlx ranges
 - [ ] condition problems (python does not requires booleans in conditions. e.g (None or 2) == 2. convert everything to bool?)
+- [ ] deep copy procedure params (setlx call by value vs. python call by reference)
