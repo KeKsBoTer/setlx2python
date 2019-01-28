@@ -17,3 +17,10 @@
 - [ ] read/write procedure param
 - [ ] procedureListParameter
 - [ ] load setlx files
+- [ ] switch case
+
+# Features that will not be supported
+- execute / eval
+- scan
+- terms
+- term matching
