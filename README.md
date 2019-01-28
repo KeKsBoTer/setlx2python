@@ -18,6 +18,7 @@
 - [ ] procedureListParameter
 - [ ] load setlx files
 - [ ] switch case
+- [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
 
 # Features that will not be supported
 - execute / eval
