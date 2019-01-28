@@ -1,11 +1,11 @@
-import grammar.python.statements as py_stmt
+import grammar.python.statements as py_stmnt
 import grammar.python.types as py_type
 import grammar.python.block as py_block
 from grammar.setlx.types import WithLevel
 
 
 class Assignment:
-    def __init__(self, assignable, right_hand_side, target_type=py_stmt.Assignment):
+    def __init__(self, assignable, right_hand_side, target_type=py_stmnt.Assignment):
         self.assignable = assignable
         self.right_hand_side = right_hand_side
         self.target_type = target_type
@@ -19,37 +19,37 @@ class Assignment:
 class SumAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(
-            self, assignable, right_hand_side, py_stmt.SumAssignment)
+            self, assignable, right_hand_side, py_stmnt.SumAssignment)
 
 
 class DifferenceAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmt.DifferenceAssignment)
+                            py_stmnt.DifferenceAssignment)
 
 
 class ProductAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmt.ProductAssignment)
+                            py_stmnt.ProductAssignment)
 
 
 class QuotientAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmt.QuotientAssignment)
+                            py_stmnt.QuotientAssignment)
 
 
 class IntegerDivisionAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmt.IntegerDivisionAssignment)
+                            py_stmnt.IntegerDivisionAssignment)
 
 
 class ModuloAssignment(Assignment):
     def __init__(self, assignable, right_hand_side):
         Assignment.__init__(self, assignable, right_hand_side,
-                            py_stmt.ModuloAssignment)
+                            py_stmnt.ModuloAssignment)
 
 
 class Factorial:
@@ -67,7 +67,7 @@ class FunctionCall:
     def to_python(self, state):
         # TODO expression (unpack param)
         params = [p.to_python(state) for p in self.params]
-        return py_stmt.FunctionCall(self.callable.to_python(state), params)
+        return py_stmnt.FunctionCall(self.callable.to_python(state), params)
 
 
 class Call:
@@ -99,42 +99,42 @@ class PrefixOperator:
 
 class Equal(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.Equal)
+        InfixOperator.__init__(self, left, right, py_stmnt.Equal)
 
 
 class GreaterThan(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.GreaterThan)
+        InfixOperator.__init__(self, left, right, py_stmnt.GreaterThan)
 
 
 class NotEqual(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.NotEqual)
+        InfixOperator.__init__(self, left, right, py_stmnt.NotEqual)
 
 
 class Disjunction(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.Disjunction)
+        InfixOperator.__init__(self, left, right, py_stmnt.Disjunction)
 
 
 class Conjunction(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.Conjunction)
+        InfixOperator.__init__(self, left, right, py_stmnt.Conjunction)
 
 
 class Not(PrefixOperator):
     def __init__(self, expr):
-        PrefixOperator.__init__(self, expr, py_stmt.Not)
+        PrefixOperator.__init__(self, expr, py_stmnt.Not)
 
 
 class Difference(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.Difference)
+        InfixOperator.__init__(self, left, right, py_stmnt.Difference)
 
 
 class Product(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmt.Product)
+        InfixOperator.__init__(self, left, right, py_stmnt.Product)
 
 
 class IfThen:
@@ -143,7 +143,7 @@ class IfThen:
 
     def to_python(self, state):
         if_list = [i.to_python(state) for i in self.if_list]
-        return py_stmt.IfThen(if_list)
+        return py_stmnt.IfThen(if_list)
 
 
 class IfThenBranch:
@@ -154,7 +154,7 @@ class IfThenBranch:
     def to_python(self, state):
         condition = self.condition.to_python(state)
         block = self.block.to_python(state)
-        return py_stmt.IfThenBranch(condition, block)
+        return py_stmnt.IfThenBranch(condition, block)
 
 
 class IfThenElseIfBranch:
@@ -165,7 +165,7 @@ class IfThenElseIfBranch:
     def to_python(self, state):
         condition = self.condition.to_python(state)
         block = self.block.to_python(state)
-        return py_stmt.IfThenElseIfBranch(condition, block)
+        return py_stmnt.IfThenElseIfBranch(condition, block)
 
 
 class IfThenElseBranch:
@@ -174,7 +174,7 @@ class IfThenElseBranch:
 
     def to_python(self, state):
         block = self.block.to_python(state)
-        return py_stmt.IfThenElseBranch(block)
+        return py_stmnt.IfThenElseBranch(block)
 
 
 class Condition:
@@ -193,7 +193,7 @@ class While:
     def to_python(self, state):
         condition = self.condition.to_python(state)
         block = self.block.to_python(state)
-        return py_stmt.While(condition, block)
+        return py_stmnt.While(condition, block)
 
 
 class DoWhile:
@@ -205,11 +205,11 @@ class DoWhile:
         condition = self.condition.to_python(state)
         block = self.block.to_python(state)
         # see tests/dowhile.py
-        break_block = py_block.Block([py_stmt.Break()])
-        negate = py_stmt.Not(condition)
-        if_break = py_stmt.IfThen([py_stmt.IfThenBranch(negate, break_block)])
+        break_block = py_block.Block([py_stmnt.Break()])
+        negate = py_stmnt.Not(condition)
+        if_break = py_stmnt.IfThen([py_stmnt.IfThenBranch(negate, break_block)])
         block.stmnts.append(if_break)
-        return py_stmt.While(py_type.PyTrue(), block)
+        return py_stmnt.While(py_type.PyTrue(), block)
 
 
 class Backtrack:
@@ -234,7 +234,7 @@ class Return:
 
     def to_python(self, state):
         expression = self.expression.to_python(state)
-        return py_stmt.Return(expression)
+        return py_stmnt.Return(expression)
 
 
 def iterator_from_chain(state, iter_chain):
@@ -246,10 +246,10 @@ def iterator_from_chain(state, iter_chain):
     assignable = py_type.PyList(py_type.ExplicitList(assignables))
 
     exprs = [e.expression.to_python(state) for e in iter_chain]
-    list_product = py_stmt.FunctionCall(
+    list_product = py_stmnt.FunctionCall(
         py_type.Variable("product"), exprs)
 
-    return py_stmt.PyIterator(assignable, list_product)
+    return py_stmnt.PyIterator(assignable, list_product)
 
 
 class For:
@@ -267,9 +267,9 @@ class For:
         # add condition as if statement in branch
         if self.condition != None:
             condition = self.condition.to_python(state)
-            if_stmt = py_stmt.IfThen([py_stmt.IfThenBranch(condition, block)])
+            if_stmt = py_stmnt.IfThen([py_stmnt.IfThenBranch(condition, block)])
             block = py_block.Block([if_stmt])
-        return py_stmt.For(iterator, block)
+        return py_stmnt.For(iterator, block)
 
 
 class SetlIterator:
@@ -280,8 +280,13 @@ class SetlIterator:
     def to_python(self, state):
         assignable = self.assignable.to_python(state)
         expression = self.expression.to_python(state)
-        return py_stmt.PyIterator(assignable, expression)
+        return py_stmnt.PyIterator(assignable, expression)
 
+
+def deep_copy_param(param,state):
+    state.imports.add("copy","deepcopy")
+    call = py_stmnt.FunctionCall(py_type.Variable("deepcopy"),[py_type.Parameter(param.id)])
+    return py_stmnt.Assignment(py_type.Variable(param.id),call)
 
 class Procedure:
     def __init__(self, params, block, name=None):
@@ -292,18 +297,20 @@ class Procedure:
     def to_python(self, state):
         params = [p.to_python(state) for p in self.params]
         block = self.block.to_python(state)
+        deepcopies = [deep_copy_param(p,state) for p in params]
+        block.stmnts = deepcopies + block.stmnts
 
         if self.name == None:
             # TODO find better naming
             proc_name = f"procedure_{state.level}_{state.procedure_counter}"
 
             state.before_stmnts.append(
-                WithLevel(state.level, py_stmt.Function(proc_name, params, block)))
+                WithLevel(state.level, py_stmnt.Function(proc_name, params, block)))
 
             state.procedure_counter += 1
             return py_type.Variable(proc_name)
         else:
-            return py_stmt.Function(self.name, params, block)
+            return py_stmnt.Function(self.name, params, block)
 
 
 class CollectionAccess:
@@ -314,9 +321,9 @@ class CollectionAccess:
     def to_python(self, state):
         callable = self.callable.to_python(
             state) if self.callable != None else None
-        params = [py_stmt.Difference(p.to_python(
+        params = [py_stmnt.Difference(p.to_python(
             state), py_type.PyFraction(1, 1)) for p in self.params]
-        return py_stmt.CollectionAccess(params, callable)
+        return py_stmnt.CollectionAccess(params, callable)
 
 
 class SetlIteration:
@@ -334,7 +341,7 @@ class SetlIteration:
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
-        return py_stmt.Iteration(expr, iterator, condition)
+        return py_stmnt.Iteration(expr, iterator, condition)
 
 
 class BooleanEqual(InfixOperator):
@@ -346,11 +353,11 @@ class BooleanEqual(InfixOperator):
         right_cond = self.right.to_python(state)
         left = to_bool(left_cond)
         right = to_bool(right_cond)
-        return py_stmt.Equal(left, right)
+        return py_stmnt.Equal(left, right)
 
 
 def to_bool(expr):
-    return py_stmt.FunctionCall(py_type.Variable("bool"), [expr])
+    return py_stmnt.FunctionCall(py_type.Variable("bool"), [expr])
 
 
 class BooleanNotEqual(InfixOperator):
@@ -360,7 +367,7 @@ class BooleanNotEqual(InfixOperator):
     def to_python(self, state):
         left_cond = self.left.to_python(state)
         right_cond = self.right.to_python(state)
-        return py_stmt.NotEqual(to_bool(left_cond), to_bool(right_cond))
+        return py_stmnt.NotEqual(to_bool(left_cond), to_bool(right_cond))
 
 
 class Implication(InfixOperator):
@@ -368,6 +375,6 @@ class Implication(InfixOperator):
         InfixOperator.__init__(self, left, right, None)
 
     def to_python(self, state):
-        left = py_stmt.Not(self.left.to_python(state))
+        left = py_stmnt.Not(self.left.to_python(state))
         right = self.right.to_python(state)
-        return py_stmt.Disjunction(left, right)
+        return py_stmnt.Disjunction(left, right)
