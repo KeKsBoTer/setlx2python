@@ -20,7 +20,7 @@
 - [ ] switch case
 # tasks daniel
 - [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
-- [ ] create list 
+- [ ] create list of alle setlx specific functions
 # Features that will not be supported
 - execute / eval
 - scan
