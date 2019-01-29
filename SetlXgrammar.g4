@@ -15,17 +15,15 @@ stmnts = []
 statement
 	returns[stmnt]
 	@init {
-ifList = []
+else_list = []
 expression = None
 condition = None
     }:
-	'if' '(' c1 = condition ')' '{' b1 = block '}' {ifList.append(IfThenBranch($c1.cnd, $b1.blk)) }
-		(
-		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {ifList.append(IfThenElseIfBranch($c2.cnd, $b2.blk)) 
-			}
+	'if' '(' c1 = condition ')' '{' b1 = block '}' (
+		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk)) }
 	)* (
-		'else' '{' b3 = block '}' {ifList.append(IfThenElseBranch($b3.blk))                  }
-	)? {$stmnt = IfThen(ifList) }
+		'else' '{' b3 = block '}' {else_list.append($b3.blk) }
+	)? {$stmnt = IfThen($c1.cnd,$b1.blk,else_list) }
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
 	)? ')' '{' block '}' {$stmnt = For($iteratorChain.ic, condition, $block.blk) }
@@ -75,8 +73,7 @@ assignable[enableIgnore]
 	| {$enableIgnore}? '_' {$a = AssignableIgnore()};
 
 assignableVariable
-	returns[v]:
-	ID {$v = AssignableVariable($ID.text) };
+	returns[v]: ID {$v = AssignableVariable($ID.text) };
 
 expr[enableIgnore]
 	returns[ex]:

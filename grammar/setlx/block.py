@@ -31,6 +31,4 @@ class Block:
         state.procedure_counter = procedure_counter
         # return py.Block(stmnts)
         """
-        stmnts = [x.to_python(state) for x in self.stmnts]
-        mod = ast.Module(body=stmnts)
-        return mod
+        return [x.to_python(state) for x in self.stmnts]

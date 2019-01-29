@@ -3,7 +3,7 @@ import grammar.python.types as py_type
 import grammar.python.block as py_block
 from grammar.setlx.types import WithLevel
 import grammar.setlx.utils as utils
-
+from grammar.setlx.block import Block
 import ast
 
 
@@ -114,12 +114,12 @@ class PrefixOperator:
 
 
 class Compare:
-    def __init__(self,left,right,operator):
+    def __init__(self, left, right, operator):
         self.left = left
         self.right = right
         self.operator = operator
-    
-    def to_python(self,state):
+
+    def to_python(self, state):
         left = self.left.to_python(state)
         right = self.right.to_python(state)
         return ast.Compare(left=left, ops=[self.operator], comparators=[right])
@@ -166,43 +166,41 @@ class Product(InfixOperator):
 
 
 class IfThen:
-    def __init__(self, if_list=[]):
-        self.if_list = if_list
+    def __init__(self, condition, block, else_list=[]):
+        self.else_list = else_list
+        self.condition = condition
+        self.block = block
 
     def to_python(self, state):
-        if_list = [i.to_python(state) for i in self.if_list]
-        return py_stmnt.IfThen(if_list)
+        [condition, block] = utils.to_python(
+            state, [self.condition, self.block])
+
+        orelse = []
+        for e in self.else_list[::-1]:
+            if isinstance(e, IfThenBranch):
+                e.orelse = orelse
+                orelse = [e]
+            else:
+                orelse = e
+
+        orelse = orelse.to_python(state) if isinstance(orelse, Block) else [
+            e.to_python(state) for e in orelse]
+        return ast.If(test=condition, body=block, orelse=orelse)
 
 
 class IfThenBranch:
-    def __init__(self, condition, block):
+    def __init__(self, condition, block, orelse=None):
         self.condition = condition
         self.block = block
+        self.orelse = orelse
 
     def to_python(self, state):
         [condition, block] = utils.to_python(
             state, [self.condition, self.block])
-        return py_stmnt.IfThenBranch(condition, block)
+        orelse = self.orelse.to_python(state) if isinstance(self.orelse, Block) else [
+            e.to_python(state) for e in self.orelse]
 
-
-class IfThenElseIfBranch:
-    def __init__(self, condition, block):
-        self.condition = condition
-        self.block = block
-
-    def to_python(self, state):
-        [condition, block] = utils.to_python(
-            state, [self.condition, self.block])
-        return py_stmnt.IfThenElseIfBranch(condition, block)
-
-
-class IfThenElseBranch:
-    def __init__(self, block):
-        self.block = block
-
-    def to_python(self, state):
-        block = self.block.to_python(state)
-        return py_stmnt.IfThenElseBranch(block)
+        return ast.If(test=condition, body=block, orelse=orelse)
 
 
 class Condition:
