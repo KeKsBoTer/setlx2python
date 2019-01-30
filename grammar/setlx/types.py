@@ -53,7 +53,7 @@ class SetlXLiteral:
             self.value = value
 
     def to_python(self, state):
-        return py_type.Literal(self.value)
+        return ast.Str(s=self.value)
 
 
 class SetlXOm:

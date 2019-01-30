@@ -7,18 +7,6 @@ from grammar.setlx.block import Block
 import ast
 
 
-class InfixOperator:
-    def __init__(self, left, right, py_target_type):
-        self.left = left
-        self.right = right
-        self.py_target_type = py_target_type
-
-    def to_python(self, state):
-        [left, right] = utils.to_python(state, [self.left, self.right])
-        # return (self.py_target_type)(left, right)
-        return ast.Assign([left], right)
-
-
 class Assignment:
     def __init__(self, assignable, right_hand_side):
         self.assignable = assignable
@@ -155,14 +143,30 @@ class Not(PrefixOperator):
         PrefixOperator.__init__(self, expr, "not")
 
 
-class Difference(InfixOperator):
+class InfixOperator:
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.Difference)
+        self.left = left
+        self.right = right
 
 
-class Product(InfixOperator):
+class BinOperator(InfixOperator):
+    def __init__(self, left, right, operator):
+        InfixOperator.__init__(self, left, right)
+        self.operator = operator
+
+    def to_python(self, state):
+        [left, right] = utils.to_python(state, [self.left, self.right])
+        return ast.BinOp(left, self.operator, right)
+
+
+class Difference(BinOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, py_stmnt.Product)
+        BinOperator.__init__(self, left, right, ast.Sub())
+
+
+class Product(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Mult())
 
 
 class IfThen:
@@ -219,7 +223,7 @@ class While:
     def to_python(self, state):
         [condition, block] = utils.to_python(
             state, [self.condition, self.block])
-        return py_stmnt.While(condition, block)
+        return ast.While(test=condition, body=block, orelse=[])
 
 
 class DoWhile:
@@ -230,13 +234,11 @@ class DoWhile:
     def to_python(self, state):
         [condition, block] = utils.to_python(
             state, [self.condition, self.block])
-        # see tests/dowhile.py
-        break_block = py_block.Block([py_stmnt.Break()])
-        negate = py_stmnt.Not(condition)
-        if_break = py_stmnt.IfThen(
-            [py_stmnt.IfThenBranch(negate, break_block)])
-        block.stmnts.append(if_break)
-        return py_stmnt.While(py_type.PyTrue(), block)
+        break_block = [ast.Break()]
+        negate = utils.call_function("not", [condition])
+        if_break = ast.If(test=negate, body=break_block, orelse=[])
+        block.append(if_break)
+        return ast.While(test=utils.bool_true(), body=block, orelse=[])
 
 
 class Backtrack:
@@ -272,17 +274,13 @@ class For:
 
     def to_python(self, state):
         block = self.block.to_python(state)
-        if len(self.iteratorChain) > 1:
-            iterator = utils.iterator_from_chain(state, self.iteratorChain)
-        else:
-            iterator = self.iteratorChain[0].to_python(state)
+        [assignable,iterator] = utils.iterator_from_chain(state, self.iteratorChain)
         # add condition as if statement in branch
         if self.condition != None:
             condition = self.condition.to_python(state)
-            if_stmt = py_stmnt.IfThen(
-                [py_stmnt.IfThenBranch(condition, block)])
-            block = py_block.Block([if_stmt])
-        return py_stmnt.For(iterator, block)
+            if_stmt = ast.If(test=condition, body=block, orelse=[])
+            block = [if_stmt]
+        return ast.For(target=assignable,iter=iterator, body=block,orelse=[])
 
 
 class SetlIterator:
