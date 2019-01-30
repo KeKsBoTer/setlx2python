@@ -18,7 +18,7 @@ class AssignableList:
 
     def to_python(self, state):
         assignables = [a.to_python(state) for a in self.assignables]
-        return py_type.AssignableList(assignables)
+        return ast.List(elts=assignables)
 
 
 class SetlXFraction(Fraction):
@@ -69,7 +69,7 @@ class Parameter:
     def to_python(self, state):
         default = self.default.to_python(
             state) if self.default != None else None
-        return py_type.Parameter(self.id, default)
+        return ast.arg(arg=self.id, annotation=None)  # TODO default value
 
 
 class SetlXTrue:
@@ -88,7 +88,7 @@ class SetlXList:
 
     def to_python(self, state):
         expr = self.expr.to_python(state) if self.expr != None else None
-        return py_type.PyList(expr)
+        return ast.List(expr)
 
 
 class ExplicitList:
@@ -96,8 +96,7 @@ class ExplicitList:
         self.exprs = exprs
 
     def to_python(self, state):
-        exprs = [e.to_python(state) for e in self.exprs]
-        return py_type.ExplicitList(exprs)
+        return [e.to_python(state) for e in self.exprs]
 
 
 class WithLevel:
@@ -105,8 +104,8 @@ class WithLevel:
         self.code = code
         self.level = level
 
-    def to_code(self, indent=0):
-        return self.code.to_code(indent)
+    def to_python(self, state):
+        return self.code
 
 
 class ListRange:

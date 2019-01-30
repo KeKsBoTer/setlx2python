@@ -58,9 +58,8 @@ $procedure.pd.name = $variable.v.id
 $assign = $procedure.pd
     }
 	| assignable[False] ':=' (
-		assignmentDirect {$assign = Assignment($assignable.a, $assignmentDirect.assign)
-			}
-		| exprContent[False] {$assign = Assignment($assignable.a, $exprContent.ex)}
+		assignmentDirect {$assign = Assignment($assignable.a, $assignmentDirect.assign) }
+		| exprContent[False] {$assign = Assignment($assignable.a, $exprContent.ex) }
 	);
 
 assignable[enableIgnore]

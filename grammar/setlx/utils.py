@@ -33,3 +33,9 @@ def bool_true():
 
 def bool_false():
     return ast.NameConstant(value=False)
+
+
+def deep_copy_param(param, state):
+    state.imports.add("copy", "deepcopy")
+    call = call_function("deepcopy",[param])
+    return ast.Assign([param], call)

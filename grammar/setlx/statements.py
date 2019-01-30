@@ -16,6 +16,8 @@ class Assignment:
         [left, right] = utils.to_python(
             state, [self.assignable, self.right_hand_side])
         # return (self.py_target_type)(left, right)
+        if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
+            right = right.value  # TODO fix this workaround. see tests/procedure
         return ast.Assign([left], right)
 
 
@@ -263,7 +265,7 @@ class Return:
 
     def to_python(self, state):
         expression = self.expression.to_python(state)
-        return py_stmnt.Return(expression)
+        return ast.Return(value=expression)
 
 
 class For:
@@ -274,13 +276,14 @@ class For:
 
     def to_python(self, state):
         block = self.block.to_python(state)
-        [assignable,iterator] = utils.iterator_from_chain(state, self.iteratorChain)
+        [assignable, iterator] = utils.iterator_from_chain(
+            state, self.iteratorChain)
         # add condition as if statement in branch
         if self.condition != None:
             condition = self.condition.to_python(state)
             if_stmt = ast.If(test=condition, body=block, orelse=[])
             block = [if_stmt]
-        return ast.For(target=assignable,iter=iterator, body=block,orelse=[])
+        return ast.For(target=assignable, iter=iterator, body=block, orelse=[])
 
 
 class SetlIterator:
@@ -294,13 +297,6 @@ class SetlIterator:
         return py_stmnt.PyIterator(assignable, expression)
 
 
-def deep_copy_param(param, state):
-    state.imports.add("copy", "deepcopy")
-    call = py_stmnt.FunctionCall(py_type.Variable(
-        "deepcopy"), [py_type.Parameter(param.id)])
-    return py_stmnt.Assignment(py_type.Variable(param.id), call)
-
-
 class Procedure:
     def __init__(self, params, block, name=None):
         self.params = params
@@ -310,20 +306,26 @@ class Procedure:
     def to_python(self, state):
         params = [p.to_python(state) for p in self.params]
         block = self.block.to_python(state)
-        deepcopies = [deep_copy_param(p, state) for p in params]
-        block.stmnts = deepcopies + block.stmnts
+        deepcopies = [utils.deep_copy_param(p, state) for p in params]
+        block = deepcopies + block
+        params = ast.arguments(args=params,
+                               vararg=None,
+                               kwonlyargs=[],
+                               kw_defaults=[],
+                               kwarg=None,
+                               defaults=[])
 
         if self.name == None:
             # TODO find better naming
             proc_name = f"procedure_{state.level}_{state.procedure_counter}"
 
             state.before_stmnts.append(
-                WithLevel(state.level, py_stmnt.Function(proc_name, params, block)))
+                WithLevel(state.level, ast.FunctionDef(name=proc_name, args=params, body=block, decorator_list=[])))
 
             state.procedure_counter += 1
-            return py_type.Variable(proc_name)
+            return ast.Name(id=proc_name)
         else:
-            return py_stmnt.Function(self.name, params, block)
+            return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=[])
 
 
 class CollectionAccess:
@@ -358,7 +360,7 @@ class SetlIteration:
 
 class BooleanEqual(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, None)
+        InfixOperator.__init__(self, left, right)
 
     def to_python(self, state):
         [left_cond, right_cond] = utils.to_python(
@@ -370,7 +372,7 @@ class BooleanEqual(InfixOperator):
 
 class BooleanNotEqual(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, None)
+        InfixOperator.__init__(self, left, right)
 
     def to_python(self, state):
         [left_cond, right_cond] = utils.to_python(
@@ -382,7 +384,7 @@ class BooleanNotEqual(InfixOperator):
 
 class Implication(InfixOperator):
     def __init__(self, left, right):
-        InfixOperator.__init__(self, left, right, None)
+        InfixOperator.__init__(self, left, right)
 
     def to_python(self, state):
         [left, right] = utils.to_python(state, [self.left, self.right])
