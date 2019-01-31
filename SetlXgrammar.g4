@@ -246,7 +246,7 @@ params = []
 			| {$p = ListRange($e1.ex,None) }
 		)
 		| (',' e3 = expr[False] {params.append($e3.ex) })+ {$p = params }
-		| {$p = [$e1.ex] }
+		| {$p = $e1.ex }
 	)
 	| RANGE_SIGN expr[$enableIgnore] {$p = ListRange(None,$expr.ex) };
 

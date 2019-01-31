@@ -1,5 +1,3 @@
-import grammar.python.statements as py_stmnt
-import grammar.python.types as py_type
 import ast
 
 

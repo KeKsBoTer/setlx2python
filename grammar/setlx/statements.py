@@ -1,9 +1,7 @@
-import grammar.python.statements as py_stmnt
-import grammar.python.types as py_type
-import grammar.python.block as py_block
 from grammar.setlx.types import WithLevel
 import grammar.setlx.utils as utils
 from grammar.setlx.block import Block
+import grammar.setlx.types as types
 import ast
 
 
@@ -292,9 +290,7 @@ class SetlIterator:
         self.expression = expression
 
     def to_python(self, state):
-        [assignable, expression] = utils.to_python(
-            state, [self.assignable, self.expression])
-        return py_stmnt.PyIterator(assignable, expression)
+        raise "not reachable"
 
 
 class Procedure:
@@ -336,9 +332,15 @@ class CollectionAccess:
     def to_python(self, state):
         callable = self.callable.to_python(
             state) if self.callable != None else None
-        params = [py_stmnt.Difference(p.to_python(
-            state), py_type.PyFraction(1, 1)) for p in self.params]
-        return py_stmnt.CollectionAccess(params, callable)
+        # params = [py_stmnt.Difference(p.to_python(
+        #    state), py_type.PyFraction(1, 1)) for p in self.params]
+        # TODO what if params is list?
+        params = self.params.to_python(state)
+        if isinstance(self.params,types.ListRange): # TODO maby more elegant solution?
+            index = ast.Index(value=params)
+        else: 
+            index = ast.Index(value=ast.BinOp(params, ast.Sub(), ast.Num(n=1)))
+        return ast.Subscript(value=callable, slice=index)
 
 
 class SetlIteration:
@@ -348,14 +350,15 @@ class SetlIteration:
         self.condition = condition
 
     def to_python(self, state):
-        if len(self.iter_chain) > 1:
-            iterator = utils.iterator_from_chain(state, self.iter_chain)
-        else:
-            iterator = self.iter_chain[0].to_python(state)
+        
+        [assignable, iterator] = utils.iterator_from_chain(
+            state, self.iter_chain)
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
-        return py_stmnt.Iteration(expr, iterator, condition)
+        
+        comp = ast.comprehension(target=assignable,iter=iterator,ifs=[condition])
+        return ast.ListComp(elt=expr,generators=[comp])
 
 
 class BooleanEqual(InfixOperator):

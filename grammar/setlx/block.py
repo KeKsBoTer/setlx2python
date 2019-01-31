@@ -1,5 +1,3 @@
-
-import grammar.python.block as py
 import ast
 
 

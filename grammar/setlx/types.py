@@ -1,6 +1,5 @@
 from fractions import Fraction
-import grammar.python.types as py_type
-import grammar.python.statements as py_stmnt
+import grammar.setlx.utils as utils
 import ast
 
 
@@ -74,12 +73,12 @@ class Parameter:
 
 class SetlXTrue:
     def to_python(self, state):
-        return py_type.PyTrue()
+        return utils.bool_true()
 
 
 class SetlXFalse:
     def to_python(self, state):
-        return py_type.PyFalse()
+        return utils.bool_false()
 
 
 class SetlXList:
@@ -87,8 +86,10 @@ class SetlXList:
         self.expr = expr
 
     def to_python(self, state):
-        expr = self.expr.to_python(state) if self.expr != None else None
-        return ast.List(expr)
+        if self.expr != None:
+            return self.expr.to_python(state)
+        else:
+            return ast.List([])
 
 
 class ExplicitList:
@@ -96,7 +97,7 @@ class ExplicitList:
         self.exprs = exprs
 
     def to_python(self, state):
-        return [e.to_python(state) for e in self.exprs]
+        return ast.List([e.to_python(state) for e in self.exprs])
 
 
 class WithLevel:
@@ -114,10 +115,12 @@ class ListRange:
         self.start = start
         self.end = end
 
-    def to_pyton(self, state):
-        start = self.start.to_python(state)
-        end = self.end.to_python(state)
-        return py_type.ListRange(start, end)
+    def to_python(self, state):
+        start = self.start.to_python(state) if self.start != None else None
+        end = self.end.to_python(state) if self.end != None else None
+        if start != None:
+            start = ast.BinOp(left=start, op=ast.Sub(), right=ast.Num(1))
+        return ast.Slice(lower=start, upper=end, step=None)
 
 
 class Range:
@@ -129,8 +132,14 @@ class Range:
 
     def to_python(self, state):
         start = self.start.to_python(state)
-        end = py_stmnt.Sum(self.end.to_python(state), py_type.PyFraction(1, 1))
-        step = None
+        end = self.end.to_python(state)
+        end_plus_one = ast.BinOp(left=end, op=ast.Add(), right=ast.Num(n=1))
+        range_params = [start, end_plus_one]
+
         if self.step != None:
-            step = py_stmnt.Difference(self.step.to_python(state), start)
-        return py_type.Range(start, step, end)
+            step = ast.BinOp(left=self.step.to_python(
+                state), op=ast.Sub(), right=start)
+            range_params.append(step)
+
+        range_call = utils.call_function("range", range_params)
+        return utils.call_function("list", [range_call])

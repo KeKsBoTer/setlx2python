@@ -1017,14 +1017,13 @@ class SetlXgrammarParser ( Parser ):
                 if la_ == 1:
                     self.state = 211
                     localctx._assignmentDirect = self.assignmentDirect()
-                    localctx.assign = Assignment(localctx._assignable.a, localctx._assignmentDirect.assign)
-                    			
+                    localctx.assign = Assignment(localctx._assignable.a, localctx._assignmentDirect.assign) 
                     pass
 
                 elif la_ == 2:
                     self.state = 214
                     localctx._exprContent = self.exprContent(False)
-                    localctx.assign = Assignment(localctx._assignable.a, localctx._exprContent.ex)
+                    localctx.assign = Assignment(localctx._assignable.a, localctx._exprContent.ex) 
                     pass
 
 
@@ -2592,7 +2591,7 @@ class SetlXgrammarParser ( Parser ):
                     localctx.p = params 
                     pass
                 elif token in [SetlXgrammarParser.T__25]:
-                    localctx.p = [localctx.e1.ex] 
+                    localctx.p = localctx.e1.ex 
                     pass
                 else:
                     raise NoViableAltException(self)
