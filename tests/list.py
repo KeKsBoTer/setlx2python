@@ -1,4 +1,4 @@
-"""from itertools import product
+from itertools import product
 
 x = []
 x = [1,2,3,"test"]
@@ -12,5 +12,5 @@ print(b)
 
 a = [x for x in a if x > 2]
 a = [c*d for [c,d] in product(a,b) if c > 2]
-"""
+
 print(a[10-1:20])
