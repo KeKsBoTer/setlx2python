@@ -9,7 +9,6 @@
 - [x] implication (=>)
 - [x] boolean equal
 - [x] cartesian product
-- [ ] Terms
 - [ ] vector
 - [ ] matrix
 - [ ] closure 
