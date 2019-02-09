@@ -16,7 +16,7 @@ class Assignment:
         # return (self.py_target_type)(left, right)
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
             right = right.value  # TODO fix this workaround. see tests/procedure
-        return ast.Assign([left], right)
+        return ast.Assign(targets=[left], value=right)
 
 
 class AssignmentOther:
@@ -28,7 +28,7 @@ class AssignmentOther:
     def to_python(self, state):
         [target, rhs] = utils.to_python(
             state, [self.assignable, self.right_hand_side])
-        return ast.AugAssign(target, self.operator, rhs)
+        return ast.AugAssign(target=target, op=self.operator, value=rhs)
 
 
 class SumAssignment(AssignmentOther):
@@ -86,11 +86,6 @@ class FunctionCall:
         return ast.Expr(ast.Call(expr, params, []))
 
 
-class Call:
-    def __init__(self, callable):
-        self.callable = callable
-
-
 class PrefixOperator:
     def __init__(self, expr, py_target_type):
         self.expr = expr
@@ -123,6 +118,21 @@ class GreaterThan(Compare):
         Compare.__init__(self, left, right, ast.Gt())
 
 
+class GreaterOrEqual(Compare):
+    def __init__(self, left, right):
+        Compare.__init__(self, left, right, ast.GtE())
+
+
+class LessOrEqual(Compare):
+    def __init__(self, left, right):
+        Compare.__init__(self, left, right, ast.LtE())
+
+
+class LessThan(Compare):
+    def __init__(self, left, right):
+        Compare.__init__(self, left, right, ast.Lt())
+
+
 class NotEqual(Compare):
     def __init__(self, left, right):
         Compare.__init__(self, left, right, ast.NotEq())
@@ -132,15 +142,29 @@ class Disjunction(Compare):
     def __init__(self, left, right):
         Compare.__init__(self, left, right, ast.Or())
 
+    def to_python(self, state):
+        left = self.left.to_python(state)
+        right = self.right.to_python(state)
+        return ast.BoolOp(op=ast.Or(), values=[left, right])
+
 
 class Conjunction(Compare):
     def __init__(self, left, right):
         Compare.__init__(self, left, right, ast.And())
 
+    def to_python(self, state):
+        left = self.left.to_python(state)
+        right = self.right.to_python(state)
+        return ast.BoolOp(op=ast.And(), values=[left, right])
+
 
 class Not(PrefixOperator):
     def __init__(self, expr):
         PrefixOperator.__init__(self, expr, "not")
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        return ast.UnaryOp(op=ast.Not(), operand=expr)
 
 
 class InfixOperator:
@@ -235,7 +259,7 @@ class DoWhile:
         [condition, block] = utils.to_python(
             state, [self.condition, self.block])
         break_block = [ast.Break()]
-        negate = utils.call_function("not", [condition])
+        negate = ast.UnaryOp(op=ast.Not(), operand=condition)
         if_break = ast.If(test=negate, body=break_block, orelse=[])
         block.append(if_break)
         return ast.While(test=utils.bool_true(), body=block, orelse=[])
@@ -263,7 +287,7 @@ class Return:
 
     def to_python(self, state):
         expression = self.expression.to_python(state)
-        return ast.Return(value=expression)
+        return ast.Return(value=expression, decorator_list=[], returns=None)
 
 
 class For:
@@ -302,7 +326,9 @@ class Procedure:
     def to_python(self, state):
         params = [p.to_python(state) for p in self.params]
         block = self.block.to_python(state)
-        deepcopies = [utils.deep_copy_param(p, state) for p in params]
+
+        params_names = [ast.Name(id=p.arg) for p in params]
+        deepcopies = [utils.deep_copy_param(p, state) for p in params_names]
         block = deepcopies + block
         params = ast.arguments(args=params,
                                vararg=None,
@@ -336,11 +362,11 @@ class CollectionAccess:
         #    state), py_type.PyFraction(1, 1)) for p in self.params]
         # TODO what if params is list?
         params = self.params.to_python(state)
-        if isinstance(self.params,types.ListRange): # TODO maby more elegant solution?
-            index = ast.Index(value=params)
-        else: 
+        if isinstance(self.params, types.ListRange):  # TODO maby more elegant solution?
+            return ast.Subscript(value=callable, slice=params)
+        else:
             index = ast.Index(value=ast.BinOp(params, ast.Sub(), ast.Num(n=1)))
-        return ast.Subscript(value=callable, slice=index)
+            return ast.Subscript(value=callable, slice=index)
 
 
 class SetlIteration:
@@ -350,15 +376,16 @@ class SetlIteration:
         self.condition = condition
 
     def to_python(self, state):
-        
+
         [assignable, iterator] = utils.iterator_from_chain(
             state, self.iter_chain)
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
-        
-        comp = ast.comprehension(target=assignable,iter=iterator,ifs=[condition])
-        return ast.ListComp(elt=expr,generators=[comp])
+
+        comp = ast.comprehension(
+            target=assignable, iter=iterator, ifs=[condition], is_async=0)
+        return ast.ListComp(elt=expr, generators=[comp])
 
 
 class BooleanEqual(InfixOperator):
@@ -391,5 +418,5 @@ class Implication(InfixOperator):
 
     def to_python(self, state):
         [left, right] = utils.to_python(state, [self.left, self.right])
-        not_left = utils.call_function("not", [left])
+        not_left = ast.UnaryOp(op=ast.Not(), operand=left)
         return ast.Compare(left=not_left, ops=[ast.Or()], comparators=[right])

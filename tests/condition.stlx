@@ -2,7 +2,3 @@ x := "test";
 y := 2;
 z := om;
 same := !(x == y && y == z) || (x != y && y != z) || !x;
-
-print(x <==> y);
-print(x <!=> z);
-print(x => y);

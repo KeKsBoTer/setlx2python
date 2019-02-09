@@ -348,7 +348,7 @@ class SetlXgrammarParser ( Parser ):
                      "'||'", "'&&'", "'=='", "'!='", "'<'", "'<='", "'>'", 
                      "'>='", "'in'", "'notin'", "'+'", "'-'", "'*'", "'/'", 
                      "'\\'", "'%'", "'**'", "'!'", "'procedure'", "':'", 
-                     "'om'", "'True'", "'False'", "<INVALID>", "<INVALID>", 
+                     "'om'", "'true'", "'false'", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "'..'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 

@@ -8,7 +8,7 @@ class AssignableVariable:
         self.id = id
 
     def to_python(self, state):
-        return ast.Name(self.id)
+        return ast.Name(id=self.id)
 
 
 class AssignableList:
@@ -30,7 +30,7 @@ class Variable:
         self.id = id
 
     def to_python(self, state):
-        return ast.Name(self.id)
+        return ast.Name(id=self.id)
 
 
 class SetlXString:
@@ -89,7 +89,7 @@ class SetlXList:
         if self.expr != None:
             return self.expr.to_python(state)
         else:
-            return ast.List([])
+            return ast.List(elts=[])
 
 
 class ExplicitList:
@@ -97,7 +97,7 @@ class ExplicitList:
         self.exprs = exprs
 
     def to_python(self, state):
-        return ast.List([e.to_python(state) for e in self.exprs])
+        return ast.List(elts=[e.to_python(state) for e in self.exprs])
 
 
 class WithLevel:

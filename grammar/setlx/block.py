@@ -16,6 +16,9 @@ class Block:
             stmnt = s.to_python(state)
             state.level = level
 
+            if isinstance(stmnt, ast.Compare) or isinstance(stmnt, ast.UnaryOp): # TODO this needs a better solution
+                stmnt = ast.Expr(value=stmnt)
+
             if len(state.before_stmnts) > 0:
                 # prepend statements that need to be executed before statement (e.g. function declaration)
                 before, not_before = [], []

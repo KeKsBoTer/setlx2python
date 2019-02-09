@@ -4,6 +4,7 @@ import subprocess
 import ast
 import astor
 import difflib
+import colorama
 from transpiler import transpile
 from termcolor import cprint
 
@@ -13,7 +14,6 @@ def _unidiff_output(expected, actual):
     Helper function. Returns a string containing the unified diff of two multiline strings.
     """
 
-    import difflib
     expected = expected.splitlines(1)
     actual = actual.splitlines(1)
 
@@ -22,12 +22,14 @@ def _unidiff_output(expected, actual):
     return ''.join(diff)
 
 
+colorama.init()
+
 module_dir = os.path.dirname(__file__)
 tests_dir = os.path.join(module_dir, "tests")
 
 flags = [f[2:] for f in argv[1:] if f[0:2] == "--"]
 argv = [a for a in argv if a[2:] not in flags]
-print(argv)
+
 files = os.listdir(path=tests_dir)
 setlx_files = [f for f in files if f.endswith(".stlx")]
 py_files = [f for f in files if f.endswith(".py")]
@@ -59,17 +61,23 @@ for test in tests:
 
     gen_ast = astor.dump_tree(gen_tree)
     py_ast = astor.dump_tree(py_tree)
+    code = astor.to_source(gen_tree)
     if gen_ast != py_ast:
         cprint(
             f"WARNING: generated ast does not match py file ({test[0][:-5]})", "yellow")
         if "ast" in flags:
-            print("-"*5+test[0]+"-"*5)
+            print("-"*5+"generated"+"-"*5)
             print(gen_ast)
-            print("-"*5+test[1]+"-"*5)
+            print("-"*5+"expected"+"-"*5)
             print(py_ast)
+
         if "diff" in flags:
-            print(f'{"#"*5} {test[0]} <> {test[1]} {"#"*5}')
+            print(f'{"#"*5} generated <> {test[1]} {"#"*5}')
             print(_unidiff_output(py_ast, gen_ast))
+
+        if "code" in flags:
+            print(f'{"#"*5} generated code {"#"*5}')
+            print(code)
 
     successfull.append(test[0][:-5])
 

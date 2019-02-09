@@ -9,7 +9,7 @@ def iterator_from_chain(state, iter_chain):
 
     assignables = [i.assignable.to_python(
         state) for i in iter_chain]
-    assignable = ast.List(assignables)
+    assignable = ast.List(elts=assignables)
 
     exprs = [e.expression.to_python(state) for e in iter_chain]
     list_product = call_function("product", exprs)
@@ -18,7 +18,7 @@ def iterator_from_chain(state, iter_chain):
 
 
 def call_function(name, params):
-    return ast.Call(ast.Name(name), params, [])
+    return ast.Call(func=ast.Name(id=name), args=params, keywords=[])
 
 
 def to_python(state, objects):

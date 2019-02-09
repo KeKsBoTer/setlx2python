@@ -325,8 +325,8 @@ atomicValue
 	NUMBER {$av = SetlXFraction($NUMBER.text) }
 	| DOUBLE {$av = float($DOUBLE.text) }
 	| 'om' {$av = SetlXOm() }
-	| 'True' {$av = SetlXTrue() }
-	| 'False' {$av = SetlXFalse() };
+	| 'true' {$av = SetlXTrue() }
+	| 'false' {$av = SetlXFalse() };
 
 variable
 	returns[Variable v]: ID {$v = Variable($ID.text) };

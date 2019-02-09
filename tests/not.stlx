@@ -1,0 +1,3 @@
+x := true;
+y := !x;
+print(y);

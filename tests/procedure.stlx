@@ -5,26 +5,3 @@ p := procedure(x,y) {
 
 x := p(1,2);
 print(x);
-
-[a,b] := [
-    procedure(){
-        print("a");
-                
-        [a2,b2] := [
-            procedure(){
-                print("a");
-            },
-            procedure(){
-                print("b");
-            }
-        ];
-        a2();
-        b2();
-    },
-    procedure(){
-        print("b");
-    }
-];
-
-a();
-b();
