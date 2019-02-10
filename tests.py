@@ -74,10 +74,13 @@ for test in tests:
         if "diff" in flags:
             print(f'{"#"*5} generated <> {test[1]} {"#"*5}')
             print(_unidiff_output(py_ast, gen_ast))
+    elif "ast" in flags:
+        print("-"*5+"generated"+"-"*5)
+        print(gen_ast)
 
-        if "code" in flags:
-            print(f'{"#"*5} generated code {"#"*5}')
-            print(code)
+    if "code" in flags:
+        print(f'{"#"*5} generated code {"#"*5}')
+        print(code)
 
     successfull.append(test[0][:-5])
 

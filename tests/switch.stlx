@@ -1,0 +1,8 @@
+switch{
+    case true:
+        print("true");
+    case false:
+        print("false");
+    default: 
+        print("default");
+}

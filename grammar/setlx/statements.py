@@ -231,6 +231,27 @@ class IfThenBranch:
         return ast.If(test=condition, body=block, orelse=orelse)
 
 
+class Switch:
+    def __init__(self, case_list, default_branch):
+        self.case_list = case_list
+        self.default_branch = default_branch
+
+    def to_python(self, state):
+        if len(self.case_list) == 0:
+            return self.default_branch
+        else:
+            [cond, blk] = utils.to_python(state, self.case_list[0])
+            orelse = []
+            if self.default_branch is not None:
+                orelse = self.default_branch.to_python(state)
+
+            for e in self.case_list[::-2]:
+                [c, b] = utils.to_python(state, e)
+                orelse = [ast.If(test=c, body=b, orelse=orelse)]
+
+            return ast.If(test=cond, body=blk, orelse=orelse)
+
+
 class Condition:
     def __init__(self, expression):
         self.expression = expression

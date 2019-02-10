@@ -16,14 +16,20 @@ statement
 	returns[stmnt]
 	@init {
 else_list = []
+caseList = []
 expression = None
 condition = None
     }:
 	'if' '(' c1 = condition ')' '{' b1 = block '}' (
-		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk)) }
+		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk)) 
+			}
+	)* ('else' '{' b3 = block '}' {else_list.append($b3.blk) })? {$stmnt = IfThen($c1.cnd,$b1.blk,else_list) 
+		}
+	| 'switch' '{' (
+		'case' c1 = condition ':' b1 = block {caseList.append(($c1.cnd, $b1.blk)) }
 	)* (
-		'else' '{' b3 = block '}' {else_list.append($b3.blk) }
-	)? {$stmnt = IfThen($c1.cnd,$b1.blk,else_list) }
+		'default' ':' b2 = block
+	)? '}' {$stmnt = Switch(caseList,$b2.blk) }
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
 	)? ')' '{' block '}' {$stmnt = For($iteratorChain.ic, condition, $block.blk) }
@@ -165,11 +171,15 @@ prefixOperation[enableIgnore]
 factor[enableIgnore]
 	returns[f]:
 	'!' factor[$enableIgnore] {$f = Not($factor.f) }
-	/* TODO | TERM '(' termArguments[$operators] ')' { operators.add(new TermConstructor($TERM.text,
-	 $termArguments.args.size())); } | 'forall' '(' iteratorChain[$enableIgnore] '|' condition ')' {
-	 operators.add(new Forall($iteratorChain.ic, $condition.cnd)); } | 'exists' '('
-	 iteratorChain[$enableIgnore] '|' condition ')' { operators.add(new Exists($iteratorChain.ic,
-	 $condition.cnd)); }
+	/* TODO | TERM '(' termArguments[$operators] ')' { operators.add(new
+	 TermConstructor($TERM.text,
+ $termArguments.args.size())); } | 'forall' '('
+	 iteratorChain[$enableIgnore] '|' condition ')' {
+ operators.add(new Forall($iteratorChain.ic,
+	 $condition.cnd)); } | 'exists' '('
+ iteratorChain[$enableIgnore] '|' condition ')' {
+	 operators.add(new Exists($iteratorChain.ic,
+ $condition.cnd)); }
 	 */
 	| (
 		'(' exprContent[$enableIgnore] ')' {$f = $exprContent.ex }
@@ -271,8 +281,9 @@ cb = None
 	'[' (
 		collectionBuilder[$enableIgnore] {cb = $collectionBuilder.cb; }
 	)? ']' {$v = SetlXList(cb) }
-	/* TODO | '{' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? '}' {$v = new
-	 SetListConstructor(CollectionType.SET, cb); }
+	/* TODO | '{' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? '}' {$v =
+	 new
+ SetListConstructor(CollectionType.SET, cb); }
 	 */
 	| STRING {$v = SetlXString($STRING.text) }
 	| LITERAL {$v = SetlXLiteral($LITERAL.text) }
