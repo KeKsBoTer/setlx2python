@@ -188,6 +188,11 @@ class Difference(BinOperator):
         BinOperator.__init__(self, left, right, ast.Sub())
 
 
+class Sum(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Add())
+
+
 class Product(BinOperator):
     def __init__(self, left, right):
         BinOperator.__init__(self, left, right, ast.Mult())
@@ -328,16 +333,6 @@ class For:
             block = [if_stmt]
         return ast.For(target=assignable, iter=iterator, body=block, orelse=[])
 
-
-class SetlIterator:
-    def __init__(self, assignable, expression):
-        self.assignable = assignable
-        self.expression = expression
-
-    def to_python(self, state):
-        raise "not reachable"
-
-
 class Procedure:
     def __init__(self, params, block, name=None):
         self.params = params
@@ -398,15 +393,23 @@ class SetlIteration:
 
     def to_python(self, state):
 
-        [assignable, iterator] = utils.iterator_from_chain(
-            state, self.iter_chain)
+        iter_chain = utils.to_python(state,self.iter_chain)
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
 
-        comp = ast.comprehension(
-            target=assignable, iter=iterator, ifs=[condition], is_async=0)
-        return ast.ListComp(elt=expr, generators=[comp])
+        iter_chain[-1].ifs=[condition]
+        return ast.ListComp(elt=expr, generators=iter_chain)
+
+class SetlIterator:
+    def __init__(self, assignable, expression):
+        self.assignable = assignable
+        self.expression = expression
+
+    def to_python(self, state):
+        [assignable, expression] = utils.to_python(
+            state, [self.assignable, self.expression])
+        return ast.comprehension(target=assignable, iter=expression, ifs=[], is_async=0)
 
 
 class BooleanEqual(InfixOperator):
