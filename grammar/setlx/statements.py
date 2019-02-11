@@ -333,6 +333,7 @@ class For:
             block = [if_stmt]
         return ast.For(target=assignable, iter=iterator, body=block, orelse=[])
 
+
 class Procedure:
     def __init__(self, params, block, name=None):
         self.params = params
@@ -340,18 +341,25 @@ class Procedure:
         self.name = name
 
     def to_python(self, state):
-        params = [p.to_python(state) for p in self.params]
         block = self.block.to_python(state)
 
-        params_names = [ast.Name(id=p.arg) for p in params]
-        deepcopies = [utils.deep_copy_param(p, state) for p in params_names]
+        params = []
+        deepcopies = [] 
+        defaults = [] # default values for parameters
+        for p in self.params:
+            params.append(p.to_python(state))
+            if not isinstance(p, types.ReadWriteParameter): # only copy value parameters
+                deepcopies.append(utils.deep_copy_param(ast.Name(id=p.id), state))
+                if p.default != None: # add default value if one is given
+                    defaults.append(p.default.to_python(state))
+
         block = deepcopies + block
         params = ast.arguments(args=params,
                                vararg=None,
                                kwonlyargs=[],
                                kw_defaults=[],
                                kwarg=None,
-                               defaults=[])
+                               defaults=defaults)
 
         if self.name == None:
             # TODO find better naming
@@ -393,13 +401,14 @@ class SetlIteration:
 
     def to_python(self, state):
 
-        iter_chain = utils.to_python(state,self.iter_chain)
+        iter_chain = utils.to_python(state, self.iter_chain)
         expr = self.expr.to_python(state)
         condition = self.condition.to_python(
             state) if self.condition != None else None
 
-        iter_chain[-1].ifs=[condition]
+        iter_chain[-1].ifs = [condition]
         return ast.ListComp(elt=expr, generators=iter_chain)
+
 
 class SetlIterator:
     def __init__(self, assignable, expression):

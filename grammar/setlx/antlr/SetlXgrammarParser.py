@@ -12,8 +12,8 @@ from grammar.setlx.types import *
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3D")
-        buf.write("\u029f\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3E")
+        buf.write("\u02a6\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
         buf.write("\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31")
@@ -59,79 +59,80 @@ def serializedATN():
         buf.write("\13\25\3\25\3\25\3\25\3\25\7\25\u01e5\n\25\f\25\16\25")
         buf.write("\u01e8\13\25\3\25\3\25\3\25\3\25\3\25\3\25\7\25\u01f0")
         buf.write("\n\25\f\25\16\25\u01f3\13\25\3\25\5\25\u01f6\n\25\3\26")
-        buf.write("\3\26\3\26\3\27\3\27\3\27\3\27\3\27\3\30\3\30\3\30\3\30")
-        buf.write("\3\30\3\30\3\30\3\30\3\30\3\30\5\30\u020a\n\30\3\31\3")
-        buf.write("\31\3\31\3\31\3\31\3\31\5\31\u0212\n\31\3\31\3\31\3\31")
-        buf.write("\3\31\6\31\u0218\n\31\r\31\16\31\u0219\3\31\3\31\3\31")
-        buf.write("\5\31\u021f\n\31\3\31\3\31\3\31\3\31\5\31\u0225\n\31\3")
-        buf.write("\32\3\32\3\32\3\32\5\32\u022b\n\32\3\33\3\33\3\33\3\33")
-        buf.write("\5\33\u0231\n\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3")
-        buf.write("\33\3\33\3\33\3\33\3\33\5\33\u023f\n\33\3\34\3\34\3\34")
-        buf.write("\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\7\34\u024d")
-        buf.write("\n\34\f\34\16\34\u0250\13\34\3\34\3\34\3\34\3\34\3\34")
-        buf.write("\5\34\u0257\n\34\5\34\u0259\n\34\3\34\3\34\3\34\3\34\3")
-        buf.write("\34\3\34\3\34\3\34\3\34\3\34\5\34\u0265\n\34\3\34\3\34")
-        buf.write("\3\34\3\34\3\34\3\34\3\34\5\34\u026e\n\34\5\34\u0270\n")
-        buf.write("\34\3\35\3\35\3\35\3\35\3\35\3\35\7\35\u0278\n\35\f\35")
-        buf.write("\16\35\u027b\13\35\3\36\3\36\3\36\3\36\3\36\3\37\3\37")
-        buf.write("\3\37\3\37\3\37\3\37\3\37\3\37\3\37\3\37\5\37\u028c\n")
-        buf.write("\37\3 \3 \3 \3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\7\"\u029a")
-        buf.write("\n\"\f\"\16\"\u029d\13\"\3\"\2\2#\2\4\6\b\n\f\16\20\22")
-        buf.write("\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@B\2\2\2\u02d8")
-        buf.write("\2I\3\2\2\2\4\u00c5\3\2\2\2\6\u00c7\3\2\2\2\b\u00f1\3")
-        buf.write("\2\2\2\n\u010b\3\2\2\2\f\u010d\3\2\2\2\16\u0110\3\2\2")
-        buf.write("\2\20\u0113\3\2\2\2\22\u011e\3\2\2\2\24\u012a\3\2\2\2")
-        buf.write("\26\u0132\3\2\2\2\30\u013d\3\2\2\2\32\u0148\3\2\2\2\34")
-        buf.write("\u016c\3\2\2\2\36\u017b\3\2\2\2 \u0192\3\2\2\2\"\u01a1")
-        buf.write("\3\2\2\2$\u01ca\3\2\2\2&\u01cc\3\2\2\2(\u01f5\3\2\2\2")
-        buf.write("*\u01f7\3\2\2\2,\u01fa\3\2\2\2.\u0209\3\2\2\2\60\u0224")
-        buf.write("\3\2\2\2\62\u022a\3\2\2\2\64\u023e\3\2\2\2\66\u0240\3")
-        buf.write("\2\2\28\u0271\3\2\2\2:\u027c\3\2\2\2<\u028b\3\2\2\2>\u028d")
-        buf.write("\3\2\2\2@\u0290\3\2\2\2B\u0293\3\2\2\2DE\5\4\3\2EF\b\2")
-        buf.write("\1\2FH\3\2\2\2GD\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2")
-        buf.write("JL\3\2\2\2KI\3\2\2\2LM\b\2\1\2M\3\3\2\2\2NO\7\3\2\2OP")
-        buf.write("\7\4\2\2PQ\5@!\2QR\7\5\2\2RS\7\6\2\2ST\5\2\2\2Ta\7\7\2")
-        buf.write("\2UV\7\b\2\2VW\7\3\2\2WX\7\4\2\2XY\5@!\2YZ\7\5\2\2Z[\7")
-        buf.write("\6\2\2[\\\5\2\2\2\\]\7\7\2\2]^\b\3\1\2^`\3\2\2\2_U\3\2")
-        buf.write("\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2\2\2bj\3\2\2\2ca\3\2\2\2")
-        buf.write("de\7\b\2\2ef\7\6\2\2fg\5\2\2\2gh\7\7\2\2hi\b\3\1\2ik\3")
-        buf.write("\2\2\2jd\3\2\2\2jk\3\2\2\2kl\3\2\2\2lm\b\3\1\2m\u00c6")
-        buf.write("\3\2\2\2no\7\t\2\2ox\7\6\2\2pq\7\n\2\2qr\5@!\2rs\7\13")
-        buf.write("\2\2st\5\2\2\2tu\b\3\1\2uw\3\2\2\2vp\3\2\2\2wz\3\2\2\2")
-        buf.write("xv\3\2\2\2xy\3\2\2\2y~\3\2\2\2zx\3\2\2\2{|\7\f\2\2|}\7")
-        buf.write("\13\2\2}\177\5\2\2\2~{\3\2\2\2~\177\3\2\2\2\177\u0080")
-        buf.write("\3\2\2\2\u0080\u0081\7\7\2\2\u0081\u00c6\b\3\1\2\u0082")
-        buf.write("\u0083\7\r\2\2\u0083\u0084\7\4\2\2\u0084\u0089\58\35\2")
-        buf.write("\u0085\u0086\7\16\2\2\u0086\u0087\5@!\2\u0087\u0088\b")
-        buf.write("\3\1\2\u0088\u008a\3\2\2\2\u0089\u0085\3\2\2\2\u0089\u008a")
-        buf.write("\3\2\2\2\u008a\u008b\3\2\2\2\u008b\u008c\7\5\2\2\u008c")
-        buf.write("\u008d\7\6\2\2\u008d\u008e\5\2\2\2\u008e\u008f\7\7\2\2")
-        buf.write("\u008f\u0090\b\3\1\2\u0090\u00c6\3\2\2\2\u0091\u0092\7")
-        buf.write("\17\2\2\u0092\u0093\7\4\2\2\u0093\u0094\5@!\2\u0094\u0095")
-        buf.write("\7\5\2\2\u0095\u0096\7\6\2\2\u0096\u0097\5\2\2\2\u0097")
-        buf.write("\u0098\7\7\2\2\u0098\u0099\b\3\1\2\u0099\u00c6\3\2\2\2")
-        buf.write("\u009a\u009b\7\20\2\2\u009b\u009c\7\6\2\2\u009c\u009d")
-        buf.write("\5\2\2\2\u009d\u009e\7\7\2\2\u009e\u009f\7\17\2\2\u009f")
-        buf.write("\u00a0\7\4\2\2\u00a0\u00a1\5@!\2\u00a1\u00a2\7\5\2\2\u00a2")
-        buf.write("\u00a3\7\21\2\2\u00a3\u00a4\b\3\1\2\u00a4\u00c6\3\2\2")
-        buf.write("\2\u00a5\u00a6\7\22\2\2\u00a6\u00a7\7\21\2\2\u00a7\u00c6")
-        buf.write("\b\3\1\2\u00a8\u00a9\7\23\2\2\u00a9\u00aa\7\21\2\2\u00aa")
-        buf.write("\u00c6\b\3\1\2\u00ab\u00ac\7\24\2\2\u00ac\u00ad\7\21\2")
-        buf.write("\2\u00ad\u00c6\b\3\1\2\u00ae\u00af\7\25\2\2\u00af\u00b0")
-        buf.write("\7\21\2\2\u00b0\u00c6\b\3\1\2\u00b1\u00b5\7\26\2\2\u00b2")
-        buf.write("\u00b3\5\16\b\2\u00b3\u00b4\b\3\1\2\u00b4\u00b6\3\2\2")
-        buf.write("\2\u00b5\u00b2\3\2\2\2\u00b5\u00b6\3\2\2\2\u00b6\u00b7")
-        buf.write("\3\2\2\2\u00b7\u00b8\7\21\2\2\u00b8\u00c6\b\3\1\2\u00b9")
-        buf.write("\u00ba\5\6\4\2\u00ba\u00bb\7\21\2\2\u00bb\u00bc\b\3\1")
-        buf.write("\2\u00bc\u00c6\3\2\2\2\u00bd\u00be\5\b\5\2\u00be\u00bf")
-        buf.write("\7\21\2\2\u00bf\u00c0\b\3\1\2\u00c0\u00c6\3\2\2\2\u00c1")
-        buf.write("\u00c2\5\16\b\2\u00c2\u00c3\7\21\2\2\u00c3\u00c4\b\3\1")
-        buf.write("\2\u00c4\u00c6\3\2\2\2\u00c5N\3\2\2\2\u00c5n\3\2\2\2\u00c5")
-        buf.write("\u0082\3\2\2\2\u00c5\u0091\3\2\2\2\u00c5\u009a\3\2\2\2")
-        buf.write("\u00c5\u00a5\3\2\2\2\u00c5\u00a8\3\2\2\2\u00c5\u00ab\3")
-        buf.write("\2\2\2\u00c5\u00ae\3\2\2\2\u00c5\u00b1\3\2\2\2\u00c5\u00b9")
-        buf.write("\3\2\2\2\u00c5\u00bd\3\2\2\2\u00c5\u00c1\3\2\2\2\u00c6")
-        buf.write("\5\3\2\2\2\u00c7\u00e0\5\n\6\2\u00c8\u00c9\7\27\2\2\u00c9")
+        buf.write("\3\26\3\26\3\26\3\26\3\26\3\26\3\26\5\26\u0200\n\26\3")
+        buf.write("\27\3\27\3\27\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30")
+        buf.write("\3\30\3\30\3\30\3\30\5\30\u0211\n\30\3\31\3\31\3\31\3")
+        buf.write("\31\3\31\3\31\5\31\u0219\n\31\3\31\3\31\3\31\3\31\6\31")
+        buf.write("\u021f\n\31\r\31\16\31\u0220\3\31\3\31\3\31\5\31\u0226")
+        buf.write("\n\31\3\31\3\31\3\31\3\31\5\31\u022c\n\31\3\32\3\32\3")
+        buf.write("\32\3\32\5\32\u0232\n\32\3\33\3\33\3\33\3\33\5\33\u0238")
+        buf.write("\n\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33")
+        buf.write("\3\33\3\33\5\33\u0246\n\33\3\34\3\34\3\34\3\34\3\34\3")
+        buf.write("\34\3\34\3\34\3\34\3\34\3\34\3\34\7\34\u0254\n\34\f\34")
+        buf.write("\16\34\u0257\13\34\3\34\3\34\3\34\3\34\3\34\5\34\u025e")
+        buf.write("\n\34\5\34\u0260\n\34\3\34\3\34\3\34\3\34\3\34\3\34\3")
+        buf.write("\34\3\34\3\34\3\34\5\34\u026c\n\34\3\34\3\34\3\34\3\34")
+        buf.write("\3\34\3\34\3\34\5\34\u0275\n\34\5\34\u0277\n\34\3\35\3")
+        buf.write("\35\3\35\3\35\3\35\3\35\7\35\u027f\n\35\f\35\16\35\u0282")
+        buf.write("\13\35\3\36\3\36\3\36\3\36\3\36\3\37\3\37\3\37\3\37\3")
+        buf.write("\37\3\37\3\37\3\37\3\37\3\37\5\37\u0293\n\37\3 \3 \3 ")
+        buf.write("\3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\7\"\u02a1\n\"\f\"\16")
+        buf.write("\"\u02a4\13\"\3\"\2\2#\2\4\6\b\n\f\16\20\22\24\26\30\32")
+        buf.write("\34\36 \"$&(*,.\60\62\64\668:<>@B\2\2\2\u02e0\2I\3\2\2")
+        buf.write("\2\4\u00c5\3\2\2\2\6\u00c7\3\2\2\2\b\u00f1\3\2\2\2\n\u010b")
+        buf.write("\3\2\2\2\f\u010d\3\2\2\2\16\u0110\3\2\2\2\20\u0113\3\2")
+        buf.write("\2\2\22\u011e\3\2\2\2\24\u012a\3\2\2\2\26\u0132\3\2\2")
+        buf.write("\2\30\u013d\3\2\2\2\32\u0148\3\2\2\2\34\u016c\3\2\2\2")
+        buf.write("\36\u017b\3\2\2\2 \u0192\3\2\2\2\"\u01a1\3\2\2\2$\u01ca")
+        buf.write("\3\2\2\2&\u01cc\3\2\2\2(\u01f5\3\2\2\2*\u01ff\3\2\2\2")
+        buf.write(",\u0201\3\2\2\2.\u0210\3\2\2\2\60\u022b\3\2\2\2\62\u0231")
+        buf.write("\3\2\2\2\64\u0245\3\2\2\2\66\u0247\3\2\2\28\u0278\3\2")
+        buf.write("\2\2:\u0283\3\2\2\2<\u0292\3\2\2\2>\u0294\3\2\2\2@\u0297")
+        buf.write("\3\2\2\2B\u029a\3\2\2\2DE\5\4\3\2EF\b\2\1\2FH\3\2\2\2")
+        buf.write("GD\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2JL\3\2\2\2KI\3")
+        buf.write("\2\2\2LM\b\2\1\2M\3\3\2\2\2NO\7\3\2\2OP\7\4\2\2PQ\5@!")
+        buf.write("\2QR\7\5\2\2RS\7\6\2\2ST\5\2\2\2Ta\7\7\2\2UV\7\b\2\2V")
+        buf.write("W\7\3\2\2WX\7\4\2\2XY\5@!\2YZ\7\5\2\2Z[\7\6\2\2[\\\5\2")
+        buf.write("\2\2\\]\7\7\2\2]^\b\3\1\2^`\3\2\2\2_U\3\2\2\2`c\3\2\2")
+        buf.write("\2a_\3\2\2\2ab\3\2\2\2bj\3\2\2\2ca\3\2\2\2de\7\b\2\2e")
+        buf.write("f\7\6\2\2fg\5\2\2\2gh\7\7\2\2hi\b\3\1\2ik\3\2\2\2jd\3")
+        buf.write("\2\2\2jk\3\2\2\2kl\3\2\2\2lm\b\3\1\2m\u00c6\3\2\2\2no")
+        buf.write("\7\t\2\2ox\7\6\2\2pq\7\n\2\2qr\5@!\2rs\7\13\2\2st\5\2")
+        buf.write("\2\2tu\b\3\1\2uw\3\2\2\2vp\3\2\2\2wz\3\2\2\2xv\3\2\2\2")
+        buf.write("xy\3\2\2\2y~\3\2\2\2zx\3\2\2\2{|\7\f\2\2|}\7\13\2\2}\177")
+        buf.write("\5\2\2\2~{\3\2\2\2~\177\3\2\2\2\177\u0080\3\2\2\2\u0080")
+        buf.write("\u0081\7\7\2\2\u0081\u00c6\b\3\1\2\u0082\u0083\7\r\2\2")
+        buf.write("\u0083\u0084\7\4\2\2\u0084\u0089\58\35\2\u0085\u0086\7")
+        buf.write("\16\2\2\u0086\u0087\5@!\2\u0087\u0088\b\3\1\2\u0088\u008a")
+        buf.write("\3\2\2\2\u0089\u0085\3\2\2\2\u0089\u008a\3\2\2\2\u008a")
+        buf.write("\u008b\3\2\2\2\u008b\u008c\7\5\2\2\u008c\u008d\7\6\2\2")
+        buf.write("\u008d\u008e\5\2\2\2\u008e\u008f\7\7\2\2\u008f\u0090\b")
+        buf.write("\3\1\2\u0090\u00c6\3\2\2\2\u0091\u0092\7\17\2\2\u0092")
+        buf.write("\u0093\7\4\2\2\u0093\u0094\5@!\2\u0094\u0095\7\5\2\2\u0095")
+        buf.write("\u0096\7\6\2\2\u0096\u0097\5\2\2\2\u0097\u0098\7\7\2\2")
+        buf.write("\u0098\u0099\b\3\1\2\u0099\u00c6\3\2\2\2\u009a\u009b\7")
+        buf.write("\20\2\2\u009b\u009c\7\6\2\2\u009c\u009d\5\2\2\2\u009d")
+        buf.write("\u009e\7\7\2\2\u009e\u009f\7\17\2\2\u009f\u00a0\7\4\2")
+        buf.write("\2\u00a0\u00a1\5@!\2\u00a1\u00a2\7\5\2\2\u00a2\u00a3\7")
+        buf.write("\21\2\2\u00a3\u00a4\b\3\1\2\u00a4\u00c6\3\2\2\2\u00a5")
+        buf.write("\u00a6\7\22\2\2\u00a6\u00a7\7\21\2\2\u00a7\u00c6\b\3\1")
+        buf.write("\2\u00a8\u00a9\7\23\2\2\u00a9\u00aa\7\21\2\2\u00aa\u00c6")
+        buf.write("\b\3\1\2\u00ab\u00ac\7\24\2\2\u00ac\u00ad\7\21\2\2\u00ad")
+        buf.write("\u00c6\b\3\1\2\u00ae\u00af\7\25\2\2\u00af\u00b0\7\21\2")
+        buf.write("\2\u00b0\u00c6\b\3\1\2\u00b1\u00b5\7\26\2\2\u00b2\u00b3")
+        buf.write("\5\16\b\2\u00b3\u00b4\b\3\1\2\u00b4\u00b6\3\2\2\2\u00b5")
+        buf.write("\u00b2\3\2\2\2\u00b5\u00b6\3\2\2\2\u00b6\u00b7\3\2\2\2")
+        buf.write("\u00b7\u00b8\7\21\2\2\u00b8\u00c6\b\3\1\2\u00b9\u00ba")
+        buf.write("\5\6\4\2\u00ba\u00bb\7\21\2\2\u00bb\u00bc\b\3\1\2\u00bc")
+        buf.write("\u00c6\3\2\2\2\u00bd\u00be\5\b\5\2\u00be\u00bf\7\21\2")
+        buf.write("\2\u00bf\u00c0\b\3\1\2\u00c0\u00c6\3\2\2\2\u00c1\u00c2")
+        buf.write("\5\16\b\2\u00c2\u00c3\7\21\2\2\u00c3\u00c4\b\3\1\2\u00c4")
+        buf.write("\u00c6\3\2\2\2\u00c5N\3\2\2\2\u00c5n\3\2\2\2\u00c5\u0082")
+        buf.write("\3\2\2\2\u00c5\u0091\3\2\2\2\u00c5\u009a\3\2\2\2\u00c5")
+        buf.write("\u00a5\3\2\2\2\u00c5\u00a8\3\2\2\2\u00c5\u00ab\3\2\2\2")
+        buf.write("\u00c5\u00ae\3\2\2\2\u00c5\u00b1\3\2\2\2\u00c5\u00b9\3")
+        buf.write("\2\2\2\u00c5\u00bd\3\2\2\2\u00c5\u00c1\3\2\2\2\u00c6\5")
+        buf.write("\3\2\2\2\u00c7\u00e0\5\n\6\2\u00c8\u00c9\7\27\2\2\u00c9")
         buf.write("\u00ca\5\16\b\2\u00ca\u00cb\b\4\1\2\u00cb\u00e1\3\2\2")
         buf.write("\2\u00cc\u00cd\7\30\2\2\u00cd\u00ce\5\16\b\2\u00ce\u00cf")
         buf.write("\b\4\1\2\u00cf\u00e1\3\2\2\2\u00d0\u00d1\7\31\2\2\u00d1")
@@ -161,7 +162,7 @@ def serializedATN():
         buf.write("\b\6\1\2\u0107\u010c\3\2\2\2\u0108\u0109\6\6\2\3\u0109")
         buf.write("\u010a\7!\2\2\u010a\u010c\b\6\1\2\u010b\u00f3\3\2\2\2")
         buf.write("\u010b\u0103\3\2\2\2\u010b\u0108\3\2\2\2\u010c\13\3\2")
-        buf.write("\2\2\u010d\u010e\7<\2\2\u010e\u010f\b\7\1\2\u010f\r\3")
+        buf.write("\2\2\u010d\u010e\7=\2\2\u010e\u010f\b\7\1\2\u010f\r\3")
         buf.write("\2\2\2\u0110\u0111\5\22\n\2\u0111\u0112\b\b\1\2\u0112")
         buf.write("\17\3\2\2\2\u0113\u0114\5\22\n\2\u0114\u011b\b\t\1\2\u0115")
         buf.write("\u0116\7\"\2\2\u0116\u0117\5\22\n\2\u0117\u0118\b\t\1")
@@ -260,83 +261,86 @@ def serializedATN():
         buf.write("\u01f1\u01ef\3\2\2\2\u01f1\u01f2\3\2\2\2\u01f2\u01f6\3")
         buf.write("\2\2\2\u01f3\u01f1\3\2\2\2\u01f4\u01f6\3\2\2\2\u01f5\u01d5")
         buf.write("\3\2\2\2\u01f5\u01e9\3\2\2\2\u01f5\u01f4\3\2\2\2\u01f6")
-        buf.write(")\3\2\2\2\u01f7\u01f8\5> \2\u01f8\u01f9\b\26\1\2\u01f9")
-        buf.write("+\3\2\2\2\u01fa\u01fb\5\f\7\2\u01fb\u01fc\7\35\2\2\u01fc")
-        buf.write("\u01fd\5\16\b\2\u01fd\u01fe\b\27\1\2\u01fe-\3\2\2\2\u01ff")
-        buf.write("\u0200\7\4\2\2\u0200\u0201\5\62\32\2\u0201\u0202\7\5\2")
-        buf.write("\2\u0202\u0203\b\30\1\2\u0203\u020a\3\2\2\2\u0204\u0205")
-        buf.write("\7\37\2\2\u0205\u0206\5\60\31\2\u0206\u0207\7 \2\2\u0207")
-        buf.write("\u0208\b\30\1\2\u0208\u020a\3\2\2\2\u0209\u01ff\3\2\2")
-        buf.write("\2\u0209\u0204\3\2\2\2\u020a/\3\2\2\2\u020b\u021e\5\16")
-        buf.write("\b\2\u020c\u0211\7?\2\2\u020d\u020e\5\16\b\2\u020e\u020f")
-        buf.write("\b\31\1\2\u020f\u0212\3\2\2\2\u0210\u0212\b\31\1\2\u0211")
-        buf.write("\u020d\3\2\2\2\u0211\u0210\3\2\2\2\u0212\u021f\3\2\2\2")
-        buf.write("\u0213\u0214\7\"\2\2\u0214\u0215\5\16\b\2\u0215\u0216")
-        buf.write("\b\31\1\2\u0216\u0218\3\2\2\2\u0217\u0213\3\2\2\2\u0218")
-        buf.write("\u0219\3\2\2\2\u0219\u0217\3\2\2\2\u0219\u021a\3\2\2\2")
-        buf.write("\u021a\u021b\3\2\2\2\u021b\u021c\b\31\1\2\u021c\u021f")
-        buf.write("\3\2\2\2\u021d\u021f\b\31\1\2\u021e\u020c\3\2\2\2\u021e")
-        buf.write("\u0217\3\2\2\2\u021e\u021d\3\2\2\2\u021f\u0225\3\2\2\2")
-        buf.write("\u0220\u0221\7?\2\2\u0221\u0222\5\16\b\2\u0222\u0223\b")
-        buf.write("\31\1\2\u0223\u0225\3\2\2\2\u0224\u020b\3\2\2\2\u0224")
-        buf.write("\u0220\3\2\2\2\u0225\61\3\2\2\2\u0226\u0227\5\20\t\2\u0227")
-        buf.write("\u0228\b\32\1\2\u0228\u022b\3\2\2\2\u0229\u022b\3\2\2")
-        buf.write("\2\u022a\u0226\3\2\2\2\u022a\u0229\3\2\2\2\u022b\63\3")
-        buf.write("\2\2\2\u022c\u0230\7\37\2\2\u022d\u022e\5\66\34\2\u022e")
-        buf.write("\u022f\b\33\1\2\u022f\u0231\3\2\2\2\u0230\u022d\3\2\2")
-        buf.write("\2\u0230\u0231\3\2\2\2\u0231\u0232\3\2\2\2\u0232\u0233")
-        buf.write("\7 \2\2\u0233\u023f\b\33\1\2\u0234\u0235\7@\2\2\u0235")
-        buf.write("\u023f\b\33\1\2\u0236\u0237\7A\2\2\u0237\u023f\b\33\1")
-        buf.write("\2\u0238\u0239\5<\37\2\u0239\u023a\b\33\1\2\u023a\u023f")
-        buf.write("\3\2\2\2\u023b\u023c\6\33\3\3\u023c\u023d\7!\2\2\u023d")
-        buf.write("\u023f\b\33\1\2\u023e\u022c\3\2\2\2\u023e\u0234\3\2\2")
-        buf.write("\2\u023e\u0236\3\2\2\2\u023e\u0238\3\2\2\2\u023e\u023b")
-        buf.write("\3\2\2\2\u023f\65\3\2\2\2\u0240\u026f\5\16\b\2\u0241\u0242")
-        buf.write("\7\"\2\2\u0242\u0258\5\16\b\2\u0243\u0244\7?\2\2\u0244")
-        buf.write("\u0245\5\16\b\2\u0245\u0246\b\34\1\2\u0246\u0259\3\2\2")
-        buf.write("\2\u0247\u024e\b\34\1\2\u0248\u0249\7\"\2\2\u0249\u024a")
-        buf.write("\5\16\b\2\u024a\u024b\b\34\1\2\u024b\u024d\3\2\2\2\u024c")
-        buf.write("\u0248\3\2\2\2\u024d\u0250\3\2\2\2\u024e\u024c\3\2\2\2")
-        buf.write("\u024e\u024f\3\2\2\2\u024f\u0256\3\2\2\2\u0250\u024e\3")
-        buf.write("\2\2\2\u0251\u0252\7\16\2\2\u0252\u0253\5\16\b\2\u0253")
-        buf.write("\u0254\b\34\1\2\u0254\u0257\3\2\2\2\u0255\u0257\b\34\1")
-        buf.write("\2\u0256\u0251\3\2\2\2\u0256\u0255\3\2\2\2\u0257\u0259")
-        buf.write("\3\2\2\2\u0258\u0243\3\2\2\2\u0258\u0247\3\2\2\2\u0259")
-        buf.write("\u0270\3\2\2\2\u025a\u025b\7?\2\2\u025b\u025c\5\16\b\2")
-        buf.write("\u025c\u025d\b\34\1\2\u025d\u0270\3\2\2\2\u025e\u0264")
-        buf.write("\b\34\1\2\u025f\u0260\7\16\2\2\u0260\u0261\5\16\b\2\u0261")
-        buf.write("\u0262\b\34\1\2\u0262\u0265\3\2\2\2\u0263\u0265\b\34\1")
-        buf.write("\2\u0264\u025f\3\2\2\2\u0264\u0263\3\2\2\2\u0265\u0270")
-        buf.write("\3\2\2\2\u0266\u0267\7\13\2\2\u0267\u026d\58\35\2\u0268")
-        buf.write("\u0269\7\16\2\2\u0269\u026a\5@!\2\u026a\u026b\b\34\1\2")
-        buf.write("\u026b\u026e\3\2\2\2\u026c\u026e\b\34\1\2\u026d\u0268")
-        buf.write("\3\2\2\2\u026d\u026c\3\2\2\2\u026e\u0270\3\2\2\2\u026f")
-        buf.write("\u0241\3\2\2\2\u026f\u025a\3\2\2\2\u026f\u025e\3\2\2\2")
-        buf.write("\u026f\u0266\3\2\2\2\u0270\67\3\2\2\2\u0271\u0272\5:\36")
-        buf.write("\2\u0272\u0279\b\35\1\2\u0273\u0274\7\"\2\2\u0274\u0275")
-        buf.write("\5:\36\2\u0275\u0276\b\35\1\2\u0276\u0278\3\2\2\2\u0277")
-        buf.write("\u0273\3\2\2\2\u0278\u027b\3\2\2\2\u0279\u0277\3\2\2\2")
-        buf.write("\u0279\u027a\3\2\2\2\u027a9\3\2\2\2\u027b\u0279\3\2\2")
-        buf.write("\2\u027c\u027d\5\n\6\2\u027d\u027e\7.\2\2\u027e\u027f")
-        buf.write("\5\16\b\2\u027f\u0280\b\36\1\2\u0280;\3\2\2\2\u0281\u0282")
-        buf.write("\7=\2\2\u0282\u028c\b\37\1\2\u0283\u0284\7>\2\2\u0284")
-        buf.write("\u028c\b\37\1\2\u0285\u0286\79\2\2\u0286\u028c\b\37\1")
-        buf.write("\2\u0287\u0288\7:\2\2\u0288\u028c\b\37\1\2\u0289\u028a")
-        buf.write("\7;\2\2\u028a\u028c\b\37\1\2\u028b\u0281\3\2\2\2\u028b")
-        buf.write("\u0283\3\2\2\2\u028b\u0285\3\2\2\2\u028b\u0287\3\2\2\2")
-        buf.write("\u028b\u0289\3\2\2\2\u028c=\3\2\2\2\u028d\u028e\7<\2\2")
-        buf.write("\u028e\u028f\b \1\2\u028f?\3\2\2\2\u0290\u0291\5\16\b")
-        buf.write("\2\u0291\u0292\b!\1\2\u0292A\3\2\2\2\u0293\u0294\5\n\6")
-        buf.write("\2\u0294\u029b\b\"\1\2\u0295\u0296\7\"\2\2\u0296\u0297")
-        buf.write("\5\n\6\2\u0297\u0298\b\"\1\2\u0298\u029a\3\2\2\2\u0299")
-        buf.write("\u0295\3\2\2\2\u029a\u029d\3\2\2\2\u029b\u0299\3\2\2\2")
-        buf.write("\u029b\u029c\3\2\2\2\u029cC\3\2\2\2\u029d\u029b\3\2\2")
-        buf.write("\2\67Iajx~\u0089\u00b5\u00c5\u00e0\u00ef\u00f1\u00fe\u0100")
+        buf.write(")\3\2\2\2\u01f7\u01f8\6\26\3\3\u01f8\u01f9\79\2\2\u01f9")
+        buf.write("\u01fa\5\f\7\2\u01fa\u01fb\b\26\1\2\u01fb\u0200\3\2\2")
+        buf.write("\2\u01fc\u01fd\5> \2\u01fd\u01fe\b\26\1\2\u01fe\u0200")
+        buf.write("\3\2\2\2\u01ff\u01f7\3\2\2\2\u01ff\u01fc\3\2\2\2\u0200")
+        buf.write("+\3\2\2\2\u0201\u0202\5\f\7\2\u0202\u0203\7\35\2\2\u0203")
+        buf.write("\u0204\5\16\b\2\u0204\u0205\b\27\1\2\u0205-\3\2\2\2\u0206")
+        buf.write("\u0207\7\4\2\2\u0207\u0208\5\62\32\2\u0208\u0209\7\5\2")
+        buf.write("\2\u0209\u020a\b\30\1\2\u020a\u0211\3\2\2\2\u020b\u020c")
+        buf.write("\7\37\2\2\u020c\u020d\5\60\31\2\u020d\u020e\7 \2\2\u020e")
+        buf.write("\u020f\b\30\1\2\u020f\u0211\3\2\2\2\u0210\u0206\3\2\2")
+        buf.write("\2\u0210\u020b\3\2\2\2\u0211/\3\2\2\2\u0212\u0225\5\16")
+        buf.write("\b\2\u0213\u0218\7@\2\2\u0214\u0215\5\16\b\2\u0215\u0216")
+        buf.write("\b\31\1\2\u0216\u0219\3\2\2\2\u0217\u0219\b\31\1\2\u0218")
+        buf.write("\u0214\3\2\2\2\u0218\u0217\3\2\2\2\u0219\u0226\3\2\2\2")
+        buf.write("\u021a\u021b\7\"\2\2\u021b\u021c\5\16\b\2\u021c\u021d")
+        buf.write("\b\31\1\2\u021d\u021f\3\2\2\2\u021e\u021a\3\2\2\2\u021f")
+        buf.write("\u0220\3\2\2\2\u0220\u021e\3\2\2\2\u0220\u0221\3\2\2\2")
+        buf.write("\u0221\u0222\3\2\2\2\u0222\u0223\b\31\1\2\u0223\u0226")
+        buf.write("\3\2\2\2\u0224\u0226\b\31\1\2\u0225\u0213\3\2\2\2\u0225")
+        buf.write("\u021e\3\2\2\2\u0225\u0224\3\2\2\2\u0226\u022c\3\2\2\2")
+        buf.write("\u0227\u0228\7@\2\2\u0228\u0229\5\16\b\2\u0229\u022a\b")
+        buf.write("\31\1\2\u022a\u022c\3\2\2\2\u022b\u0212\3\2\2\2\u022b")
+        buf.write("\u0227\3\2\2\2\u022c\61\3\2\2\2\u022d\u022e\5\20\t\2\u022e")
+        buf.write("\u022f\b\32\1\2\u022f\u0232\3\2\2\2\u0230\u0232\3\2\2")
+        buf.write("\2\u0231\u022d\3\2\2\2\u0231\u0230\3\2\2\2\u0232\63\3")
+        buf.write("\2\2\2\u0233\u0237\7\37\2\2\u0234\u0235\5\66\34\2\u0235")
+        buf.write("\u0236\b\33\1\2\u0236\u0238\3\2\2\2\u0237\u0234\3\2\2")
+        buf.write("\2\u0237\u0238\3\2\2\2\u0238\u0239\3\2\2\2\u0239\u023a")
+        buf.write("\7 \2\2\u023a\u0246\b\33\1\2\u023b\u023c\7A\2\2\u023c")
+        buf.write("\u0246\b\33\1\2\u023d\u023e\7B\2\2\u023e\u0246\b\33\1")
+        buf.write("\2\u023f\u0240\5<\37\2\u0240\u0241\b\33\1\2\u0241\u0246")
+        buf.write("\3\2\2\2\u0242\u0243\6\33\4\3\u0243\u0244\7!\2\2\u0244")
+        buf.write("\u0246\b\33\1\2\u0245\u0233\3\2\2\2\u0245\u023b\3\2\2")
+        buf.write("\2\u0245\u023d\3\2\2\2\u0245\u023f\3\2\2\2\u0245\u0242")
+        buf.write("\3\2\2\2\u0246\65\3\2\2\2\u0247\u0276\5\16\b\2\u0248\u0249")
+        buf.write("\7\"\2\2\u0249\u025f\5\16\b\2\u024a\u024b\7@\2\2\u024b")
+        buf.write("\u024c\5\16\b\2\u024c\u024d\b\34\1\2\u024d\u0260\3\2\2")
+        buf.write("\2\u024e\u0255\b\34\1\2\u024f\u0250\7\"\2\2\u0250\u0251")
+        buf.write("\5\16\b\2\u0251\u0252\b\34\1\2\u0252\u0254\3\2\2\2\u0253")
+        buf.write("\u024f\3\2\2\2\u0254\u0257\3\2\2\2\u0255\u0253\3\2\2\2")
+        buf.write("\u0255\u0256\3\2\2\2\u0256\u025d\3\2\2\2\u0257\u0255\3")
+        buf.write("\2\2\2\u0258\u0259\7\16\2\2\u0259\u025a\5\16\b\2\u025a")
+        buf.write("\u025b\b\34\1\2\u025b\u025e\3\2\2\2\u025c\u025e\b\34\1")
+        buf.write("\2\u025d\u0258\3\2\2\2\u025d\u025c\3\2\2\2\u025e\u0260")
+        buf.write("\3\2\2\2\u025f\u024a\3\2\2\2\u025f\u024e\3\2\2\2\u0260")
+        buf.write("\u0277\3\2\2\2\u0261\u0262\7@\2\2\u0262\u0263\5\16\b\2")
+        buf.write("\u0263\u0264\b\34\1\2\u0264\u0277\3\2\2\2\u0265\u026b")
+        buf.write("\b\34\1\2\u0266\u0267\7\16\2\2\u0267\u0268\5\16\b\2\u0268")
+        buf.write("\u0269\b\34\1\2\u0269\u026c\3\2\2\2\u026a\u026c\b\34\1")
+        buf.write("\2\u026b\u0266\3\2\2\2\u026b\u026a\3\2\2\2\u026c\u0277")
+        buf.write("\3\2\2\2\u026d\u026e\7\13\2\2\u026e\u0274\58\35\2\u026f")
+        buf.write("\u0270\7\16\2\2\u0270\u0271\5@!\2\u0271\u0272\b\34\1\2")
+        buf.write("\u0272\u0275\3\2\2\2\u0273\u0275\b\34\1\2\u0274\u026f")
+        buf.write("\3\2\2\2\u0274\u0273\3\2\2\2\u0275\u0277\3\2\2\2\u0276")
+        buf.write("\u0248\3\2\2\2\u0276\u0261\3\2\2\2\u0276\u0265\3\2\2\2")
+        buf.write("\u0276\u026d\3\2\2\2\u0277\67\3\2\2\2\u0278\u0279\5:\36")
+        buf.write("\2\u0279\u0280\b\35\1\2\u027a\u027b\7\"\2\2\u027b\u027c")
+        buf.write("\5:\36\2\u027c\u027d\b\35\1\2\u027d\u027f\3\2\2\2\u027e")
+        buf.write("\u027a\3\2\2\2\u027f\u0282\3\2\2\2\u0280\u027e\3\2\2\2")
+        buf.write("\u0280\u0281\3\2\2\2\u02819\3\2\2\2\u0282\u0280\3\2\2")
+        buf.write("\2\u0283\u0284\5\n\6\2\u0284\u0285\7.\2\2\u0285\u0286")
+        buf.write("\5\16\b\2\u0286\u0287\b\36\1\2\u0287;\3\2\2\2\u0288\u0289")
+        buf.write("\7>\2\2\u0289\u0293\b\37\1\2\u028a\u028b\7?\2\2\u028b")
+        buf.write("\u0293\b\37\1\2\u028c\u028d\7:\2\2\u028d\u0293\b\37\1")
+        buf.write("\2\u028e\u028f\7;\2\2\u028f\u0293\b\37\1\2\u0290\u0291")
+        buf.write("\7<\2\2\u0291\u0293\b\37\1\2\u0292\u0288\3\2\2\2\u0292")
+        buf.write("\u028a\3\2\2\2\u0292\u028c\3\2\2\2\u0292\u028e\3\2\2\2")
+        buf.write("\u0292\u0290\3\2\2\2\u0293=\3\2\2\2\u0294\u0295\7=\2\2")
+        buf.write("\u0295\u0296\b \1\2\u0296?\3\2\2\2\u0297\u0298\5\16\b")
+        buf.write("\2\u0298\u0299\b!\1\2\u0299A\3\2\2\2\u029a\u029b\5\n\6")
+        buf.write("\2\u029b\u02a2\b\"\1\2\u029c\u029d\7\"\2\2\u029d\u029e")
+        buf.write("\5\n\6\2\u029e\u029f\b\"\1\2\u029f\u02a1\3\2\2\2\u02a0")
+        buf.write("\u029c\3\2\2\2\u02a1\u02a4\3\2\2\2\u02a2\u02a0\3\2\2\2")
+        buf.write("\u02a2\u02a3\3\2\2\2\u02a3C\3\2\2\2\u02a4\u02a2\3\2\2")
+        buf.write("\28Iajx~\u0089\u00b5\u00c5\u00e0\u00ef\u00f1\u00fe\u0100")
         buf.write("\u010b\u011b\u0128\u0130\u013a\u0145\u016a\u0176\u0178")
         buf.write("\u018d\u018f\u019b\u01a1\u01b2\u01bb\u01bd\u01c2\u01c8")
-        buf.write("\u01ca\u01dd\u01e6\u01f1\u01f5\u0209\u0211\u0219\u021e")
-        buf.write("\u0224\u022a\u0230\u023e\u024e\u0256\u0258\u0264\u026d")
-        buf.write("\u026f\u0279\u028b\u029b")
+        buf.write("\u01ca\u01dd\u01e6\u01f1\u01f5\u01ff\u0210\u0218\u0220")
+        buf.write("\u0225\u022b\u0231\u0237\u0245\u0255\u025d\u025f\u026b")
+        buf.write("\u0274\u0276\u0280\u0292\u02a2")
         return buf.getvalue()
 
 
@@ -358,8 +362,9 @@ class SetlXgrammarParser ( Parser ):
                      "']'", "'_'", "','", "'<==>'", "'<!=>'", "'=>'", "'||'", 
                      "'&&'", "'=='", "'!='", "'<'", "'<='", "'>'", "'>='", 
                      "'in'", "'notin'", "'+'", "'-'", "'*'", "'/'", "'\\'", 
-                     "'%'", "'**'", "'!'", "'procedure'", "'om'", "'true'", 
-                     "'false'", "<INVALID>", "<INVALID>", "<INVALID>", "'..'" ]
+                     "'%'", "'**'", "'!'", "'procedure'", "'rw'", "'om'", 
+                     "'true'", "'false'", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "'..'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -375,8 +380,8 @@ class SetlXgrammarParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "ID", "NUMBER", "DOUBLE", 
-                      "RANGE_SIGN", "STRING", "LITERAL", "LINE_COMMENT", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "ID", "NUMBER", 
+                      "DOUBLE", "RANGE_SIGN", "STRING", "LITERAL", "LINE_COMMENT", 
                       "MULTI_COMMENT", "WS" ]
 
     RULE_block = 0
@@ -480,15 +485,16 @@ class SetlXgrammarParser ( Parser ):
     T__54=55
     T__55=56
     T__56=57
-    ID=58
-    NUMBER=59
-    DOUBLE=60
-    RANGE_SIGN=61
-    STRING=62
-    LITERAL=63
-    LINE_COMMENT=64
-    MULTI_COMMENT=65
-    WS=66
+    T__57=58
+    ID=59
+    NUMBER=60
+    DOUBLE=61
+    RANGE_SIGN=62
+    STRING=63
+    LITERAL=64
+    LINE_COMMENT=65
+    MULTI_COMMENT=66
+    WS=67
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -1253,7 +1259,7 @@ class SetlXgrammarParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 267
             localctx._ID = self.match(SetlXgrammarParser.ID)
-            localctx.v = AssignableVariable((None if localctx._ID is None else localctx._ID.text)) 
+            localctx.v = Variable((None if localctx._ID is None else localctx._ID.text)) 
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2391,8 +2397,13 @@ class SetlXgrammarParser ( Parser ):
             self.parser = parser
             self.enableRw = None
             self.param = None
+            self._assignableVariable = None # AssignableVariableContext
             self._variable = None # VariableContext
             self.enableRw = enableRw
+
+        def assignableVariable(self):
+            return self.getTypedRuleContext(SetlXgrammarParser.AssignableVariableContext,0)
+
 
         def variable(self):
             return self.getTypedRuleContext(SetlXgrammarParser.VariableContext,0)
@@ -2417,10 +2428,30 @@ class SetlXgrammarParser ( Parser ):
         localctx = SetlXgrammarParser.ProcedureParameterContext(self, self._ctx, self.state, enableRw)
         self.enterRule(localctx, 40, self.RULE_procedureParameter)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 501
-            localctx._variable = self.variable()
-            localctx.param = Parameter(localctx._variable.v.id) 
+            self.state = 509
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,36,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 501
+                if not localctx.enableRw:
+                    from antlr4.error.Errors import FailedPredicateException
+                    raise FailedPredicateException(self, "$enableRw")
+                self.state = 502
+                self.match(SetlXgrammarParser.T__54)
+                self.state = 503
+                localctx._assignableVariable = self.assignableVariable()
+                localctx.param = ReadWriteParameter(localctx._assignableVariable.v.id) 
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 506
+                localctx._variable = self.variable()
+                localctx.param = Parameter(localctx._variable.v.id) 
+                pass
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2466,11 +2497,11 @@ class SetlXgrammarParser ( Parser ):
         self.enterRule(localctx, 42, self.RULE_procedureDefaultParameter)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 504
+            self.state = 511
             localctx._assignableVariable = self.assignableVariable()
-            self.state = 505
+            self.state = 512
             self.match(SetlXgrammarParser.T__26)
-            self.state = 506
+            self.state = 513
             localctx._expr = self.expr(False)
             localctx.param = Parameter(localctx._assignableVariable.v.id, localctx._expr.ex) 
         except RecognitionException as re:
@@ -2519,27 +2550,27 @@ class SetlXgrammarParser ( Parser ):
         localctx = SetlXgrammarParser.CallContext(self, self._ctx, self.state, enableIgnore)
         self.enterRule(localctx, 44, self.RULE_call)
         try:
-            self.state = 519
+            self.state = 526
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SetlXgrammarParser.T__1]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 509
+                self.state = 516
                 self.match(SetlXgrammarParser.T__1)
-                self.state = 510
+                self.state = 517
                 localctx._callParameters = self.callParameters(localctx.enableIgnore)
-                self.state = 511
+                self.state = 518
                 self.match(SetlXgrammarParser.T__2)
                 localctx.c = FunctionCall(localctx._callParameters.params, localctx._callParameters.ex) 
                 		
                 pass
             elif token in [SetlXgrammarParser.T__28]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 514
+                self.state = 521
                 self.match(SetlXgrammarParser.T__28)
-                self.state = 515
+                self.state = 522
                 localctx._collectionAccessParams = self.collectionAccessParams(localctx.enableIgnore)
-                self.state = 516
+                self.state = 523
                 self.match(SetlXgrammarParser.T__29)
                 localctx.c = CollectionAccess(localctx._collectionAccessParams.p)
                 		
@@ -2601,24 +2632,24 @@ class SetlXgrammarParser ( Parser ):
             
         self._la = 0 # Token type
         try:
-            self.state = 546
+            self.state = 553
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,40,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,41,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 521
+                self.state = 528
                 localctx.e1 = self.expr(localctx.enableIgnore)
-                self.state = 540
+                self.state = 547
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [SetlXgrammarParser.RANGE_SIGN]:
-                    self.state = 522
+                    self.state = 529
                     self.match(SetlXgrammarParser.RANGE_SIGN)
-                    self.state = 527
+                    self.state = 534
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,37,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,38,self._ctx)
                     if la_ == 1:
-                        self.state = 523
+                        self.state = 530
                         localctx.e2 = self.expr(localctx.enableIgnore)
                         localctx.p = ListRange(localctx.e1.ex,localctx.e2.ex) 
                         pass
@@ -2630,16 +2661,16 @@ class SetlXgrammarParser ( Parser ):
 
                     pass
                 elif token in [SetlXgrammarParser.T__31]:
-                    self.state = 533 
+                    self.state = 540 
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     while True:
-                        self.state = 529
+                        self.state = 536
                         self.match(SetlXgrammarParser.T__31)
-                        self.state = 530
+                        self.state = 537
                         localctx.e3 = self.expr(False)
                         params.append(localctx.e3.ex) 
-                        self.state = 535 
+                        self.state = 542 
                         self._errHandler.sync(self)
                         _la = self._input.LA(1)
                         if not (_la==SetlXgrammarParser.T__31):
@@ -2657,9 +2688,9 @@ class SetlXgrammarParser ( Parser ):
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 542
+                self.state = 549
                 self.match(SetlXgrammarParser.RANGE_SIGN)
-                self.state = 543
+                self.state = 550
                 localctx._expr = self.expr(localctx.enableIgnore)
                 localctx.p = ListRange(None,localctx._expr.ex) 
                 pass
@@ -2711,12 +2742,12 @@ class SetlXgrammarParser ( Parser ):
         localctx.ex = None
             
         try:
-            self.state = 552
+            self.state = 559
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,41,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,42,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 548
+                self.state = 555
                 localctx._exprList = self.exprList(localctx.enableIgnore)
                 localctx.params = localctx._exprList.exprs
                 pass
@@ -2784,55 +2815,55 @@ class SetlXgrammarParser ( Parser ):
         cb = None
             
         try:
-            self.state = 572
+            self.state = 579
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,43,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,44,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 554
+                self.state = 561
                 self.match(SetlXgrammarParser.T__28)
-                self.state = 558
+                self.state = 565
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input,42,self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,43,self._ctx)
                 if la_ == 1:
-                    self.state = 555
+                    self.state = 562
                     localctx._collectionBuilder = self.collectionBuilder(localctx.enableIgnore)
                     cb = localctx._collectionBuilder.cb; 
 
 
-                self.state = 560
+                self.state = 567
                 self.match(SetlXgrammarParser.T__29)
                 localctx.v = SetlXList(cb) 
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 562
+                self.state = 569
                 localctx._STRING = self.match(SetlXgrammarParser.STRING)
                 localctx.v = SetlXString((None if localctx._STRING is None else localctx._STRING.text)) 
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 564
+                self.state = 571
                 localctx._LITERAL = self.match(SetlXgrammarParser.LITERAL)
                 localctx.v = SetlXLiteral((None if localctx._LITERAL is None else localctx._LITERAL.text)) 
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 566
+                self.state = 573
                 localctx._atomicValue = self.atomicValue()
                 localctx.v = localctx._atomicValue.av 
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 569
+                self.state = 576
                 if not localctx.enableIgnore:
                     from antlr4.error.Errors import FailedPredicateException
                     raise FailedPredicateException(self, "$enableIgnore")
-                self.state = 570
+                self.state = 577
                 self.match(SetlXgrammarParser.T__30)
                 localctx.v = VariableIgnore() 
                 pass
@@ -2903,48 +2934,48 @@ class SetlXgrammarParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 574
+            self.state = 581
             localctx.e1 = self.expr(localctx.enableIgnore)
-            self.state = 621
+            self.state = 628
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SetlXgrammarParser.T__31]:
-                self.state = 575
+                self.state = 582
                 self.match(SetlXgrammarParser.T__31)
-                self.state = 576
+                self.state = 583
                 localctx.e2 = self.expr(localctx.enableIgnore)
-                self.state = 598
+                self.state = 605
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [SetlXgrammarParser.RANGE_SIGN]:
-                    self.state = 577
+                    self.state = 584
                     self.match(SetlXgrammarParser.RANGE_SIGN)
-                    self.state = 578
+                    self.state = 585
                     localctx.e3 = self.expr(localctx.enableIgnore)
                     localctx.cb = Range(localctx.e1.ex, localctx.e2.ex, localctx.e3.ex) 
                     pass
                 elif token in [SetlXgrammarParser.T__11, SetlXgrammarParser.T__29, SetlXgrammarParser.T__31]:
                     exprs.append(localctx.e1.ex); exprs.append(localctx.e2.ex) 
-                    self.state = 588
+                    self.state = 595
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     while _la==SetlXgrammarParser.T__31:
-                        self.state = 582
+                        self.state = 589
                         self.match(SetlXgrammarParser.T__31)
-                        self.state = 583
+                        self.state = 590
                         localctx.e3 = self.expr(localctx.enableIgnore)
                         exprs.append(localctx.e3.ex) 
-                        self.state = 590
+                        self.state = 597
                         self._errHandler.sync(self)
                         _la = self._input.LA(1)
 
-                    self.state = 596
+                    self.state = 603
                     self._errHandler.sync(self)
                     token = self._input.LA(1)
                     if token in [SetlXgrammarParser.T__11]:
-                        self.state = 591
+                        self.state = 598
                         self.match(SetlXgrammarParser.T__11)
-                        self.state = 592
+                        self.state = 599
                         localctx.e4 = self.expr(False)
                         localctx.cb = ExplicitListWithRest(exprs, localctx.e4.ex) 
                         pass
@@ -2960,21 +2991,21 @@ class SetlXgrammarParser ( Parser ):
 
                 pass
             elif token in [SetlXgrammarParser.RANGE_SIGN]:
-                self.state = 600
+                self.state = 607
                 self.match(SetlXgrammarParser.RANGE_SIGN)
-                self.state = 601
+                self.state = 608
                 localctx.e3 = self.expr(localctx.enableIgnore)
                 localctx.cb = Range(localctx.e1.ex, None, localctx.e3.ex) 
                 pass
             elif token in [SetlXgrammarParser.T__11, SetlXgrammarParser.T__29]:
                 exprs.append(localctx.e1.ex) 
-                self.state = 610
+                self.state = 617
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [SetlXgrammarParser.T__11]:
-                    self.state = 605
+                    self.state = 612
                     self.match(SetlXgrammarParser.T__11)
-                    self.state = 606
+                    self.state = 613
                     localctx.e2 = self.expr(False)
                     localctx.cb = ExplicitListWithRest(exprs, localctx.e2.ex) 
                     pass
@@ -2986,17 +3017,17 @@ class SetlXgrammarParser ( Parser ):
 
                 pass
             elif token in [SetlXgrammarParser.T__8]:
-                self.state = 612
-                self.match(SetlXgrammarParser.T__8)
-                self.state = 613
-                localctx._iteratorChain = self.iteratorChain(localctx.enableIgnore)
                 self.state = 619
+                self.match(SetlXgrammarParser.T__8)
+                self.state = 620
+                localctx._iteratorChain = self.iteratorChain(localctx.enableIgnore)
+                self.state = 626
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [SetlXgrammarParser.T__11]:
-                    self.state = 614
+                    self.state = 621
                     self.match(SetlXgrammarParser.T__11)
-                    self.state = 615
+                    self.state = 622
                     localctx.c1 = self.condition()
                     localctx.cb = SetlIteration(localctx.e1.ex, localctx._iteratorChain.ic, localctx.c1.cnd) 
                     pass
@@ -3060,19 +3091,19 @@ class SetlXgrammarParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 623
+            self.state = 630
             localctx.i1 = self.iterator(localctx.enableIgnore)
             localctx.ic.append(localctx.i1.iter)
-            self.state = 631
+            self.state = 638
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==SetlXgrammarParser.T__31:
-                self.state = 625
+                self.state = 632
                 self.match(SetlXgrammarParser.T__31)
-                self.state = 626
+                self.state = 633
                 localctx.i2 = self.iterator(localctx.enableIgnore)
                 localctx.ic.append(localctx.i2.iter) 
-                self.state = 633
+                self.state = 640
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -3123,11 +3154,11 @@ class SetlXgrammarParser ( Parser ):
         self.enterRule(localctx, 56, self.RULE_iterator)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 634
+            self.state = 641
             localctx._assignable = self.assignable(True)
-            self.state = 635
+            self.state = 642
             self.match(SetlXgrammarParser.T__43)
-            self.state = 636
+            self.state = 643
             localctx._expr = self.expr(localctx.enableIgnore)
             localctx.iter = SetlIterator(localctx._assignable.a, localctx._expr.ex) 
         except RecognitionException as re:
@@ -3172,37 +3203,37 @@ class SetlXgrammarParser ( Parser ):
         localctx = SetlXgrammarParser.AtomicValueContext(self, self._ctx, self.state)
         self.enterRule(localctx, 58, self.RULE_atomicValue)
         try:
-            self.state = 649
+            self.state = 656
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SetlXgrammarParser.NUMBER]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 639
+                self.state = 646
                 localctx._NUMBER = self.match(SetlXgrammarParser.NUMBER)
                 localctx.av = SetlXFraction((None if localctx._NUMBER is None else localctx._NUMBER.text)) 
                 pass
             elif token in [SetlXgrammarParser.DOUBLE]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 641
+                self.state = 648
                 localctx._DOUBLE = self.match(SetlXgrammarParser.DOUBLE)
                 localctx.av = float((None if localctx._DOUBLE is None else localctx._DOUBLE.text)) 
                 pass
-            elif token in [SetlXgrammarParser.T__54]:
+            elif token in [SetlXgrammarParser.T__55]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 643
-                self.match(SetlXgrammarParser.T__54)
+                self.state = 650
+                self.match(SetlXgrammarParser.T__55)
                 localctx.av = SetlXOm() 
                 pass
-            elif token in [SetlXgrammarParser.T__55]:
+            elif token in [SetlXgrammarParser.T__56]:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 645
-                self.match(SetlXgrammarParser.T__55)
+                self.state = 652
+                self.match(SetlXgrammarParser.T__56)
                 localctx.av = SetlXTrue() 
                 pass
-            elif token in [SetlXgrammarParser.T__56]:
+            elif token in [SetlXgrammarParser.T__57]:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 647
-                self.match(SetlXgrammarParser.T__56)
+                self.state = 654
+                self.match(SetlXgrammarParser.T__57)
                 localctx.av = SetlXFalse() 
                 pass
             else:
@@ -3247,7 +3278,7 @@ class SetlXgrammarParser ( Parser ):
         self.enterRule(localctx, 60, self.RULE_variable)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 651
+            self.state = 658
             localctx._ID = self.match(SetlXgrammarParser.ID)
             localctx.v = Variable((None if localctx._ID is None else localctx._ID.text)) 
         except RecognitionException as re:
@@ -3290,7 +3321,7 @@ class SetlXgrammarParser ( Parser ):
         self.enterRule(localctx, 62, self.RULE_condition)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 654
+            self.state = 661
             localctx._expr = self.expr(False)
             localctx.cnd = Condition(localctx._expr.ex) 
         except RecognitionException as re:
@@ -3341,19 +3372,19 @@ class SetlXgrammarParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 657
+            self.state = 664
             localctx.a1 = self.assignable(True)
             localctx.al.append(localctx.a1.a) 
-            self.state = 665
+            self.state = 672
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==SetlXgrammarParser.T__31:
-                self.state = 659
+                self.state = 666
                 self.match(SetlXgrammarParser.T__31)
-                self.state = 660
+                self.state = 667
                 localctx.a2 = self.assignable(True)
                 localctx.al.append(localctx.a2.a) 
-                self.state = 667
+                self.state = 674
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -3371,6 +3402,7 @@ class SetlXgrammarParser ( Parser ):
         if self._predicates == None:
             self._predicates = dict()
         self._predicates[4] = self.assignable_sempred
+        self._predicates[20] = self.procedureParameter_sempred
         self._predicates[25] = self.value_sempred
         pred = self._predicates.get(ruleIndex, None)
         if pred is None:
@@ -3383,8 +3415,13 @@ class SetlXgrammarParser ( Parser ):
                 return localctx.enableIgnore
          
 
-    def value_sempred(self, localctx:ValueContext, predIndex:int):
+    def procedureParameter_sempred(self, localctx:ProcedureParameterContext, predIndex:int):
             if predIndex == 1:
+                return localctx.enableRw
+         
+
+    def value_sempred(self, localctx:ValueContext, predIndex:int):
+            if predIndex == 2:
                 return localctx.enableIgnore
          
 

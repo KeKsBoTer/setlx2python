@@ -78,7 +78,7 @@ assignable[enableIgnore]
 	| {$enableIgnore}? '_' {$a = AssignableIgnore()};
 
 assignableVariable
-	returns[v]: ID {$v = AssignableVariable($ID.text) };
+	returns[v]: ID {$v = Variable($ID.text) };
 
 expr[enableIgnore]
 	returns[ex]:
@@ -228,9 +228,8 @@ $paramList = []
 
 procedureParameter[enableRw]
 	returns[param]:
-	// TODO {$enableRw}? 'rw' assignableVariable {$param =
-	// ReadWriteParameter($assignableVariable.v.ID) } \
-	variable {$param = Parameter($variable.v.id) };
+	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v.id) }
+	| variable {$param = Parameter($variable.v.id) };
 
 procedureDefaultParameter
 	returns[param]:

@@ -3,7 +3,7 @@ import grammar.setlx.utils as utils
 import ast
 
 
-class AssignableVariable:
+class Variable:
     def __init__(self, id):
         self.id = id
 
@@ -23,14 +23,6 @@ class AssignableList:
 class SetlXFraction(Fraction):
     def to_python(self, state):
         return ast.Num(self.numerator)
-
-
-class Variable:
-    def __init__(self, id):
-        self.id = id
-
-    def to_python(self, state):
-        return ast.Name(id=self.id)
 
 
 class SetlXString:
@@ -60,15 +52,22 @@ class SetlXOm:
         return ast.NameConstant(None)
 
 
-class Parameter:
-    def __init__(self, id, default=None):
+class ReadWriteParameter:
+    def __init__(self, id):
         self.id = id
-        self.default = default
 
     def to_python(self, state):
-        default = self.default.to_python(
-            state) if self.default != None else None
         return ast.arg(arg=self.id, annotation=None)  # TODO default value
+
+
+class Parameter:
+    def __init__(self, id, default=None, read_write=False):
+        self.id = id
+        self.default = default
+        self.read_write = read_write
+
+    def to_python(self, state):
+        return ast.arg(arg=self.id, annotation=None) # TODO default value
 
 
 class SetlXTrue:

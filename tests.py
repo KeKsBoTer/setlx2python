@@ -62,6 +62,7 @@ for test in tests:
         gen_tree = transpile(os.path.join(tests_dir, test[0]))
     except Exception as e:
         cprint(f"ERROR: cannot transpile {test[0]}", "red")
+        cprint(str(e), "red")
         cprint("".join(traceback.format_tb(e.__traceback__, limit=-4)), "red")
         continue
     with open(os.path.join(tests_dir, test[1])) as f:
@@ -78,9 +79,9 @@ for test in tests:
             objects, sep=sep, end=end, file=output, flush=flush)
         exec(code, {"print": sprint})
     except Exception as e:
-        print(e)
-        cprint("".join(traceback.format_tb(e.__traceback__)), "red")
-        continue
+        output.write(str(e)+"\n")
+        output.write("".join(traceback.format_tb(e.__traceback__, limit=-4)))
+        # continue
 
     if gen_ast != py_ast:
         cprint(
