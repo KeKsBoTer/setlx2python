@@ -86,16 +86,6 @@ class FunctionCall:
         return ast.Expr(ast.Call(expr, params, []))
 
 
-class PrefixOperator:
-    def __init__(self, expr, py_target_type):
-        self.expr = expr
-        self.py_target_type = py_target_type
-
-    def to_python(self, state):
-        expr = self.expr.to_python(state)
-        return utils.call_function(self.py_target_type, [expr])
-
-
 class Compare:
     def __init__(self, left, right, operator):
         self.left = left
@@ -158,6 +148,75 @@ class Conjunction(Compare):
         return ast.BoolOp(op=ast.And(), values=[left, right])
 
 
+class PrefixOperator:
+    def __init__(self, expr, py_target_type):
+        self.expr = expr
+        self.py_target_type = py_target_type
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        return utils.call_function(self.py_target_type, [expr])
+
+
+class SumOfMembersBinary(PrefixOperator):
+    def __init__(self, left, right):
+        PrefixOperator.__init__(self, right, "sum")
+
+
+class ProductOfMembersBinary(PrefixOperator):
+    def __init__(self, left, right):
+        # TODO create function for product
+        PrefixOperator.__init__(self, right, "sum")
+
+
+class SumOfMembers(PrefixOperator):
+    def __init__(self, expr):
+        PrefixOperator.__init__(self, expr, "sum")
+
+
+class ProductOfMembers(PrefixOperator):
+    def __init__(self, expr):
+        # TODO create function for product
+        PrefixOperator.__init__(self, expr, "sum")
+
+
+class Cardinality(PrefixOperator):
+    def __init__(self, expr):
+        # TODO create function for product
+        PrefixOperator.__init__(self, expr, "len")
+
+
+class Minus:
+    def __init__(self, expr):
+        self.expr = expr
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        return ast.UnaryOp(op=ast.USub(), operand=expr)
+
+
+class Forall:
+    def __init__(self, iter_chain, condition):
+        self.iter_chain = iter_chain
+        self.condition = condition
+
+    def to_python(self, state):
+        expr = SetlIteration(
+            self.condition, self.iter_chain, None).to_python(state)
+        return utils.call_function("all", [expr])
+
+
+class Exists:
+    def __init__(self, iter_chain, condition):
+        self.iter_chain = iter_chain
+        self.condition = condition
+
+    def to_python(self, state):
+        expr = SetlIteration(
+            self.condition, self.iter_chain, None).to_python(state)
+        return utils.call_function("any", [expr])
+
+
 class Not(PrefixOperator):
     def __init__(self, expr):
         PrefixOperator.__init__(self, expr, "not")
@@ -188,9 +247,39 @@ class Difference(BinOperator):
         BinOperator.__init__(self, left, right, ast.Sub())
 
 
+class Sum(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Add())
+
+
 class Product(BinOperator):
     def __init__(self, left, right):
         BinOperator.__init__(self, left, right, ast.Mult())
+
+
+class Quotient(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Div())
+
+
+class IntegerDivision(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.FloorDiv())
+
+
+class Modulo(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Mod())
+
+
+class CartesianProduct(BinOperator):
+    def __init__(self, left, right):
+        BinOperator.__init__(self, left, right, ast.Mod())
+
+    def to_python(self, state):
+        state.imports.add("itertools", "product")
+        params = utils.to_python(state, [self.left, self.right])
+        return utils.call_function("product", params)
 
 
 class IfThen:
@@ -329,15 +418,6 @@ class For:
         return ast.For(target=assignable, iter=iterator, body=block, orelse=[])
 
 
-class SetlIterator:
-    def __init__(self, assignable, expression):
-        self.assignable = assignable
-        self.expression = expression
-
-    def to_python(self, state):
-        raise "not reachable"
-
-
 class Procedure:
     def __init__(self, params, block, name=None):
         self.params = params
@@ -345,18 +425,26 @@ class Procedure:
         self.name = name
 
     def to_python(self, state):
-        params = [p.to_python(state) for p in self.params]
         block = self.block.to_python(state)
 
-        params_names = [ast.Name(id=p.arg) for p in params]
-        deepcopies = [utils.deep_copy_param(p, state) for p in params_names]
+        params = []
+        deepcopies = []
+        defaults = []  # default values for parameters
+        for p in self.params:
+            params.append(p.to_python(state))
+            if not isinstance(p, types.ReadWriteParameter):  # only copy value parameters
+                deepcopies.append(utils.deep_copy_param(
+                    ast.Name(id=p.id), state))
+                if p.default != None:  # add default value if one is given
+                    defaults.append(p.default.to_python(state))
+
         block = deepcopies + block
         params = ast.arguments(args=params,
                                vararg=None,
                                kwonlyargs=[],
                                kw_defaults=[],
                                kwarg=None,
-                               defaults=[])
+                               defaults=defaults)
 
         if self.name == None:
             # TODO find better naming
@@ -398,15 +486,24 @@ class SetlIteration:
 
     def to_python(self, state):
 
-        [assignable, iterator] = utils.iterator_from_chain(
-            state, self.iter_chain)
+        iter_chain = utils.to_python(state, self.iter_chain)
         expr = self.expr.to_python(state)
-        condition = self.condition.to_python(
-            state) if self.condition != None else None
+        condition = [self.condition.to_python(
+            state)] if self.condition != None else []
 
-        comp = ast.comprehension(
-            target=assignable, iter=iterator, ifs=[condition], is_async=0)
-        return ast.ListComp(elt=expr, generators=[comp])
+        iter_chain[-1].ifs = condition
+        return ast.ListComp(elt=expr, generators=iter_chain)
+
+
+class SetlIterator:
+    def __init__(self, assignable, expression):
+        self.assignable = assignable
+        self.expression = expression
+
+    def to_python(self, state):
+        [assignable, expression] = utils.to_python(
+            state, [self.assignable, self.expression])
+        return ast.comprehension(target=assignable, iter=expression, ifs=[], is_async=0)
 
 
 class BooleanEqual(InfixOperator):
@@ -441,3 +538,21 @@ class Implication(InfixOperator):
         [left, right] = utils.to_python(state, [self.left, self.right])
         not_left = ast.UnaryOp(op=ast.Not(), operand=left)
         return ast.Compare(left=not_left, ops=[ast.Or()], comparators=[right])
+
+
+class SetListConstructor:
+    def __init__(self, collection):
+        self.collection = collection
+
+    def to_python(self, state):
+        # TODO use own sets
+        if self.collection == None:
+            return utils.call_function("set", [])
+        else:
+            collection = self.collection.to_python(state)
+            if isinstance(self.collection, types.Range):
+                return utils.call_function("set", [collection.args[0]])
+            elif isinstance(self.collection, SetlIteration):
+                return ast.SetComp(elt=collection.elt, generators=collection.generators)
+            else:
+                return ast.Set(elts=collection.elts)

@@ -1,0 +1,3 @@
+a := [1,2,3];
+exists(x in a, y in a | x+y > 0);
+forall(x in a | x > 0);

@@ -1,6 +1,6 @@
-p := procedure(x,y) {
+p := procedure(x , rw y, z := "z",w := "w") {
     print(y);
-    return x;
+    return x+z;
 };
 
 x := p(1,2);

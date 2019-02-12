@@ -1,10 +1,11 @@
-from sys import argv
+from sys import argv, stdout
 import os
 import subprocess
 import ast
 import astor
 import difflib
 import colorama
+import traceback
 from transpiler import transpile
 from termcolor import cprint
 
@@ -18,8 +19,16 @@ def _unidiff_output(expected, actual):
     actual = actual.splitlines(1)
 
     diff = difflib.unified_diff(expected, actual)
-
+    print
     return ''.join(diff)
+
+
+class WritableObject:
+    def __init__(self):
+        self.content = ""
+
+    def write(self, string):
+        self.content += string
 
 
 colorama.init()
@@ -47,13 +56,14 @@ if len(argv[1:]) > 0:
 
 print(f"running tests: {', '.join([f[0][:-5] for f in tests])}")
 
-successfull = []
 for test in tests:
+    successfull = True
     try:
         gen_tree = transpile(os.path.join(tests_dir, test[0]))
     except Exception as e:
         cprint(f"ERROR: cannot transpile {test[0]}", "red")
-        cprint(f"\n{e.__str__()}\n", "red")
+        cprint(str(e), "red")
+        cprint("".join(traceback.format_tb(e.__traceback__, limit=-4)), "red")
         continue
     with open(os.path.join(tests_dir, test[1])) as f:
         py_code = f.read()
@@ -61,7 +71,24 @@ for test in tests:
 
     gen_ast = astor.dump_tree(gen_tree)
     py_ast = astor.dump_tree(py_tree)
-    code = astor.to_source(gen_tree)
+    try:
+        code = astor.to_source(gen_tree)
+    except Exception as e:
+        cprint(f"ERROR: invalid generated ast for {test[0]}", "red")
+        cprint(str(e), "red")
+        cprint("".join(traceback.format_tb(e.__traceback__, limit=-4)), "red")
+        successfull = False
+
+    output = WritableObject()
+    try:
+        sprint = lambda *objects, sep=' ', end='\n', file=stdout, flush=False: print(
+            objects, sep=sep, end=end, file=output, flush=flush)
+        exec(code, {"print": sprint})
+    except Exception as e:
+        output.write(str(e)+"\n")
+        output.write("".join(traceback.format_tb(e.__traceback__, limit=-4)))
+        # continue
+
     if gen_ast != py_ast:
         cprint(
             f"WARNING: generated ast does not match py file ({test[0][:-5]})", "yellow")
@@ -75,14 +102,16 @@ for test in tests:
             print(f'{"#"*5} generated <> {test[1]} {"#"*5}')
             print(_unidiff_output(py_ast, gen_ast))
     elif "ast" in flags:
-        print("-"*5+"generated"+"-"*5)
+        print("-"*10+"generated"+"-"*10)
         print(gen_ast)
 
     if "code" in flags:
-        print(f'{"#"*5} generated code {"#"*5}')
+        print(f'{"#"*10} generated code {"#"*10}')
         print(code)
 
-    successfull.append(test[0][:-5])
+    if "output" in flags:
+        print(f"{'#'*10} output {'#'*10}")
+        print(output.content)
 
-if len(successfull) > 0:
-    cprint(f"test(s) {', '.join(successfull)} were successfull", 'green')
+    if successfull:
+        cprint(f"INFO: {test[0][:-5]} was successfull", 'green')
