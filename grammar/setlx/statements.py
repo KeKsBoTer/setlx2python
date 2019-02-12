@@ -459,6 +459,16 @@ class Procedure:
             return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=[])
 
 
+class CachedProcedure:
+    def __init__(self, params, block, name=None):
+        self.params = params
+        self.block = block
+        self.name = name
+
+    def to_python(self, state):
+        return Procedure(self.params, self.block, self.name).to_python(state)
+
+
 class CollectionAccess:
     def __init__(self, params):
         self.params = params

@@ -193,11 +193,9 @@ procedure
 	returns[pd]:
 	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk) 
 		}
-	/* TODO| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd =
-	 CachedProcedure($procedureParameters.paramList, $block.blk) } | 'closure' '('
-	 procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList,
-	 $block.blk) }
-	 */;
+	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) };
+	/* 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList,
+	 $block.blk) };*/
 
 procedureParameters[enableRw]
 	returns[paramList]
