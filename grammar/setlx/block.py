@@ -16,7 +16,8 @@ class Block:
             stmnt = s.to_python(state)
             state.level = level
 
-            if isinstance(stmnt, ast.Compare) or isinstance(stmnt, ast.UnaryOp): # TODO this needs a better solution
+            # TODO this needs a better solution
+            if isinstance(stmnt, (ast.Compare, ast.UnaryOp, ast.BinOp, ast.Call, ast.Set, ast.SetComp)):
                 stmnt = ast.Expr(value=stmnt)
 
             if len(state.before_stmnts) > 0:

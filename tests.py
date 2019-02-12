@@ -56,8 +56,8 @@ if len(argv[1:]) > 0:
 
 print(f"running tests: {', '.join([f[0][:-5] for f in tests])}")
 
-successfull = []
 for test in tests:
+    successfull = True
     try:
         gen_tree = transpile(os.path.join(tests_dir, test[0]))
     except Exception as e:
@@ -71,7 +71,13 @@ for test in tests:
 
     gen_ast = astor.dump_tree(gen_tree)
     py_ast = astor.dump_tree(py_tree)
-    code = astor.to_source(gen_tree)
+    try:
+        code = astor.to_source(gen_tree)
+    except Exception as e:
+        cprint(f"ERROR: invalid generated ast for {test[0]}", "red")
+        cprint(str(e), "red")
+        cprint("".join(traceback.format_tb(e.__traceback__, limit=-4)), "red")
+        successfull = False
 
     output = WritableObject()
     try:
@@ -107,5 +113,5 @@ for test in tests:
         print(f"{'#'*10} output {'#'*10}")
         print(output.content)
 
-    successfull.append(test[0][:-5])
-    cprint(f"INFO: {test[0][:-5]} was successfull", 'green')
+    if successfull:
+        cprint(f"INFO: {test[0][:-5]} was successfull", 'green')

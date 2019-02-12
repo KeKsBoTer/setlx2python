@@ -27,9 +27,7 @@ condition = None
 		}
 	| 'switch' '{' (
 		'case' c1 = condition ':' b1 = block {caseList.append(($c1.cnd, $b1.blk)) }
-	)* (
-		'default' ':' b2 = block
-	)? '}' {$stmnt = Switch(caseList,$b2.blk) }
+	)* ('default' ':' b2 = block)? '}' {$stmnt = Switch(caseList,$b2.blk) }
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
 	)? ')' '{' block '}' {$stmnt = For($iteratorChain.ic, condition, $block.blk) }
@@ -146,41 +144,36 @@ product[enableIgnore]
 		| '/' r2 = setlxReduce[$enableIgnore] {$p = Quotient($p,$r2.r) }
 		| '\\' r2 = setlxReduce[$enableIgnore] {$p = IntegerDivision($p,$r2.r) }
 		| '%' r2 = setlxReduce[$enableIgnore] {$p = Modulo($p,$r2.r) }
-		// TODO | '><' setlxReduce[$enableIgnore] { operators.add(CartesianProduct.CP); }
+		| '><' r2 = setlxReduce[$enableIgnore] {$p = CartesianProduct($p,$r2.r) }
 	)*;
 
 setlxReduce[enableIgnore]
 	returns[r]:
-	p1 = prefixOperation[$enableIgnore] {$r =$p1.p}
-	/* TODO ( '+/' prefixOperation[$enableIgnore, $operators] {
-	 operators.add(SumOfMembersBinary.SOMB ); } | '*\(remove this backslash)/'
-	 prefixOperation[$enableIgnore, $operators] { operators.add(ProductOfMembersBinary.POMB); } )*
-	 */;
+	p1 = prefixOperation[$enableIgnore] {$r = $p1.p} (
+		// TODO what does this do??
+		'+/' p2 = prefixOperation[$enableIgnore] {$r = SumOfMembersBinary($r,$p2.p) }
+		| '*/' p2 = prefixOperation[$enableIgnore] {$r = ProductOfMembersBinary($r,$p2.p) }
+	)*;
 
 prefixOperation[enableIgnore]
 	returns[p]:
 	factor[$enableIgnore] {$p = $factor.f} (
 		'**' prefixOperation[$enableIgnore] {$p = Power($p,$prefixOperation.p) }
 	)?
-	//| '+/' prefixOperation[$enableIgnore, $operators] { operators.add(SumOfMembers.SOM); } |
-	// '*\(remove this backslash)/' prefixOperation[$enableIgnore, $operators] {
-	// operators.add(ProductOfMembers.POM); } | '#' prefixOperation[$enableIgnore, $operators] {
-	// operators.add(Cardinality.C); }
+	| '+/' prefixOperation[$enableIgnore] {$p = SumOfMembers($prefixOperation.p) }
+	| '*/' prefixOperation[$enableIgnore] {$p = ProductOfMembers($prefixOperation.p) }
+	| '#' prefixOperation[$enableIgnore] {$p = Cardinality($prefixOperation.p) }
 	| '-' prefixOperation[$enableIgnore] {$p = Minus($prefixOperation.p)};
 
 factor[enableIgnore]
 	returns[f]:
 	'!' factor[$enableIgnore] {$f = Not($factor.f) }
-	/* TODO | TERM '(' termArguments[$operators] ')' { operators.add(new
-	 TermConstructor($TERM.text,
- $termArguments.args.size())); } | 'forall' '('
-	 iteratorChain[$enableIgnore] '|' condition ')' {
- operators.add(new Forall($iteratorChain.ic,
-	 $condition.cnd)); } | 'exists' '('
- iteratorChain[$enableIgnore] '|' condition ')' {
-	 operators.add(new Exists($iteratorChain.ic,
- $condition.cnd)); }
-	 */
+	//| TERM '(' termArguments[$operators] ')' {operators.append(TermConstructor($TERM.text,
+	// $termArguments.args.size())) }
+	| 'forall' '(' iteratorChain[$enableIgnore] '|' condition ')' {$f = Forall($iteratorChain.ic,$condition.cnd)
+		}
+	| 'exists' '(' iteratorChain[$enableIgnore] '|' condition ')' {$f = Exists($iteratorChain.ic,$condition.cnd)
+		}
 	| (
 		'(' exprContent[$enableIgnore] ')' {$f = $exprContent.ex }
 		| procedure {$f = $procedure.pd }
@@ -280,10 +273,9 @@ cb = None
 	'[' (
 		collectionBuilder[$enableIgnore] {cb = $collectionBuilder.cb; }
 	)? ']' {$v = SetlXList(cb) }
-	/* TODO | '{' (collectionBuilder[$enableIgnore] { cb = $collectionBuilder.cb; } )? '}' {$v =
-	 new
- SetListConstructor(CollectionType.SET, cb); }
-	 */
+	| '{' (
+		collectionBuilder[$enableIgnore] {cb = $collectionBuilder.cb; }
+	)? '}' {$v = SetListConstructor(cb) }
 	| STRING {$v = SetlXString($STRING.text) }
 	| LITERAL {$v = SetlXLiteral($LITERAL.text) }
 	// TODO | matrix {$v = new ValueOperator($matrix.m); } TODO | vector {$v = new
@@ -374,3 +366,5 @@ LINE_COMMENT: '//' ~('\n' | '\r')* -> skip;
 MULTI_COMMENT:
 	'/*' (~('*') | '*'+ ~('*' | '/'))* '*'+ '/' -> skip;
 WS: (' ' | '\t' | '\n' | '\r')+ -> skip;
+
+REMAINDER: .;

@@ -2,7 +2,7 @@
 
 # Missing features 
 - [ ] lambdas
-- [ ] sets
+- [x] sets
 - [x] lists
 - [ ] classes
 - [ ] unpack procedure parameters
@@ -13,7 +13,7 @@
 - [ ] matrix
 - [ ] closure 
 - [ ] cached procedure
-- [ ] read/write procedure param
+- [x] read/write procedure param
 - [ ] procedureListParameter
 - [ ] load setlx files
 - [x] switch case
