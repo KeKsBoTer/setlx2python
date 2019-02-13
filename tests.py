@@ -2,6 +2,7 @@ from sys import argv, stdout
 import os
 import subprocess
 import ast
+import sys
 import astor
 import difflib
 import colorama
@@ -85,7 +86,13 @@ for test in tests:
         try:
             sprint = lambda *objects, sep=' ', end='\n', file=stdout, flush=False: print(
                 *objects, sep=sep, end=end, file=output, flush=flush)
-            exec(code, {"print": sprint})
+
+            def no_exit(): pass  # do not
+
+            exec(code, {
+                 "print": sprint,
+                 "exit": no_exit
+                 })
         except Exception as e:
             output.write(str(e)+"\n")
             output.write(

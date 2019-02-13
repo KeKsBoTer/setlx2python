@@ -1,0 +1,9 @@
+x := procedure() {
+    backtrack;
+};
+
+check{
+    x();
+}afterBacktrack{
+    print("test");
+}

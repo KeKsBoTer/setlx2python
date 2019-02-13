@@ -17,6 +17,7 @@ statement
 	@init {
 else_list = []
 caseList = []
+tryList = []
 expression = None
 condition = None
     }:
@@ -28,17 +29,33 @@ condition = None
 	| 'switch' '{' (
 		'case' c1 = condition ':' b1 = block {caseList.append(($c1.cnd, $b1.blk)) }
 	)* ('default' ':' b2 = block)? '}' {$stmnt = Switch(caseList,$b2.blk) }
+	//| match 
+	//| scan 
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
 	)? ')' '{' block '}' {$stmnt = For($iteratorChain.ic, condition, $block.blk) }
 	| 'while' '(' condition ')' '{' block '}' {$stmnt = While($condition.cnd, $block.blk) }
 	| 'do' '{' block '}' 'while' '(' condition ')' ';' {$stmnt = DoWhile($condition.cnd, $block.blk) 
 		}
+	| 'try' '{' b1 = block '}' /*(
+		'catchLng' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchLngBranch($v1.v, $b2.blk))         
+			}
+		| 'catchUsr' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchUsrBranch($v1.v, $b2.blk))         
+			}
+	)**/ (
+		'catch' '(' v2 = assignableVariable ')' '{' b3 = block '}' {tryList.append(TryCatchBranch($v2.v, $b3.blk))         
+			}
+	)? {$stmnt = TryCatch($b1.blk, tryList) }
+	/*| 'check' '{' b1 = block '}' (
+		'afterBacktrack' '{' b2 = block {block = $b2.blk} '}'
+	)? {$stmnt = Check($b1.blk, block)                         }
+	*/
 	| 'backtrack' ';' {$stmnt = Backtrack() }
 	| 'break' ';' {$stmnt = Break() }
 	| 'continue' ';' {$stmnt = Continue() }
 	| 'exit' ';' {$stmnt = Exit() }
 	| 'return' (expr[False] {expression = $expr.ex })? ';' {$stmnt = Return(expression) }
+	| 'assert' '(' condition ',' expr[False] ')' ';' {$stmnt = Assert($condition.cnd, $expr.ex)}
 	| assignmentOther ';' {$stmnt = $assignmentOther.assign }
 	| assignmentDirect ';' {$stmnt = $assignmentDirect.assign }
 	| expr[False] ';' {$stmnt = $expr.ex};

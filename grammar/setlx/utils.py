@@ -43,4 +43,10 @@ def setlx_access(state, name):
 
 def setlx_function(state, name, args):
     state.imports.add("setlx")
-    return ast.Call(func=setlx_access(state,name), args=args, keywords=[])
+    return ast.Call(func=setlx_access(state, name), args=args, keywords=[])
+
+
+def unpack_error(state, target):
+    state.imports.add("setlx")
+    unpack_call = setlx_function(state, "unpack_error", [ast.Name(id='e')])
+    return ast.Assign(targets=[ast.Name(id=target)], value=unpack_call)

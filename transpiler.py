@@ -19,7 +19,6 @@ class ParserErrorListener(ErrorListener):
         raise SyntaxError("line " + str(line) + ":" + str(column) + " " + msg)
 
 
-
 def transpile(file):
     input = FileStream(file)
     lexer = SetlXgrammarLexer(input)
@@ -29,6 +28,10 @@ def transpile(file):
     tree = parser.block()
     state = SetlxState()
     body = tree.blk.to_python(state)
-    body = state.imports.to_python(state) + body
+    # TODO throw
+    throw = ast.ImportFrom(module='setlx', names=[
+        ast.alias(name='throw', asname=None)], level=0)
+    imports = [throw] + state.imports.to_python(state)
+    body = imports + body
     code = ast.Module(body=body)
     return code

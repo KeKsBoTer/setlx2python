@@ -17,6 +17,7 @@
 - [ ] procedureListParameter
 - [ ] load setlx files
 - [x] switch case
+- [x] throw
 # tasks daniel
 - [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
 - [ ] create list of all setlx specific functions

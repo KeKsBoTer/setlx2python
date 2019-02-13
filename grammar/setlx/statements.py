@@ -380,22 +380,6 @@ class DoWhile:
         return ast.While(test=utils.bool_true(), body=block, orelse=[])
 
 
-class Backtrack:
-    pass
-
-
-class Break:
-    pass
-
-
-class Continue:
-    pass
-
-
-class Exit:
-    pass
-
-
 class Return:
     def __init__(self, expression):
         self.expression = expression
@@ -491,7 +475,10 @@ class CollectionAccess:
         # params = [py_stmnt.Difference(p.to_python(
         #    state), py_type.PyFraction(1, 1)) for p in self.params]
         # TODO what if params is list?
-        params = self.params.to_python(state)
+        if isinstance(self.params, list):
+            params = ast.List(elts=[p.to_python(state) for p in self.params])
+        else:
+            params = self.params.to_python(state)
         if isinstance(self.params, types.ListRange):  # TODO maby more elegant solution?
             return ast.Subscript(value=callable, slice=params)
         else:
@@ -609,3 +596,72 @@ class LambdaClosure:
                                              kwarg=None,
                                              defaults=[]),
                           body=expr)
+
+
+class Assert:
+    def __init__(self, condition, expr):
+        self.condition = condition
+        self.expr = expr
+
+    def to_python(self, state):
+        [condition, expr] = utils.to_python(state, [self.condition, self.expr])
+        return ast.Assert(test=condition, msg=expr)
+
+
+class Break:
+    def to_python(self, state):
+        return ast.Break()
+
+
+class Continue:
+    def to_python(self, state):
+        return ast.Continue()
+
+
+class Exit:
+    def to_python(self, state):
+        return utils.call_function("exit", [])
+
+
+class Backtrack:
+    def to_python(self, state):
+        raise Exception("backtrack is not supported yet")
+
+
+class TryCatch:
+    def __init__(self, block, try_list):
+        self.block = block
+        self.try_list = try_list
+
+    def to_python(self, state):
+        block = self.block.to_python(state)
+        trys = len(self.try_list)
+        if trys == 0:
+            return block
+        if trys == 1 and isinstance(self.try_list[0], TryCatchBranch):
+            catch = self.try_list[0]
+            error = utils.unpack_error(state,catch.variable.id)
+            except_block = [error] + catch.block.to_python(state)
+            ex = ast.ExceptHandler(
+                type=ast.Name(id="Exception"),
+                name="e",
+                body=except_block
+            )
+            return ast.Try(
+                body=block,
+                handlers=[ex],
+                orelse=[],
+                finalbody=[]
+            )
+        else:
+            # TODO try_list
+            raise "only one catch is supported"
+
+
+class TryCatchBranch:
+    def __init__(self, variable, block):
+        self.variable = variable
+        self.block = block
+
+    def to_python(self, state):
+        raise "not reachable"
