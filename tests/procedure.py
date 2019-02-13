@@ -1,12 +1,15 @@
-from copy import deepcopy
+import setlx
 
 
-def p(x, y, z=0):
-    x = deepcopy(x)
-    z = deepcopy(z)
-    print(y)
-    return x
+@setlx.procedure
+def p(x, y: 'rw', z=1, w=2):
+    x[1-1] = "can write to a"
+    y[1-1] = "can write to b"
+    return w+z
 
 
-x = p(1, 2)
-print(x)
+a = ["can't write to x"]
+b = ["can't write to y"]
+p(a, b)
+print(a)
+print(b)

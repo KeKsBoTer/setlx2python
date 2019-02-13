@@ -1,7 +1,11 @@
-p := procedure(x , rw y, z := "z",w := "w") {
-    print(y);
-    return x+z;
+p := procedure(x , rw y, z := 1,w := 2) {
+    x[1] := "can write to x";
+    y[1] := "can write to y";
+    return w+z;
 };
 
-x := p(1,2);
-print(x);
+a := ["can't write to x"];
+b := ["can't write to y"];
+p(a,b);
+print(a);
+print(b);

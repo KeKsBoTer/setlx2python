@@ -1,9 +1,10 @@
 import astor
+import ast
 import sys
 
 def main(argv):
-    ast = astor.dump_tree(astor.parse_file(argv[1]))
-    print(ast)
+    tree = astor.dump_tree(ast.parse(argv[1]))
+    print(tree)
 
 
 if __name__ == '__main__':

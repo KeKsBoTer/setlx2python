@@ -71,6 +71,7 @@ for test in tests:
 
     gen_ast = astor.dump_tree(gen_tree)
     py_ast = astor.dump_tree(py_tree)
+    code = None
     try:
         code = astor.to_source(gen_tree)
     except Exception as e:
@@ -80,14 +81,16 @@ for test in tests:
         successfull = False
 
     output = WritableObject()
-    try:
-        sprint = lambda *objects, sep=' ', end='\n', file=stdout, flush=False: print(
-            objects, sep=sep, end=end, file=output, flush=flush)
-        exec(code, {"print": sprint})
-    except Exception as e:
-        output.write(str(e)+"\n")
-        output.write("".join(traceback.format_tb(e.__traceback__, limit=-4)))
-        # continue
+    if code != None:
+        try:
+            sprint = lambda *objects, sep=' ', end='\n', file=stdout, flush=False: print(
+                *objects, sep=sep, end=end, file=output, flush=flush)
+            exec(code, {"print": sprint})
+        except Exception as e:
+            output.write(str(e)+"\n")
+            output.write(
+                "".join(traceback.format_tb(e.__traceback__, limit=-4)))
+            # continue
 
     if gen_ast != py_ast:
         cprint(

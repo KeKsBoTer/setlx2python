@@ -12,7 +12,7 @@
 - [ ] vector
 - [ ] matrix
 - [ ] closure 
-- [ ] cached procedure
+- [x] cached procedure
 - [x] read/write procedure param
 - [ ] procedureListParameter
 - [ ] load setlx files

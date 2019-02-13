@@ -70,7 +70,7 @@ assignable[enableIgnore]
 	returns[a]:
 	assignableVariable {$a = $assignableVariable.v} (
 		'.' variable {$a = AssignableMember($a, $variable.v)}
-		| '[' exprList[False] ']' {$a = AssignableCollectionAccess($a)}
+		| '[' exprList[False] ']' {$a = AssignableCollectionAccess($a, $exprList.exprs)}
 	)*
 	| '[' assignmentList ']' {$a = AssignableList($assignmentList.al)}
 	| {$enableIgnore}? '_' {$a = AssignableIgnore()};

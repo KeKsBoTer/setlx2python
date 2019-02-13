@@ -1,10 +1,9 @@
-p_values = {}
-def p(x,y):
-    if (x,y) in p_values:
-        return p_values[(x,y)]
-        
-    print("computed")
+import setlx
 
-    return_value = x+y
-    p_values[(x,y)] = return_value
-    return return_value
+@setlx.cached_procedure
+def p(x, y):
+    print("computed")
+    return x+y
+
+p(1, 2)
+p(1, 2)

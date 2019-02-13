@@ -158,31 +158,37 @@ class PrefixOperator:
         return utils.call_function(self.py_target_type, [expr])
 
 
-class SumOfMembersBinary(PrefixOperator):
+class SetlXFunction(PrefixOperator):
+    def __init__(self, expr, py_target_type):
+        PrefixOperator.__init__(self, expr, py_target_type)
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        return utils.setlx_function(state, self.py_target_type, [expr])
+
+
+class SumOfMembersBinary(SetlXFunction):
     def __init__(self, left, right):
-        PrefixOperator.__init__(self, right, "sum")
+        SetlXFunction.__init__(self, right, "sum")
 
 
-class ProductOfMembersBinary(PrefixOperator):
+class ProductOfMembersBinary(SetlXFunction):
     def __init__(self, left, right):
-        # TODO create function for product
-        PrefixOperator.__init__(self, right, "sum")
+        SetlXFunction.__init__(self, right, "product")
 
 
-class SumOfMembers(PrefixOperator):
+class SumOfMembers(SetlXFunction):
     def __init__(self, expr):
-        PrefixOperator.__init__(self, expr, "sum")
+        SetlXFunction.__init__(self, expr, "sum")
 
 
-class ProductOfMembers(PrefixOperator):
+class ProductOfMembers(SetlXFunction):
     def __init__(self, expr):
-        # TODO create function for product
-        PrefixOperator.__init__(self, expr, "sum")
+        SetlXFunction.__init__(self, expr, "product")
 
 
 class Cardinality(PrefixOperator):
     def __init__(self, expr):
-        # TODO create function for product
         PrefixOperator.__init__(self, expr, "len")
 
 
@@ -277,9 +283,8 @@ class CartesianProduct(BinOperator):
         BinOperator.__init__(self, left, right, ast.Mod())
 
     def to_python(self, state):
-        state.imports.add("itertools", "product")
         params = utils.to_python(state, [self.left, self.right])
-        return utils.call_function("product", params)
+        return utils.setlx_function(state, "cartesian_product", params)
 
 
 class IfThen:
@@ -419,44 +424,49 @@ class For:
 
 
 class Procedure:
-    def __init__(self, params, block, name=None):
+    def __init__(self, params, block, name=None, decorator=None):
         self.params = params
         self.block = block
         self.name = name
+        self.decorator = decorator
 
     def to_python(self, state):
         block = self.block.to_python(state)
 
+        if self.decorator == None:
+            self.decorator = utils.setlx_access(state, "procedure")
+
         params = []
-        deepcopies = []
         defaults = []  # default values for parameters
         for p in self.params:
-            params.append(p.to_python(state))
-            if not isinstance(p, types.ReadWriteParameter):  # only copy value parameters
-                deepcopies.append(utils.deep_copy_param(
-                    ast.Name(id=p.id), state))
-                if p.default != None:  # add default value if one is given
-                    defaults.append(p.default.to_python(state))
+            prm = p.to_python(state)
+            if isinstance(p, types.ReadWriteParameter):  # only copy value parameters
+                prm.annotation = ast.Str("rw")
+            elif p.default != None:  # add default value if one is given
+                defaults.append(p.default.to_python(state))
+            params.append(prm)
 
-        block = deepcopies + block
         params = ast.arguments(args=params,
                                vararg=None,
                                kwonlyargs=[],
                                kw_defaults=[],
                                kwarg=None,
                                defaults=defaults)
-
+        decorators = []
+        if self.decorator != None:
+            decorators = [ast.Name(id=self.decorator)] if isinstance(
+                self.decorator, str) else [self.decorator]
         if self.name == None:
             # TODO find better naming
             proc_name = f"procedure_{state.level}_{state.procedure_counter}"
 
             state.before_stmnts.append(
-                WithLevel(state.level, ast.FunctionDef(name=proc_name, args=params, body=block, decorator_list=[])))
+                WithLevel(state.level, ast.FunctionDef(name=proc_name, args=params, body=block, decorator_list=decorators)))
 
             state.procedure_counter += 1
             return ast.Name(id=proc_name)
         else:
-            return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=[])
+            return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=decorators)
 
 
 class CachedProcedure:
@@ -466,7 +476,8 @@ class CachedProcedure:
         self.name = name
 
     def to_python(self, state):
-        return Procedure(self.params, self.block, self.name).to_python(state)
+        cache = utils.setlx_access(state, "cached_procedure")
+        return Procedure(self.params, self.block, self.name, [cache]).to_python(state)
 
 
 class CollectionAccess:
@@ -566,3 +577,18 @@ class SetListConstructor:
                 return ast.SetComp(elt=collection.elt, generators=collection.generators)
             else:
                 return ast.Set(elts=collection.elts)
+
+
+class AssignableCollectionAccess:
+    def __init__(self, assignable, exprs):
+        self.assignable = assignable
+        self.exprs = exprs
+
+    def to_python(self, state):
+        if len(self.exprs) > 1:
+            raise Exception("only one collection access is allowed")
+        [assignable, expr] = utils.to_python(
+            state, [self.assignable, self.exprs[0]])
+        index = ast.Index(value=ast.BinOp(
+            left=expr, op=ast.Sub(), right=ast.Num(n=1)))
+        return ast.Subscript(value=assignable, slice=index)

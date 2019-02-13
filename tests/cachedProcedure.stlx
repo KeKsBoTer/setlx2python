@@ -2,3 +2,6 @@ p := cachedProcedure(x,y) {
     print("computed");
     return x+y;
 };
+
+p(1,2);
+p(1,2);

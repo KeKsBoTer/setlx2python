@@ -1155,6 +1155,7 @@ class SetlXgrammarParser ( Parser ):
             self.a = None
             self._assignableVariable = None # AssignableVariableContext
             self._variable = None # VariableContext
+            self._exprList = None # ExprListContext
             self._assignmentList = None # AssignmentListContext
             self.enableIgnore = enableIgnore
 
@@ -1226,10 +1227,10 @@ class SetlXgrammarParser ( Parser ):
                         self.state = 247
                         self.match(SetlXgrammarParser.T__28)
                         self.state = 248
-                        self.exprList(False)
+                        localctx._exprList = self.exprList(False)
                         self.state = 249
                         self.match(SetlXgrammarParser.T__29)
-                        localctx.a = AssignableCollectionAccess(localctx.a)
+                        localctx.a = AssignableCollectionAccess(localctx.a, localctx._exprList.exprs)
                         pass
                     else:
                         raise NoViableAltException(self)

@@ -4,15 +4,13 @@ import ast
 def iterator_from_chain(state, iter_chain):
     if len(iter_chain) == 1:
         return to_python(state, [iter_chain[0].assignable, iter_chain[0].expression])
-    # add import for list product
-    state.imports.add("itertools", "product")
 
     assignables = [i.assignable.to_python(
         state) for i in iter_chain]
     assignable = ast.List(elts=assignables)
 
     exprs = [e.expression.to_python(state) for e in iter_chain]
-    list_product = call_function("product", exprs)
+    list_product = setlx_function(state, "product", exprs)
 
     return [assignable, list_product]
 
@@ -34,6 +32,15 @@ def bool_false():
 
 
 def deep_copy_param(param, state):
-    state.imports.add("copy", "deepcopy")
-    call = call_function("deepcopy",[param])
+    call = setlx_function(state, "deepcopy", [param])
     return ast.Assign([param], call)
+
+
+def setlx_access(state, name):
+    state.imports.add("setlx")
+    return ast.Attribute(value=ast.Name(id="setlx"), attr=name)
+
+
+def setlx_function(state, name, args):
+    state.imports.add("setlx")
+    return ast.Call(func=setlx_access(state,name), args=args, keywords=[])
