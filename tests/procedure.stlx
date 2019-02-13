@@ -1,3 +1,10 @@
+t := procedure(a,*list){
+    print(*list);
+};
+
+t(1,2,3);
+
+
 p := procedure(x , rw y, z := 1,w := 2) {
     x[1] := "can write to x";
     y[1] := "can write to y";

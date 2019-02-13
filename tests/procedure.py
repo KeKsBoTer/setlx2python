@@ -1,5 +1,10 @@
 import setlx
 
+@setlx.procedure
+def t(a,*list):
+    print(*list)
+
+t(1,2,3)
 
 @setlx.procedure
 def p(x, y: 'rw', z=1, w=2):

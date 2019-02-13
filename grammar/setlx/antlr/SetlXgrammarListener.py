@@ -229,6 +229,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#procedureListParameter.
+    def enterProcedureListParameter(self, ctx:SetlXgrammarParser.ProcedureListParameterContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#procedureListParameter.
+    def exitProcedureListParameter(self, ctx:SetlXgrammarParser.ProcedureListParameterContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#call.
     def enterCall(self, ctx:SetlXgrammarParser.CallContext):
         pass

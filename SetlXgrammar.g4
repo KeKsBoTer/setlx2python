@@ -243,15 +243,15 @@ $paramList = []
 		',' pp2 = procedureParameter[$enableRw] {$paramList.append($pp2.param) }
 	)* (
 		',' dp1 = procedureDefaultParameter {$paramList.append($dp1.param) }
-	)*
-	/* TODO ( ',' lp1 = procedureListParameter {$paramList.append($lp1.param) } )?
-	 */
+	)* (
+		',' lp1 = procedureListParameter {$paramList.append($lp1.param) } 
+	)?
 	| dp2 = procedureDefaultParameter {$paramList.append($dp2.param) } (
 		',' dp3 = procedureDefaultParameter {$paramList.append($dp3.param) }
-	)*
-	/* TODO( ',' lp2 = procedureListParameter {$paramList.append($lp2.param) } )?
-	 */
-	//| lp3 = procedureListParameter {$paramList.append($lp3.param) }
+	)* (
+		',' lp2 = procedureListParameter {$paramList.append($lp2.param) }
+	)?
+	| lp3 = procedureListParameter {$paramList.append($lp3.param) }
 	| /* epsilon */;
 
 procedureParameter[enableRw]
@@ -263,9 +263,13 @@ procedureDefaultParameter
 	returns[param]:
 	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v.id, $expr.ex) };
 
+procedureListParameter
+	returns[param]:
+	'*' variable {$param = ListParameter($variable.v.id) };
+
 call[enableIgnore]
 	returns[c]:
-	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params, $callParameters.ex) 
+	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params) 
 		}
 	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p)
 		};
@@ -288,16 +292,14 @@ params = []
 	| RANGE_SIGN expr[$enableIgnore] {$p = ListRange(None,$expr.ex) };
 
 callParameters[enableIgnore]
-	returns[ params, ex]
+	returns[params]
 	@init {
 $params = []
-$ex = None
     }:
-	exprList[$enableIgnore] {$params = $exprList.exprs}
-	/* TODO unpack parameters( ',' '*' exprContent[False] {$ex =
-	 OperatorExpression(listArgumentOperators)} )? | '*' exprContent[False] {$ex =
-	 OperatorExpression(listArgumentOperators)}
-	 */
+	exprList[$enableIgnore] {$params = $exprList.exprs} (
+		 ',' '*' exprContent[False] {$params.append(OperatorExpression($exprContent.ex))}
+    )?
+	| '*' exprContent[False] {$params = [OperatorExpression($exprContent.ex)]}
 	| /* epsilon */;
 
 value[enableIgnore]
@@ -313,8 +315,8 @@ cb = None
 	)? '}' {$v = SetListConstructor(cb) }
 	| STRING {$v = SetlXString($STRING.text) }
 	| LITERAL {$v = SetlXLiteral($LITERAL.text) }
-	// TODO | matrix {$v = new ValueOperator($matrix.m); } TODO | vector {$v = new
-	// ValueOperator($vector.v); }
+	// TODO | matrix {$v = new ValueOperator($matrix.m); }
+	// TODO | vector {$v = new ValueOperator($vector.v); }
 	| atomicValue {$v = $atomicValue.av }
 	| {$enableIgnore}? '_' {$v = VariableIgnore() };
 

@@ -73,17 +73,24 @@ class Factorial:
 
 
 class FunctionCall:
-    def __init__(self, params, expression):
+    def __init__(self, params):
         # maby later Call.__init__(self, None)
         self.params = params
-        self.expression = expression
         self.callable = None
 
     def to_python(self, state):
-        # TODO expression (unpack param)
         params = [p.to_python(state) for p in self.params]
         expr = self.callable.to_python(state)
         return ast.Call(expr, params, [])
+
+
+class OperatorExpression:
+    def __init__(self, expr):
+        self.expr = expr
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        return ast.Starred(value=expr)
 
 
 class Compare:
@@ -416,22 +423,27 @@ class Procedure:
 
     def to_python(self, state):
         block = self.block.to_python(state)
+        stlx_params = self.params
 
         if self.decorator == None:
             self.decorator = utils.setlx_access(state, "procedure")
 
         params = []
         defaults = []  # default values for parameters
-        for p in self.params:
-            prm = p.to_python(state)
-            if isinstance(p, types.ReadWriteParameter):  # only copy value parameters
-                prm.annotation = ast.Str("rw")
-            elif p.default != None:  # add default value if one is given
-                defaults.append(p.default.to_python(state))
-            params.append(prm)
+        vararg = None
+        for p in stlx_params:
+            if not isinstance(p, types.ListParameter):
+                prm = p.to_python(state)
+                if isinstance(p, types.ReadWriteParameter):  # only copy value parameters
+                    prm.annotation = ast.Str("rw")
+                elif p.default != None:  # add default value if one is given
+                    defaults.append(p.default.to_python(state))
+                params.append(prm)
+            else:
+                vararg = ast.arg(arg=p.id, annotation=None)
 
         params = ast.arguments(args=params,
-                               vararg=None,
+                               vararg=vararg,
                                kwonlyargs=[],
                                kw_defaults=[],
                                kwarg=None,
@@ -640,7 +652,7 @@ class TryCatch:
             return block
         if trys == 1 and isinstance(self.try_list[0], TryCatchBranch):
             catch = self.try_list[0]
-            error = utils.unpack_error(state,catch.variable.id)
+            error = utils.unpack_error(state, catch.variable.id)
             except_block = [error] + catch.block.to_python(state)
             ex = ast.ExceptHandler(
                 type=ast.Name(id="Exception"),

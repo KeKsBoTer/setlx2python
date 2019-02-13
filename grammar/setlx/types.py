@@ -52,14 +52,6 @@ class SetlXOm:
         return ast.NameConstant(None)
 
 
-class ReadWriteParameter:
-    def __init__(self, id):
-        self.id = id
-
-    def to_python(self, state):
-        return ast.arg(arg=self.id, annotation=None)  # TODO default value
-
-
 class Parameter:
     def __init__(self, id, default=None, read_write=False):
         self.id = id
@@ -67,7 +59,23 @@ class Parameter:
         self.read_write = read_write
 
     def to_python(self, state):
-        return ast.arg(arg=self.id, annotation=None) # TODO default value
+        return ast.arg(arg=self.id, annotation=None)
+
+
+class ReadWriteParameter:
+    def __init__(self, id):
+        self.id = id
+
+    def to_python(self, state):
+        return ast.arg(arg=self.id, annotation=None)
+
+
+class ListParameter:
+    def __init__(self, id):
+        self.id = id
+
+    def to_python(self, state):
+        raise "not reachable"
 
 
 class SetlXTrue:
