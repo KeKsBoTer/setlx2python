@@ -83,7 +83,7 @@ class FunctionCall:
         # TODO expression (unpack param)
         params = [p.to_python(state) for p in self.params]
         expr = self.callable.to_python(state)
-        return ast.Expr(ast.Call(expr, params, []))
+        return ast.Call(expr, params, [])
 
 
 class Compare:
@@ -466,7 +466,7 @@ class Procedure:
             state.procedure_counter += 1
             return ast.Name(id=proc_name)
         else:
-            return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=decorators)
+            return ast.FunctionDef(name=self.name, args=params, body=block, decorator_list=decorators, returns=None)
 
 
 class CachedProcedure:
@@ -476,8 +476,8 @@ class CachedProcedure:
         self.name = name
 
     def to_python(self, state):
-        cache = utils.setlx_access(state, "cached_procedure")
-        return Procedure(self.params, self.block, self.name, [cache]).to_python(state)
+        decorator = utils.setlx_access(state, "cached_procedure")
+        return Procedure(self.params, self.block, self.name, decorator).to_python(state)
 
 
 class CollectionAccess:
@@ -592,3 +592,20 @@ class AssignableCollectionAccess:
         index = ast.Index(value=ast.BinOp(
             left=expr, op=ast.Sub(), right=ast.Num(n=1)))
         return ast.Subscript(value=assignable, slice=index)
+
+
+class LambdaClosure:
+    def __init__(self, params, expr):
+        self.params = params
+        self.expr = expr
+
+    def to_python(self, state):
+        expr = self.expr.to_python(state)
+        params = utils.to_python(state, self.params)
+        return ast.Lambda(args=ast.arguments(args=params,
+                                             vararg=None,
+                                             kwonlyargs=[],
+                                             kw_defaults=[],
+                                             kwarg=None,
+                                             defaults=[]),
+                          body=expr)

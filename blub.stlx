@@ -1,0 +1,11 @@
+t := "test";
+
+x1 := a |-> print(t);
+x2 := a |=> print(t);
+c := closure(x) {
+    print(t);
+};
+
+x1("one");
+x2("two");
+c("closure");

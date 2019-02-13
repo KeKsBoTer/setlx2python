@@ -10,7 +10,7 @@ def iterator_from_chain(state, iter_chain):
     assignable = ast.List(elts=assignables)
 
     exprs = [e.expression.to_python(state) for e in iter_chain]
-    list_product = setlx_function(state, "product", exprs)
+    list_product = setlx_function(state, "cartesian_product", exprs)
 
     return [assignable, list_product]
 

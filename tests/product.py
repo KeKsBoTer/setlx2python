@@ -1,4 +1,4 @@
-from itertools import product
+import setlx
 
 a = 1
 b = 2
@@ -7,4 +7,4 @@ a * b
 a / b
 a // b
 a % b
-product([1, 2, 3, 4], [5, 6, 7, 8])
+setlx.cartesian_product([1, 2, 3, 4], [5, 6, 7, 8])

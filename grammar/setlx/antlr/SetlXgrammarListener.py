@@ -94,6 +94,24 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#lambdaProcedure.
+    def enterLambdaProcedure(self, ctx:SetlXgrammarParser.LambdaProcedureContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#lambdaProcedure.
+    def exitLambdaProcedure(self, ctx:SetlXgrammarParser.LambdaProcedureContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#lambdaParameters.
+    def enterLambdaParameters(self, ctx:SetlXgrammarParser.LambdaParametersContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#lambdaParameters.
+    def exitLambdaParameters(self, ctx:SetlXgrammarParser.LambdaParametersContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#implication.
     def enterImplication(self, ctx:SetlXgrammarParser.ImplicationContext):
         pass

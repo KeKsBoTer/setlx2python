@@ -93,11 +93,30 @@ $exprs = []
 
 exprContent[enableIgnore]
 	returns[ex]:
-	// TODO : lambdaProcedure          { operators.add(new ProcedureConstructor($lambdaProcedure.lp)); }
-	implication[$enableIgnore] {$ex = $implication.i} (
+	lambdaProcedure  {$ex = $lambdaProcedure.lp }
+	|implication[$enableIgnore] {$ex = $implication.i} (
 		'<==>' implication[$enableIgnore] {$ex = BooleanEqual($ex,$implication.i) }
 		| '<!=>' implication[$enableIgnore] {$ex = BooleanNotEqual($ex,$implication.i) }
 	)?;
+
+lambdaProcedure
+	returns[lp]:
+	lambdaParameters (
+		// TODO '|->' expr[False] {$lp = LambdaProcedure($lambdaParameters.paramList, $expr.ex) }
+		/* |*/ '|=>' expr[False] {$lp = LambdaClosure($lambdaParameters.paramList, $expr.ex)   }
+	);
+
+lambdaParameters
+	returns[paramList]
+	@init {
+$paramList = []
+    }:
+	variable {$paramList.append(Parameter($variable.v.id)) }
+	| '[' (
+		v1 = variable {$paramList.append(Parameter($v1.v.id))} (
+			',' v2 = variable {$paramList.append(Parameter($v2.v.id))}
+		)*
+	)? ']';
 
 implication[enableIgnore]
 	returns[i]:
@@ -193,9 +212,10 @@ procedure
 	returns[pd]:
 	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk) 
 		}
-	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) };
-	/* 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList,
-	 $block.blk) };*/
+	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) 
+		}
+	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk) 
+		};
 
 procedureParameters[enableRw]
 	returns[paramList]

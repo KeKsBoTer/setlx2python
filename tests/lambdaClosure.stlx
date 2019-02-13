@@ -1,0 +1,5 @@
+t := "test";
+
+lc := a |=> print(a,t);
+
+lc("closure");
