@@ -699,13 +699,16 @@ class ClassConstructor:
 
     def to_python(self, state):
         body = self.block.to_python(state)
-        stmnts = []
-        funcs = []
-        for s in body:
-            (stmnts, funcs)[isinstance(s, ast.FunctionDef)].append(s)
-        #body = stmnts
-
-        #utils.add_self(funcs)
+        for i, s in enumerate(body):
+            if isinstance(s, ast.FunctionDef):
+                assign = ast.Assign(
+                    targets=[ast.Attribute(
+                        value=ast.Name(id='self'),
+                        attr=s.name
+                    )],
+                    value=ast.Name(id=s.name)
+                )
+                body.insert(i+1, assign)
 
         params = utils.to_python(state, self.params)
         self_arg = ast.arg(arg='self', annotation=None)
@@ -728,6 +731,6 @@ class ClassConstructor:
             name=self.id,
             bases=[],
             keywords=[],
-            body=static+[init],#+funcs,
+            body=static+[init],
             decorator_list=[]
         )

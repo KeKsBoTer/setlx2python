@@ -3,7 +3,7 @@ import ast
 import sys
 
 def main(argv):
-    tree = astor.dump_tree(astor.parse_file(argv[1]))
+    tree = astor.dump_tree(ast.parse(argv[1]))
     print(tree)
 
 
