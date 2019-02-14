@@ -50,3 +50,14 @@ def unpack_error(state, target):
     state.imports.add("setlx")
     unpack_call = setlx_function(state, "unpack_error", [ast.Name(id='e')])
     return ast.Assign(targets=[ast.Name(id=target)], value=unpack_call)
+
+
+def make_funcs_static(block):
+    for stmnt in block:
+        if isinstance(stmnt, ast.FunctionDef):
+            stmnt.decorator_list = ["staticmethod"] + stmnt.decorator_list
+
+
+def add_self(funcs):
+    for f in funcs:
+        f.args.args = [ast.arg(arg='self', annotation=None)]+f.args.args

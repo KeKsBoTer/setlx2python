@@ -8,7 +8,8 @@ class Variable:
         self.id = id
 
     def to_python(self, state):
-        return ast.Name(id=self.id)
+        id_str = self.id if self.id != "this" else "self"
+        return ast.Name(id=id_str)
 
 
 class AssignableList:

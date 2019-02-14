@@ -1,13 +1,17 @@
+asdsa := "asdas";
+
 class Test(a,b){
     mA := a;
     mB := b;
+    print("constructor");
 
-    foo := procedure(x) {
+    foo := cachedProcedure(x) {
         return x+this.mA;
     };
 
     static{
         className := "test";
+        print("static");
 
         name := procedure(){
             return Test.className;
@@ -16,5 +20,5 @@ class Test(a,b){
 }
 
 t := Test(1,2);
-print(t.foo(10));
 print(Test.name());
+print(t.foo(10));

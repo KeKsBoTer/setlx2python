@@ -20,8 +20,12 @@ caseList = []
 tryList = []
 expression = None
 condition = None
+static = None
     }:
-	'if' '(' c1 = condition ')' '{' b1 = block '}' (
+	'class' ID '(' procedureParameters[True] ')' '{' b1 = block (
+		'static' '{' b2 = block '}' {static = $b2.blk}
+	)? '}' {$stmnt = ClassConstructor($ID.text, $procedureParameters.paramList, $b1.blk, static)}
+	|'if' '(' c1 = condition ')' '{' b1 = block '}' (
 		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk)) 
 			}
 	)* ('else' '{' b3 = block '}' {else_list.append($b3.blk) })? {$stmnt = IfThen($c1.cnd,$b1.blk,else_list) 

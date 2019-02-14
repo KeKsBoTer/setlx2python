@@ -677,3 +677,57 @@ class TryCatchBranch:
 
     def to_python(self, state):
         raise "not reachable"
+
+
+class MemberAccess:
+    def __init__(self, parent, child):
+        self.parent = parent
+        self.child = child
+
+    def to_python(self, state):
+        parent = self.parent.to_python(state)
+        child = self.child.to_python(state)
+        return ast.Attribute(value=parent, attr=child)
+
+
+class ClassConstructor:
+    def __init__(self, id, params, block, static_block):
+        self.id = id
+        self.params = params
+        self.block = block
+        self.static_block = static_block
+
+    def to_python(self, state):
+        body = self.block.to_python(state)
+        stmnts = []
+        funcs = []
+        for s in body:
+            (stmnts, funcs)[isinstance(s, ast.FunctionDef)].append(s)
+        #body = stmnts
+
+        #utils.add_self(funcs)
+
+        params = utils.to_python(state, self.params)
+        self_arg = ast.arg(arg='self', annotation=None)
+        static = self.static_block.to_python(state)
+        utils.make_funcs_static(static)
+        func_decorator = utils.setlx_access(state, "procedure")
+
+        init = ast.FunctionDef(name='__init__',
+                               args=ast.arguments(
+                                   args=[self_arg]+params,
+                                   vararg=None,
+                                   kwonlyargs=[],
+                                   kw_defaults=[],
+                                   kwarg=None,
+                                   defaults=[]),
+                               body=body,
+                               decorator_list=[func_decorator],
+                               returns=None)
+        return ast.ClassDef(
+            name=self.id,
+            bases=[],
+            keywords=[],
+            body=static+[init],#+funcs,
+            decorator_list=[]
+        )
