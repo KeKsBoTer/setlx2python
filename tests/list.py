@@ -12,5 +12,5 @@ a = [x for x in a if x > 2]
 a = [c*d for c in a for d in b if c+d > 2]
 
 print(a[10-1:20])
-print(a[1-1])
+print(a[1-1:])
 print(a[:20])
