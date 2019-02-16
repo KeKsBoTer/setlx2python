@@ -1,4 +1,3 @@
-asdsa := "asdas";
 
 class Test(a,b){
     mA := a;

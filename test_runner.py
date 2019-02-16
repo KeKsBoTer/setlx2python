@@ -7,7 +7,7 @@ import astor
 import difflib
 import colorama
 import traceback
-from transpiler import transpile
+from cli import transpile
 from termcolor import cprint
 
 
@@ -89,10 +89,7 @@ for test in tests:
 
             def no_exit(): pass  # do not
 
-            exec(code, {
-                 "print": sprint,
-                 "exit": no_exit
-                 })
+            exec(code, {"print": sprint, "exit": no_exit})
         except Exception as e:
             output.write(str(e)+"\n")
             output.write(

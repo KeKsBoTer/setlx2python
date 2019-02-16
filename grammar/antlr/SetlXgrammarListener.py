@@ -5,9 +5,7 @@ if __name__ is not None and "." in __name__:
 else:
     from SetlXgrammarParser import SetlXgrammarParser
 
-from grammar.setlx.block import *
-from grammar.setlx.statements import *
-from grammar.setlx.types import *
+from grammar.types import *
 
 
 # This class defines a complete listener for a parse tree produced by SetlXgrammarParser.

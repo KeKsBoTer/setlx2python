@@ -1,9 +1,7 @@
 grammar SetlXgrammar;
 
 @parser::header {
-from grammar.setlx.block import *
-from grammar.setlx.statements import *
-from grammar.setlx.types import *
+from grammar.types import *
 }
 
 block
@@ -26,7 +24,7 @@ static = None
 		'static' '{' b2 = block '}' {static = $b2.blk}
 	)? '}' {$stmnt = ClassConstructor($ID.text, $procedureParameters.paramList, $b1.blk, static)}
 	|'if' '(' c1 = condition ')' '{' b1 = block '}' (
-		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk)) 
+		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk,[])) 
 			}
 	)* ('else' '{' b3 = block '}' {else_list.append($b3.blk) })? {$stmnt = IfThen($c1.cnd,$b1.blk,else_list) 
 		}
@@ -37,8 +35,8 @@ static = None
 	//| scan 
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
-	)? ')' '{' block '}' {$stmnt = For($iteratorChain.ic, condition, $block.blk) }
-	| 'while' '(' condition ')' '{' block '}' {$stmnt = While($condition.cnd, $block.blk) }
+	)? ')' '{' block '}' {$stmnt = SetlXFor($iteratorChain.ic, condition, $block.blk) }
+	| 'while' '(' condition ')' '{' block '}' {$stmnt = SetlXWhile($condition.cnd, $block.blk) }
 	| 'do' '{' block '}' 'while' '(' condition ')' ';' {$stmnt = DoWhile($condition.cnd, $block.blk) 
 		}
 	| 'try' '{' b1 = block '}' /*(
@@ -55,11 +53,11 @@ static = None
 	)? {$stmnt = Check($b1.blk, block)                         }
 	*/
 	| 'backtrack' ';' {$stmnt = Backtrack() }
-	| 'break' ';' {$stmnt = Break() }
-	| 'continue' ';' {$stmnt = Continue() }
+	| 'break' ';' {$stmnt = SetlXBreak() }
+	| 'continue' ';' {$stmnt = SetlXContinue() }
 	| 'exit' ';' {$stmnt = Exit() }
-	| 'return' (expr[False] {expression = $expr.ex })? ';' {$stmnt = Return(expression) }
-	| 'assert' '(' condition ',' expr[False] ')' ';' {$stmnt = Assert($condition.cnd, $expr.ex)}
+	| 'return' (expr[False] {expression = $expr.ex })? ';' {$stmnt = SetlXReturn(expression) }
+	| 'assert' '(' condition ',' expr[False] ')' ';' {$stmnt = SetlXAssert($condition.cnd, $expr.ex)}
 	| assignmentOther ';' {$stmnt = $assignmentOther.assign }
 	| assignmentDirect ';' {$stmnt = $assignmentDirect.assign }
 	| expr[False] ';' {$stmnt = $expr.ex};
@@ -78,10 +76,7 @@ assignmentOther
 assignmentDirect
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	variable ':=' procedure {
-$procedure.pd.name = $variable.v.id
-$assign = $procedure.pd
-    }
+	variable ':=' procedure[$variable.v.id] {$assign = $procedure.pd }
 	| assignable[False] ':=' (
 		assignmentDirect {$assign = Assignment($assignable.a, $assignmentDirect.assign) }
 		| exprContent[False] {$assign = Assignment($assignable.a, $exprContent.ex) }
@@ -132,10 +127,10 @@ lambdaParameters
 	@init {
 $paramList = []
     }:
-	variable {$paramList.append(Parameter($variable.v.id)) }
+	variable {$paramList.append(Parameter($variable.v.id, None, False)) }
 	| '[' (
-		v1 = variable {$paramList.append(Parameter($v1.v.id))} (
-			',' v2 = variable {$paramList.append(Parameter($v2.v.id))}
+		v1 = variable {$paramList.append(Parameter($v1.v.id, None, False))} (
+			',' v2 = variable {$paramList.append(Parameter($v2.v.id, None, False))}
 		)*
 	)? ']';
 
@@ -207,7 +202,7 @@ prefixOperation[enableIgnore]
 
 factor[enableIgnore]
 	returns[f]:
-	'!' factor[$enableIgnore] {$f = Not($factor.f) }
+	'!' factor[$enableIgnore] {$f = SetlXNot($factor.f) }
 	//| TERM '(' termArguments[$operators] ')' {operators.append(TermConstructor($TERM.text,
 	// $termArguments.args.size())) }
 	| 'forall' '(' iteratorChain[$enableIgnore] '|' condition ')' {$f = Forall($iteratorChain.ic,$condition.cnd)
@@ -216,24 +211,21 @@ factor[enableIgnore]
 		}
 	| (
 		'(' exprContent[$enableIgnore] ')' {$f = $exprContent.ex }
-		| procedure {$f = $procedure.pd }
+		| procedure[None] {$f = $procedure.pd }
 		| variable {$f = $variable.v }
 	) (
 		'.' variable {$f = MemberAccess($f,$variable.v) }
-		| call[$enableIgnore] {
-$call.c.callable = $f
-$f = $call.c
-        }
+		| call[$enableIgnore,$f] {$f = $call.c }
 	)* ('!' {$f = Factorial($f) })?
 	| value[$enableIgnore] {$f = $value.v } (
 		'!' {$f = Factorial($value.v) }
 	)?;
 
-procedure
+procedure[name]
 	returns[pd]:
-	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk) 
+	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk,$name,None) 
 		}
-	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) 
+	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk,$name) 
 		}
 	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk) 
 		};
@@ -261,21 +253,21 @@ $paramList = []
 procedureParameter[enableRw]
 	returns[param]:
 	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v.id) }
-	| variable {$param = Parameter($variable.v.id) };
+	| variable {$param = Parameter($variable.v.id, None, False) };
 
 procedureDefaultParameter
 	returns[param]:
-	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v.id, $expr.ex) };
+	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v.id, $expr.ex, False) };
 
 procedureListParameter
 	returns[param]:
 	'*' variable {$param = ListParameter($variable.v.id) };
 
-call[enableIgnore]
+call[enableIgnore,callable]
 	returns[c]:
-	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params) 
+	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params,$callable) 
 		}
-	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p)
+	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p,$callable)
 		};
 /* TODO | '{' expr[$enableIgnore] '}' {$c = CollectMap($expr.ex) };
  */
