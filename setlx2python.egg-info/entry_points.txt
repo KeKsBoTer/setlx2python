@@ -1,0 +1,3 @@
+[console_scripts]
+setlx2python = setlx2python.cli:main
+

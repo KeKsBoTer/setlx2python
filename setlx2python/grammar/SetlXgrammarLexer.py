@@ -1,4 +1,4 @@
-# Generated from SetlXgrammar.g4 by ANTLR 4.7.1
+# Generated from grammar/SetlXgrammar.g4 by ANTLR 4.7.1
 from antlr4 import *
 from io import StringIO
 from typing.io import TextIO

@@ -1,7 +1,7 @@
 grammar SetlXgrammar;
 
 @parser::header {
-from grammar.types import *
+from .types import *
 }
 
 block

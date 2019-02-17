@@ -2,3 +2,6 @@ antlr4-python3-runtime==4.7.2
 astor==0.7.1
 termcolor==1.1.0
 colorama==0.4.1
+docopt==0.6.2
+pytest==4.2.1
+parameterized==0.7.0

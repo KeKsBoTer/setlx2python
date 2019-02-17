@@ -1,11 +1,11 @@
-# Generated from SetlXgrammar.g4 by ANTLR 4.7.1
+# Generated from grammar/SetlXgrammar.g4 by ANTLR 4.7.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .SetlXgrammarParser import SetlXgrammarParser
 else:
     from SetlXgrammarParser import SetlXgrammarParser
 
-from grammar.types import *
+from .types import *
 
 
 # This class defines a complete listener for a parse tree produced by SetlXgrammarParser.

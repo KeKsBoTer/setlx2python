@@ -1,6 +1,6 @@
 import ast
-import utils
-from grammar.types import *
+from .utils import *
+from .grammar.types import *
 
 
 class ImportList:
@@ -100,7 +100,7 @@ class Transpiler:
         return ast.arg(arg=id, annotation=None)
 
     def exit(self):
-        return utils.call_function("exit", [])
+        return call_function("exit", [])
 
     def differenceassignment(self, assignable, right_hand_side):
         [target, rhs] = self.to_python([assignable, right_hand_side])
@@ -157,7 +157,7 @@ class Transpiler:
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        return utils.call_function("any", [expr])
+        return call_function("any", [expr])
 
     def switch(self, case_list, default_branch):
         if len(case_list) == 0:
@@ -178,7 +178,7 @@ class Transpiler:
 
     def prefixoperator(self, expr, py_target_type):
         expr = self.to_python(expr)
-        return utils.call_function(py_target_type, [expr])
+        return call_function(py_target_type, [expr])
 
     def trycatch(self, block, try_list):
         block = self.to_python(block)
@@ -187,7 +187,7 @@ class Transpiler:
             return block
         if trys == 1 and isinstance(try_list[0], TryCatchBranch):
             catch = try_list[0]
-            error = utils.unpack_error(self.state, catch.variable.id)
+            error = unpack_error(self.state, catch.variable.id)
             except_block = [error] + self.to_python(catch.block)
             ex = ast.ExceptHandler(
                 type=ast.Name(id="Exception"),
@@ -209,7 +209,7 @@ class Transpiler:
         stlx_params = params
 
         if decorator == None:
-            decorator = utils.setlx_access(self.state, "procedure")
+            decorator = setlx_access(self.state, "procedure")
 
         params = []
         defaults = []  # default values for parameters
@@ -249,10 +249,10 @@ class Transpiler:
 
     def productofmembers(self, expr):
         expr = self.to_python(expr)
-        return utils.setlx_function(self.state, "product", [expr])
+        return setlx_function(self.state, "product", [expr])
 
     def setlxtrue(self):
-        return utils.bool_true()
+        return bool_true()
 
     def assignablelist(self, assignables):
         assignables = [self.to_python(a) for a in assignables]
@@ -273,13 +273,13 @@ class Transpiler:
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
         if isinstance(callable,Variable) and callable.id == "throw":
-            return utils.setlx_function(self.state,"throw",params)
+            return setlx_function(self.state,"throw",params)
         expr = self.to_python(callable)
         return ast.Call(expr, params, [])
 
     def factorial(self, expr):
         expr = self.to_python(expr)
-        return utils.call_function("factorial", [expr])
+        return call_function("factorial", [expr])
 
     def setlxnot(self, expr):
         expr = self.to_python(expr)
@@ -290,13 +290,13 @@ class Transpiler:
         return ast.AugAssign(target=target, op=ast.Mult(), value=rhs)
 
     def cachedprocedure(self, params, block, name):
-        decorator = utils.setlx_access(self.state, "cached_procedure")
+        decorator = setlx_access(self.state, "cached_procedure")
         return self.to_python(Procedure(params, block, name, decorator))
 
     def booleanequal(self, left, right):
         [left_cond, right_cond] = self.to_python([left, right])
-        left = utils.call_function("bool", [left_cond])
-        right = utils.call_function("bool", [right_cond])
+        left = call_function("bool", [left_cond])
+        right = call_function("bool", [right_cond])
         return ast.Compare(left=left, ops=[ast.Eq()], comparators=[right])
 
     def trycatchbranch(self, variable, block):
@@ -307,7 +307,7 @@ class Transpiler:
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        return utils.call_function("all", [expr])
+        return call_function("all", [expr])
 
     def notequal(self, left, right):
         left = self.to_python(left)
@@ -321,11 +321,11 @@ class Transpiler:
     def setlistconstructor(self, collection):
         # TODO use own sets
         if collection == None:
-            return utils.call_function("set", [])
+            return call_function("set", [])
         else:
             py_collection = self.to_python(collection)
             if isinstance(collection, Range):
-                return utils.call_function("set", [py_collection.args[0]])
+                return call_function("set", [py_collection.args[0]])
             elif isinstance(collection, SetlIteration):
                 return ast.SetComp(elt=py_collection.elt, generators=py_collection.generators)
             else:
@@ -337,7 +337,7 @@ class Transpiler:
         return ast.Compare(left=left, ops=[operator], comparators=[right])
 
     def setlxfalse(self):
-        return utils.bool_false()
+        return bool_false()
 
     def minus(self, expr):
         expr = self.to_python(expr)
@@ -349,7 +349,7 @@ class Transpiler:
         negate = ast.UnaryOp(op=ast.Not(), operand=condition)
         if_break = ast.If(test=negate, body=break_block, orelse=[])
         block.append(if_break)
-        return ast.While(test=utils.bool_true(), body=block, orelse=[])
+        return ast.While(test=bool_true(), body=block, orelse=[])
 
     def quotientassignment(self, assignable, right_hand_side):
         [target, rhs] = self.to_python([assignable, right_hand_side])
@@ -360,7 +360,7 @@ class Transpiler:
 
     def setlxfunction(self, expr, py_target_type):
         expr = self.to_python(expr)
-        return utils.setlx_function(self.state, py_target_type, [expr])
+        return setlx_function(self.state, py_target_type, [expr])
 
     def modulo(self, left, right):
         [left, right] = self.to_python([left, right])
@@ -385,14 +385,14 @@ class Transpiler:
 
     def sumofmembersbinary(self, left, right):
         expr = self.to_python(right)
-        return utils.setlx_function(self.state, "sum", [expr])
+        return setlx_function(self.state, "sum", [expr])
 
     def condition(self, expression):
         return self.to_python(expression)
 
     def cartesianproduct(self, left, right):
         params = self.to_python([left, right])
-        return utils.setlx_function(self.state, "cartesian_product", params)
+        return setlx_function(self.state, "cartesian_product", params)
 
     def setlxlist(self, expr):
         if expr != None:
@@ -418,7 +418,7 @@ class Transpiler:
 
     def sumofmembers(self, expr):
         expr = self.to_python(expr)
-        return utils.setlx_function(self.state, "sum", [expr])
+        return setlx_function(self.state, "sum", [expr])
 
     def moduloassignment(self, assignable, right_hand_side):
         [target, rhs] = self.to_python([assignable, right_hand_side])
@@ -426,7 +426,7 @@ class Transpiler:
 
     def cardinality(self, expr):
         expr = self.to_python(expr)
-        return utils.call_function("len", [expr])
+        return call_function("len", [expr])
 
     def assignment(self, assignable, right_hand_side):
         [left, right] = self.to_python([assignable, right_hand_side])
@@ -444,7 +444,7 @@ class Transpiler:
 
     def productofmembersbinary(self, left, right):
         expr = self.to_python(right)
-        return utils.setlx_function(self.state, "product", [expr])
+        return setlx_function(self.state, "product", [expr])
 
     def listparameter(self, id):
         raise "not reachable"
@@ -460,8 +460,8 @@ class Transpiler:
                 step), op=ast.Sub(), right=start)
             range_params.append(step)
 
-        range_call = utils.call_function("range", range_params)
-        return utils.call_function("list", [range_call])
+        range_call = call_function("range", range_params)
+        return call_function("list", [range_call])
 
     def sum(self, left, right):
         [left, right] = self.to_python([left, right])
@@ -525,8 +525,8 @@ class Transpiler:
         params = self.to_python(params)
         self_arg = ast.arg(arg='self', annotation=None)
         static = self.to_python(static_block)
-        utils.make_funcs_static(static)
-        func_decorator = utils.setlx_access(self.state, "procedure")
+        make_funcs_static(static)
+        func_decorator = setlx_access(self.state, "procedure")
 
         init = ast.FunctionDef(name='__init__',
                                args=ast.arguments(
@@ -564,8 +564,8 @@ class Transpiler:
 
     def booleannotequal(self, left, right):
         [left_cond, right_cond] = self.to_python([left, right])
-        left = utils.call_function("bool", [left_cond])
-        right = utils.call_function("bool", [right_cond])
+        left = call_function("bool", [left_cond])
+        right = call_function("bool", [right_cond])
         return ast.Compare(left=left, ops=[ast.NotEq()], comparators=[right])
 
     def listrange(self, start, end):
@@ -616,7 +616,7 @@ class Transpiler:
         assignable = ast.List(elts=assignables)
 
         exprs = [self.to_python(e.expression) for e in iter_chain]
-        list_product = utils.setlx_function(
+        list_product = setlx_function(
             self.state, "cartesian_product", exprs)
 
         return [assignable, list_product]
