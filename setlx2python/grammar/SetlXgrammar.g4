@@ -59,7 +59,7 @@ static = None
 	| 'return' (expr[False] {expression = $expr.ex })? ';' {$stmnt = SetlXReturn(expression) }
 	| 'assert' '(' condition ',' expr[False] ')' ';' {$stmnt = SetlXAssert($condition.cnd, $expr.ex)}
 	| assignmentOther ';' {$stmnt = $assignmentOther.assign }
-	| assignmentDirect ';' {$stmnt = $assignmentDirect.assign }
+	| assignment ';' {$stmnt = $assignment.assign }
 	| expr[False] ';' {$stmnt = $expr.ex};
 
 assignmentOther
@@ -73,13 +73,17 @@ assignmentOther
 		| '%=' e = expr[False] {$assign = ModuloAssignment($assignable.a, $e.ex) }
 	);
 
-assignmentDirect
+assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
 	variable ':=' procedure[$variable.v.id] {$assign = $procedure.pd }
-	| assignable[False] ':=' (
-		assignmentDirect {$assign = Assignment($assignable.a, $assignmentDirect.assign) }
-		| exprContent[False] {$assign = Assignment($assignable.a, $exprContent.ex) }
+	| assignmentDirect {$assign = $assignmentDirect.assign };
+
+assignmentDirect
+	returns[assign]:
+	assignable[False] ':=' (
+		assignmentDirect {$assign = Assignment([$assignable.a]+$assignmentDirect.assign.assignables, $assignmentDirect.assign.right_hand_side) }
+		| exprContent[False] {$assign = Assignment([$assignable.a], $exprContent.ex) }
 	);
 
 assignable[enableIgnore]
@@ -161,7 +165,7 @@ comparison[enableIgnore]
 		| '<=' s2 = setlxSum[$enableIgnore] {$c = LessOrEqual($s1.s,$s2.s) }
 		| '>' s2 = setlxSum[$enableIgnore] {$c = GreaterThan($s1.s,$s2.s) }
 		| '>=' s2 = setlxSum[$enableIgnore] {$c = GreaterOrEqual($s1.s,$s2.s) }
-		| 'in' s2 = setlxSum[$enableIgnore] {$c = In($s1.s,$s2.s) }
+		| 'in' s2 = setlxSum[$enableIgnore] {$c = SetlXIn($s1.s,$s2.s) }
 		| 'notin' s2 = setlxSum[$enableIgnore] {$c = NotIn($s1.s,$s2.s) }
 	)?;
 
@@ -267,10 +271,8 @@ call[enableIgnore,callable]
 	returns[c]:
 	'(' callParameters[$enableIgnore] ')' {$c = FunctionCall($callParameters.params,$callable) 
 		}
-	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p,$callable)
-		};
-/* TODO | '{' expr[$enableIgnore] '}' {$c = CollectMap($expr.ex) };
- */
+	| '[' collectionAccessParams[$enableIgnore] ']' {$c = CollectionAccess($collectionAccessParams.p,$callable) }
+    | '{' expr[$enableIgnore] '}' {$c = CollectMap($expr.ex,$callable) }; 
 
 collectionAccessParams[enableIgnore]
 	returns[p]
@@ -358,7 +360,7 @@ iterator[enableIgnore]
 atomicValue
 	returns[Value av]:
 	NUMBER {$av = SetlXFraction($NUMBER.text) }
-	| DOUBLE {$av = float($DOUBLE.text) }
+	| DOUBLE {$av = SetlXDouble($DOUBLE.text) }
 	| 'om' {$av = SetlXOm() }
 	| 'true' {$av = SetlXTrue() }
 	| 'false' {$av = SetlXFalse() };

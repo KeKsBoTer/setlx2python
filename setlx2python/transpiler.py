@@ -38,6 +38,8 @@ class Transpiler:
         return imports + body
 
     def to_python(self, node):
+        if node == None:
+            return None
         if not isinstance(node, list):
             name = node.__class__.__name__.lower()
             return getattr(self, name)(*list(node))
@@ -121,6 +123,10 @@ class Transpiler:
         [target, rhs] = self.to_python([assignable, right_hand_side])
         return ast.AugAssign(target=target, op=operator, value=rhs)
 
+    def assignablemember(self, assignable, right_hand_side):
+        [target, rhs] = self.to_python([assignable, right_hand_side])
+        return ast.Attribute(value=target, attr=rhs)
+
     def equal(self, left, right):
         left = self.to_python(left)
         right = self.to_python(right)
@@ -130,10 +136,10 @@ class Transpiler:
         [condition, block] = self.to_python([condition, block])
 
         orelse = []
-        
+
         for e in else_list[::-1]:
             if isinstance(e, IfThenBranch):
-                if isinstance(orelse,list):
+                if isinstance(orelse, list):
                     e.orelse.append(orelse[0])
                 else:
                     e.orelse.append(orelse)
@@ -254,6 +260,9 @@ class Transpiler:
     def setlxtrue(self):
         return bool_true()
 
+    def setlxdouble(self, value):
+        return ast.Num(n=float(value))
+
     def assignablelist(self, assignables):
         assignables = [self.to_python(a) for a in assignables]
         return ast.List(elts=assignables)
@@ -272,8 +281,8 @@ class Transpiler:
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
-        if isinstance(callable,Variable) and callable.id == "throw":
-            return setlx_function(self.state,"throw",params)
+        if isinstance(callable, Variable) and callable.id == "throw":
+            return setlx_function(self.state, "throw", params)
         expr = self.to_python(callable)
         return ast.Call(expr, params, [])
 
@@ -428,12 +437,12 @@ class Transpiler:
         expr = self.to_python(expr)
         return call_function("len", [expr])
 
-    def assignment(self, assignable, right_hand_side):
-        [left, right] = self.to_python([assignable, right_hand_side])
-        # return (py_target_type)(left, right)
+    def assignment(self, assignables, right_hand_side):
+        left = self.to_python(assignables)
+        right = self.to_python(right_hand_side)
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
             right = right.value  # TODO fix this workaround. see tests/procedure
-        return ast.Assign(targets=[left], value=right)
+        return ast.Assign(targets=left, value=right)
 
     def setlxfraction(self, number):
         num = int(number)
@@ -466,6 +475,10 @@ class Transpiler:
     def sum(self, left, right):
         [left, right] = self.to_python([left, right])
         return ast.BinOp(left, ast.Add(), right)
+
+    def power(self, base, exponent):
+        [base, exponent] = self.to_python([base, exponent])
+        return ast.BinOp(left=base, op=ast.Pow(), right=exponent)
 
     def ifthenbranch(self, condition, block, orelse):
         [condition, block] = self.to_python([condition, block])
@@ -505,11 +518,19 @@ class Transpiler:
         right = self.to_python(right)
         return ast.Compare(left=left, ops=[ast.GtE()], comparators=[right])
 
+    def setlxin(self, left, right):
+        left = self.to_python(left)
+        right = self.to_python(right)
+        return ast.Compare(left=left, ops=[ast.In()], comparators=[right])
+
     def classconstructor(self, id, params, block, static_block):
         body = self.to_python(block)
         for s in body:
-            if isinstance(s, ast.Assign) and isinstance(s.targets[0],ast.Name):
-                s.targets[0] = ast.Attribute(value=ast.Name(id='self'), attr=s.targets[0])
+            if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
+                if isinstance(s.targets[0], ast.Name):
+                    s.targets[0] = s.targets[0].id
+                s.targets[0] = ast.Attribute(
+                    value=ast.Name(id='self'), attr=s.targets[0])
 
         for i, s in enumerate(body):
             if isinstance(s, ast.FunctionDef):
@@ -528,22 +549,26 @@ class Transpiler:
         make_funcs_static(static)
         func_decorator = setlx_access(self.state, "procedure")
 
-        init = ast.FunctionDef(name='__init__',
-                               args=ast.arguments(
-                                   args=[self_arg]+params,
-                                   vararg=None,
-                                   kwonlyargs=[],
-                                   kw_defaults=[],
-                                   kwarg=None,
-                                   defaults=[]),
-                               body=body,
-                               decorator_list=[func_decorator],
-                               returns=None)
+        if len(body) > 0:
+            init = [ast.FunctionDef(name='__init__',
+                                    args=ast.arguments(
+                                        args=[self_arg]+params,
+                                        vararg=None,
+                                        kwonlyargs=[],
+                                        kw_defaults=[],
+                                        kwarg=None,
+                                        defaults=[]),
+                                    body=body,
+                                    decorator_list=[func_decorator],
+                                    returns=None)]
+        else:
+            init = []
+
         return ast.ClassDef(
             name=id,
             bases=[],
             keywords=[],
-            body=static+[init],
+            body=static+init,
             decorator_list=[]
         )
 
@@ -559,8 +584,13 @@ class Transpiler:
         if isinstance(params, ListRange):  # TODO maby more elegant solution?
             return ast.Subscript(value=callable, slice=py_params)
         else:
-            index = ast.Index(value=ast.BinOp(py_params, ast.Sub(), ast.Num(n=1)))
+            index = ast.Index(value=ast.BinOp(
+                py_params, ast.Sub(), ast.Num(n=1)))
             return ast.Subscript(value=callable, slice=index)
+
+    def collectmap(self, expr, callable):
+        access = self.to_python(CollectionAccess(expr, callable))
+        return setlx_function(self.state, "map", [access])
 
     def booleannotequal(self, left, right):
         [left_cond, right_cond] = self.to_python([left, right])
@@ -578,7 +608,12 @@ class Transpiler:
     def memberaccess(self, parent, child):
         parent = self.to_python(parent)
         child = self.to_python(child)
+        if isinstance(child, ast.Name):
+            child = child.id
         return ast.Attribute(value=parent, attr=child)
+
+    def assignableignore(self):
+        return ast.Name(id="_")
 
     def assignablecollectionaccess(self, assignable, exprs):
         if len(exprs) > 1:

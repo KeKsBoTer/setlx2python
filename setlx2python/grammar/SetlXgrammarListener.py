@@ -38,6 +38,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#assignment.
+    def enterAssignment(self, ctx:SetlXgrammarParser.AssignmentContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#assignment.
+    def exitAssignment(self, ctx:SetlXgrammarParser.AssignmentContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#assignmentDirect.
     def enterAssignmentDirect(self, ctx:SetlXgrammarParser.AssignmentDirectContext):
         pass

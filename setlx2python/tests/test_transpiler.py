@@ -51,15 +51,15 @@ def gen_code(setlx_file, py_file):
     py_ast = astor.dump_tree(py_tree)
 
     if gen_ast != py_ast:
-        warnings.warn(
-            f"generated ast from {os.path.basename(setlx_file)} does not match py file ({os.path.basename(py_file)})")
+        warnings.warn(Warning(
+            f"generated ast from {os.path.basename(setlx_file)} does not match py file ({os.path.basename(py_file)})"))
     code = None
     try:
         code = astor.to_source(gen_tree)
     except Exception as e:
         TestCase.fail(
             f"ERROR: invalid generated ast for {setlx_file}:{str(e)}")
-    return code
+    return (code, gen_ast, py_ast)
 
 
 def no_print(*objects, sep=' ', end='\n', file=stdout,
@@ -72,7 +72,10 @@ def no_exit(): pass  # do not exit
 @pytest.mark.parametrize('files', loadTestSnippets("snippets"))
 def test_snippet(files):
     TestCase.maxDiff = 5000
-    code = gen_code(files[0], files[1])
+
+    with warnings.catch_warnings(record=True) as w:
+        (code, ast_setlx, ast_py) = gen_code(files[0], files[1])
+        TestCase.assertEqual(TestCase(),ast_setlx, ast_py)
 
     try:
         exec(code, {"print": no_print, "exit": no_exit})

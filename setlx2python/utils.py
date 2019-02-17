@@ -37,4 +37,5 @@ def unpack_error(state, target):
 def make_funcs_static(block):
     for stmnt in block:
         if isinstance(stmnt, ast.FunctionDef):
-            stmnt.decorator_list = ["staticmethod"] + stmnt.decorator_list
+            stmnt.decorator_list = [
+                ast.Name(id="staticmethod")] + stmnt.decorator_list
