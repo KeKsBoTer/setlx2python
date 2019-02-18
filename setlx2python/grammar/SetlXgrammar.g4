@@ -19,6 +19,7 @@ tryList = []
 expression = None
 condition = None
 static = None
+block = None
     }:
 	'class' ID '(' procedureParameters[True] ')' '{' b1 = block (
 		'static' '{' b2 = block '}' {static = $b2.blk}

@@ -26,11 +26,11 @@ from astor import to_source, string_repr
 from antlr4 import FileStream, CommonTokenStream
 from antlr4.error.ErrorListener import ErrorListener
 
-from .grammar.SetlXgrammarParser import SetlXgrammarParser
-from .grammar.SetlXgrammarLexer import SetlXgrammarLexer
-from .grammar.SetlXgrammarListener import SetlXgrammarListener
+from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
+from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
+from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
 
-from .transpiler import Transpiler, NotSupported
+from setlx2python.transpiler import Transpiler, NotSupported
 from . import __version__ as VERSION
 
 
@@ -44,7 +44,7 @@ class ParserErrorListener(ErrorListener):
 
 
 def transpile(file):
-    input = FileStream(file)
+    input = FileStream(file, encoding="utf-8")
     lexer = SetlXgrammarLexer(input)
     stream = CommonTokenStream(lexer)
     parser = SetlXgrammarParser(stream)

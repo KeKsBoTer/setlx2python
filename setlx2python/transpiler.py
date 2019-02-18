@@ -57,7 +57,7 @@ class Transpiler:
 
     def assignablecollectionaccess(self, assignable, exprs):
         if len(exprs) > 1:
-            raise Exception("only one collection access is allowed")
+            raise NotSupported("only one collection access is supported")
         [assignable, expr] = self.to_python([assignable, exprs[0]])
         index = ast.Index(value=ast.BinOp(
             left=expr, op=ast.Sub(), right=ast.Num(n=1)))
@@ -172,7 +172,11 @@ class Transpiler:
         params = self.to_python(params)
         self_arg = ast.arg(arg='self', annotation=None)
         static = self.to_python(static_block)
-        make_funcs_static(static)
+        if static != None:
+            make_funcs_static(static)
+        else:
+            static = []
+
         func_decorator = setlx_access(self.state, "procedure")
 
         if len(body) > 0:
@@ -198,7 +202,7 @@ class Transpiler:
             decorator_list=[]
         )
 
-    def closure(self,params,block):
+    def closure(self, params, block):
         raise NotSupported("closures are not supported")
 
     def collectionaccess(self, params, callable):
@@ -268,7 +272,7 @@ class Transpiler:
     def explicitlist(self, exprs):
         return ast.List(elts=[self.to_python(e) for e in exprs])
 
-    def explicitlistwithrest(self,exprs,rest):
+    def explicitlistwithrest(self, exprs, rest):
         raise NotSupported("explicit list with rest is not supported")
 
     def factorial(self, expr):
@@ -304,7 +308,8 @@ class Transpiler:
         for e in else_list[::-1]:
             if isinstance(e, IfThenBranch):
                 if isinstance(orelse, list):
-                    e.orelse.append(orelse[0])
+                    if len(orelse) > 0:
+                        e.orelse.append(orelse[0])
                 else:
                     e.orelse.append(orelse)
                 orelse = [e]
@@ -317,8 +322,13 @@ class Transpiler:
 
     def ifthenbranch(self, condition, block, orelse):
         [condition, block] = self.to_python([condition, block])
-        else_list = self.to_python(orelse[0]) if isinstance(orelse[0], Block) else [
-            self.to_python(e) for e in orelse]
+        if len(orelse)>0:
+            if isinstance(orelse[0], Block):
+                else_list = self.to_python(orelse[0])
+            else:
+                else_list = [self.to_python(e) for e in orelse]
+        else:
+            else_list = []
 
         return ast.If(test=condition, body=block, orelse=else_list)
 

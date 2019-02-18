@@ -896,6 +896,7 @@ class SetlXgrammarParser ( Parser ):
         expression = None
         condition = None
         static = None
+        block = None
             
         self._la = 0 # Token type
         try:
