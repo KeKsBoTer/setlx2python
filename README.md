@@ -42,3 +42,4 @@ Usage:
 - scan
 - terms
 - term matching
+- variables / statements in strings
