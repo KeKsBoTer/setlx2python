@@ -1,5 +1,19 @@
 # setlx2python - Convert setlx code to python
 
+## Installation
+```
+pip install git+https://github.com/KeKsBoTer/setlx2python.git
+```
+
+## How to use
+```
+$ setlx2python
+Usage:
+  setlx2python <file>
+  setlx2python -h | --help
+  setlx2python --version
+```
+
 # Missing features 
 - [ ] lambdas
 - [x] sets
