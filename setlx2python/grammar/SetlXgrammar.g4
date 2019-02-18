@@ -31,27 +31,24 @@ static = None
 	| 'switch' '{' (
 		'case' c1 = condition ':' b1 = block {caseList.append(($c1.cnd, $b1.blk)) }
 	)* ('default' ':' b2 = block)? '}' {$stmnt = Switch(caseList,$b2.blk) }
-	//| match 
-	//| scan 
+	| setlxmatch {$stmnt = $setlxmatch.m}
+	| scan {$stmnt = $scan.s}
 	| 'for' '(' iteratorChain[False] (
 		'|' condition {condition = $condition.cnd}
 	)? ')' '{' block '}' {$stmnt = SetlXFor($iteratorChain.ic, condition, $block.blk) }
 	| 'while' '(' condition ')' '{' block '}' {$stmnt = SetlXWhile($condition.cnd, $block.blk) }
 	| 'do' '{' block '}' 'while' '(' condition ')' ';' {$stmnt = DoWhile($condition.cnd, $block.blk) 
 		}
-	| 'try' '{' b1 = block '}' /*(
-		'catchLng' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchLngBranch($v1.v, $b2.blk))         
-			}
-		| 'catchUsr' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchUsrBranch($v1.v, $b2.blk))         
-			}
-	)**/ (
-		'catch' '(' v2 = assignableVariable ')' '{' b3 = block '}' {tryList.append(TryCatchBranch($v2.v, $b3.blk))         
-			}
+	| 'try' '{' b1 = block '}'(
+		'catchLng' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchLngBranch($v1.v, $b2.blk))}
+		'catchUsr' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchUsrBranch($v1.v, $b2.blk))}
+	)*
+	(
+		'catch' '(' v2 = assignableVariable ')' '{' b3 = block '}' {tryList.append(TryCatchBranch($v2.v, $b3.blk)) }
 	)? {$stmnt = TryCatch($b1.blk, tryList) }
-	/*| 'check' '{' b1 = block '}' (
+	|'check' '{' b1 = block '}' (
 		'afterBacktrack' '{' b2 = block {block = $b2.blk} '}'
-	)? {$stmnt = Check($b1.blk, block)                         }
-	*/
+	)? {$stmnt = Check($b1.blk, block) }
 	| 'backtrack' ';' {$stmnt = Backtrack() }
 	| 'break' ';' {$stmnt = SetlXBreak() }
 	| 'continue' ';' {$stmnt = SetlXContinue() }
@@ -71,7 +68,38 @@ assignmentOther
 		| '/=' e = expr[False] {$assign = QuotientAssignment($assignable.a, $e.ex) }
 		| '\\=' e = expr[False] {$assign = IntegerDivisionAssignment($assignable.a, $e.ex) }
 		| '%=' e = expr[False] {$assign = ModuloAssignment($assignable.a, $e.ex) }
-	);
+
+);
+
+// Not supported
+setlxmatch
+	returns[m]:
+	'match' '(' expr[False] ')' '{' (
+		'case' exprList[True] (
+			'|' c1 = condition
+		)? ':' b1 = block 
+		| regexBranch
+	)+ (
+		'default' ':' b4 = block {}
+	)? '}' {$m = Match()};
+
+
+// Not supported
+scan
+	returns[s]:
+	'scan' '(' expr[False] ')' (
+		'using' assignableVariable
+	)? '{' (regexBranch)+ (
+		'default' ':' block
+	)? '}' {$s = Scan()};
+
+// Not supported
+regexBranch
+	returns[rb]:
+	'regex' expr[False] (
+		'as' expr[True] 
+	)? ('|' condition)? ':' block;
+
 
 assignment
 	returns[assign]:
@@ -122,8 +150,8 @@ exprContent[enableIgnore]
 lambdaProcedure
 	returns[lp]:
 	lambdaParameters (
-		// TODO '|->' expr[False] {$lp = LambdaProcedure($lambdaParameters.paramList, $expr.ex) }
-		/* |*/ '|=>' expr[False] {$lp = LambdaClosure($lambdaParameters.paramList, $expr.ex)   }
+		'|->' expr[False] {$lp = LambdaProcedure($lambdaParameters.paramList, $expr.ex)}
+		| '|=>' expr[False] {$lp = LambdaClosure($lambdaParameters.paramList, $expr.ex)}
 	);
 
 lambdaParameters
@@ -207,8 +235,7 @@ prefixOperation[enableIgnore]
 factor[enableIgnore]
 	returns[f]:
 	'!' factor[$enableIgnore] {$f = SetlXNot($factor.f) }
-	//| TERM '(' termArguments[$operators] ')' {operators.append(TermConstructor($TERM.text,
-	// $termArguments.args.size())) }
+	| TERM '(' termArguments ')' {$f = Term()}
 	| 'forall' '(' iteratorChain[$enableIgnore] '|' condition ')' {$f = Forall($iteratorChain.ic,$condition.cnd)
 		}
 	| 'exists' '(' iteratorChain[$enableIgnore] '|' condition ')' {$f = Exists($iteratorChain.ic,$condition.cnd)
@@ -224,6 +251,11 @@ factor[enableIgnore]
 	| value[$enableIgnore] {$f = $value.v } (
 		'!' {$f = Factorial($value.v) }
 	)?;
+
+termArguments
+	returns[args]:
+	exprList[True]
+	| /* epsilon */;
 
 procedure[name]
 	returns[pd]:
@@ -313,8 +345,8 @@ cb = None
 	)? '}' {$v = SetListConstructor(cb) }
 	| STRING {$v = SetlXString($STRING.text) }
 	| LITERAL {$v = SetlXLiteral($LITERAL.text) }
-	// TODO | matrix {$v = new ValueOperator($matrix.m); }
-	// TODO | vector {$v = new ValueOperator($vector.v); }
+	| matrix {$v = $matrix.m}
+	| vector {$v = $vector.v}
 	| atomicValue {$v = $atomicValue.av }
 	| {$enableIgnore}? '_' {$v = VariableIgnore() };
 
@@ -357,6 +389,25 @@ iterator[enableIgnore]
 	returns[iter]:
 	assignable[True] 'in' expr[$enableIgnore] {$iter = SetlIterator($assignable.a, $expr.ex) };
 
+matrix
+	returns[m]
+	@init {vectors = []}:
+	'<<' (vector {vectors.append($vector.v)})+ '>>' {$m = SetlMatrix(vectors)};
+
+vector
+	returns[v]
+	@init {
+doubles  = []
+negative = ""
+dbl      = 0.0
+    }:
+	'<<' (
+		('-' {negative = "-" } | /* epsilon */ {negative = ""  }) (
+			n1 = NUMBER {dbl = SetlXFraction(negative + $n1.text)     }
+			| DOUBLE {dbl = SetlXDouble(negative + $DOUBLE.text) }
+		) ('/' n2 = NUMBER {dbl /= SetlXFraction(negative + $n2.text) })? {doubles.append(dbl) }
+	)+ '>>' {$v = SetlVector(doubles) };
+
 atomicValue
 	returns[Value av]:
 	NUMBER {$av = SetlXFraction($NUMBER.text) }
@@ -387,7 +438,8 @@ ID: ('a' .. 'z' | 'A' .. 'Z') (
 		| '_'
 		| '0' .. '9'
 	)*;
-// TERM: ('@' | '@@@') ID;
+// not supported
+TERM: ('@' | '@@@') ID;
 NUMBER: '0' | ('1' .. '9') ('0' .. '9')*;
 DOUBLE:
 	NUMBER? '.' ('0' .. '9')+ (

@@ -38,6 +38,33 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#setlxmatch.
+    def enterSetlxmatch(self, ctx:SetlXgrammarParser.SetlxmatchContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#setlxmatch.
+    def exitSetlxmatch(self, ctx:SetlXgrammarParser.SetlxmatchContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#scan.
+    def enterScan(self, ctx:SetlXgrammarParser.ScanContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#scan.
+    def exitScan(self, ctx:SetlXgrammarParser.ScanContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#regexBranch.
+    def enterRegexBranch(self, ctx:SetlXgrammarParser.RegexBranchContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#regexBranch.
+    def exitRegexBranch(self, ctx:SetlXgrammarParser.RegexBranchContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#assignment.
     def enterAssignment(self, ctx:SetlXgrammarParser.AssignmentContext):
         pass
@@ -200,6 +227,15 @@ class SetlXgrammarListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SetlXgrammarParser#termArguments.
+    def enterTermArguments(self, ctx:SetlXgrammarParser.TermArgumentsContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#termArguments.
+    def exitTermArguments(self, ctx:SetlXgrammarParser.TermArgumentsContext):
+        pass
+
+
     # Enter a parse tree produced by SetlXgrammarParser#procedure.
     def enterProcedure(self, ctx:SetlXgrammarParser.ProcedureContext):
         pass
@@ -305,6 +341,24 @@ class SetlXgrammarListener(ParseTreeListener):
 
     # Exit a parse tree produced by SetlXgrammarParser#iterator.
     def exitIterator(self, ctx:SetlXgrammarParser.IteratorContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#matrix.
+    def enterMatrix(self, ctx:SetlXgrammarParser.MatrixContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#matrix.
+    def exitMatrix(self, ctx:SetlXgrammarParser.MatrixContext):
+        pass
+
+
+    # Enter a parse tree produced by SetlXgrammarParser#vector.
+    def enterVector(self, ctx:SetlXgrammarParser.VectorContext):
+        pass
+
+    # Exit a parse tree produced by SetlXgrammarParser#vector.
+    def exitVector(self, ctx:SetlXgrammarParser.VectorContext):
         pass
 
 

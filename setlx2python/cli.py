@@ -21,7 +21,7 @@ Help:
 import ast
 import sys
 from docopt import docopt
-from astor import to_source
+from astor import to_source, string_repr
 
 from antlr4 import FileStream, CommonTokenStream
 from antlr4.error.ErrorListener import ErrorListener
@@ -30,8 +30,7 @@ from .grammar.SetlXgrammarParser import SetlXgrammarParser
 from .grammar.SetlXgrammarLexer import SetlXgrammarLexer
 from .grammar.SetlXgrammarListener import SetlXgrammarListener
 
-from .transpiler import Transpiler
-
+from .transpiler import Transpiler, NotSupported
 from . import __version__ as VERSION
 
 
@@ -52,12 +51,23 @@ def transpile(file):
     parser._listeners = [ParserErrorListener()]
     tree = parser.block()
     t = Transpiler(tree.blk)
-    body = t.transpile()
+    try:
+        body = t.transpile()
+    except NotSupported as e:
+        print(e)
+        sys.exit(2)
     code = ast.Module(body=body)
     return code
+
+
+def pretty_source(source):
+    """ Prettify the source.
+    """
+    # TODO we should split somewhere
+    return ''.join((source))
 
 
 def main():
     options = docopt(__doc__, version=VERSION)
     ast_tree = transpile(options["<file>"])
-    print(to_source(ast_tree))
+    print(to_source(ast_tree, pretty_source=pretty_source))

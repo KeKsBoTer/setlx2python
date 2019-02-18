@@ -1,18 +1,12 @@
 
 from unittest import TestCase
-from parameterized import parameterized
 from sys import argv, stdout
 import os
-import subprocess
 import ast
 import sys
 import astor
-import difflib
-import colorama
-import traceback
 import pytest
 from setlx2python.cli import transpile
-from termcolor import cprint
 import warnings
 
 

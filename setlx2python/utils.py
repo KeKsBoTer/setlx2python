@@ -13,11 +13,6 @@ def bool_false():
     return ast.NameConstant(value=False)
 
 
-def deep_copy_param(param, state):
-    call = setlx_function(state, "deepcopy", [param])
-    return ast.Assign([param], call)
-
-
 def setlx_access(state, name):
     state.imports.add("setlx")
     return ast.Attribute(value=ast.Name(id="setlx"), attr=name)
