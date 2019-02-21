@@ -55,10 +55,34 @@ class Transpiler:
                 py_nodes.append(getattr(self, name)(*list(n)))
             return py_nodes
 
+    def _prefix_operator(self, operation, expr):
+        expr = self.to_python(expr)
+        return setlx_function(self.state, operation, [expr])
+
+    def _binop(self, left, operator, right):
+        [left, right] = self.to_python([left, right])
+        return ast.BinOp(left, operator, right)
+
+    def _compare(self, left, operator, right):
+        left = self.to_python(left)
+        right = self.to_python(right)
+        return ast.Compare(left=left, ops=[operator], comparators=[right])
+
+    def _boolop(self, left, operator, right):
+        left = self.to_python(left)
+        right = self.to_python(right)
+        return ast.BoolOp(op=operator, values=[left, right])
+
+    def _augassign(self, assignable, operator, right_hand_side):
+        [target, rhs] = self.to_python([assignable, right_hand_side])
+        return ast.AugAssign(target=target, op=operator, value=rhs)
+
     def assignablecollectionaccess(self, assignable, exprs):
+        assignable = self.to_python(assignable)
         if len(exprs) > 1:
-            raise NotSupported("only one collection access is supported")
-        [assignable, expr] = self.to_python([assignable, exprs[0]])
+            expr = ast.List(elts=self.to_python(exprs))
+        else:
+            expr = self.to_python(exprs[0])
         index = ast.Index(value=ast.BinOp(
             left=expr, op=ast.Sub(), right=ast.Num(n=1)))
         return ast.Subscript(value=assignable, slice=index)
@@ -81,16 +105,8 @@ class Transpiler:
             right = right.value  # TODO fix this workaround. see tests/procedure
         return ast.Assign(targets=left, value=right)
 
-    def assignmentother(self, assignable, right_hand_side, operator):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=operator, value=rhs)
-
     def backtrack(self):
         raise Exception("backtrack is not supported yet")
-
-    def binoperator(self, left, right, operator):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, operator, right)
 
     def block(self, stmnts):
         procedure_counter = self.state.procedure_counter
@@ -122,17 +138,17 @@ class Transpiler:
         self.state.procedure_counter = procedure_counter
         return py_stmnts
 
-    def booleanequal(self, left, right):
+    def _bool_op(self, left, operator, right):
         [left_cond, right_cond] = self.to_python([left, right])
         left = call_function("bool", [left_cond])
         right = call_function("bool", [right_cond])
-        return ast.Compare(left=left, ops=[ast.Eq()], comparators=[right])
+        return ast.Compare(left=left, ops=[operator], comparators=[right])
+
+    def booleanequal(self, left, right):
+        return self._bool_op(left,ast.Eq(),right)
 
     def booleannotequal(self, left, right):
-        [left_cond, right_cond] = self.to_python([left, right])
-        left = call_function("bool", [left_cond])
-        right = call_function("bool", [right_cond])
-        return ast.Compare(left=left, ops=[ast.NotEq()], comparators=[right])
+        return self._bool_op(left,ast.NotEq(),right)
 
     def cachedprocedure(self, params, block, name):
         decorator = setlx_access(self.state, "cached_procedure")
@@ -223,31 +239,20 @@ class Transpiler:
         access = self.to_python(CollectionAccess(expr, callable))
         return setlx_function(self.state, "map", [access])
 
-    def compare(self, left, right, operator):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[operator], comparators=[right])
-
     def condition(self, expression):
         return self.to_python(expression)
 
     def conjunction(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.BoolOp(op=ast.And(), values=[left, right])
+        return self._boolop(left, ast.And(), right)
 
     def difference(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.Sub(), right)
+        return self._binop(left, ast.Sub(), right)
 
     def differenceassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.Sub(), value=rhs)
+        return self._augassign(assignable,ast.Sub(),right_hand_side)
 
     def disjunction(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.BoolOp(op=ast.Or(), values=[left, right])
+        return self._boolop(left, ast.Or(), right)
 
     def dowhile(self, condition, block):
         [condition, block] = self.to_python([condition, block])
@@ -258,9 +263,7 @@ class Transpiler:
         return ast.While(test=bool_true(), body=block, orelse=[])
 
     def equal(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.Eq()], comparators=[right])
+        return self._compare(left, ast.Eq(), right)
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
@@ -291,14 +294,10 @@ class Transpiler:
         return ast.Call(expr, params, [])
 
     def greaterorequal(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.GtE()], comparators=[right])
+        return self._compare(left, ast.GtE(), right)
 
     def greaterthan(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.Gt()], comparators=[right])
+        return self._compare(left, ast.Gt(), right)
 
     def ifthen(self, condition, block, else_list):
         [condition, block] = self.to_python([condition, block])
@@ -322,7 +321,7 @@ class Transpiler:
 
     def ifthenbranch(self, condition, block, orelse):
         [condition, block] = self.to_python([condition, block])
-        if len(orelse)>0:
+        if len(orelse) > 0:
             if isinstance(orelse[0], Block):
                 else_list = self.to_python(orelse[0])
             else:
@@ -338,12 +337,10 @@ class Transpiler:
         return ast.Compare(left=not_left, ops=[ast.Or()], comparators=[right])
 
     def integerdivision(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.FloorDiv(), right)
+        return self._binop(left, ast.FloorDiv(), right)
 
     def integerdivisionassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.FloorDiv(), value=rhs)
+        return self._augassign(assignable, ast.FloorDiv(), right_hand_side)
 
     def iterator_from_chain(self, iter_chain):
         if len(iter_chain) == 1:
@@ -373,14 +370,10 @@ class Transpiler:
         raise NotSupported("lambda procedures are not supported")
 
     def lessorequal(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.LtE()], comparators=[right])
+        return self._compare(left, ast.LtE(), right)
 
     def lessthan(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.Lt()], comparators=[right])
+        return self._compare(left, ast.Lt(), right)
 
     def listparameter(self, id):
         raise "not reachable"
@@ -407,17 +400,13 @@ class Transpiler:
         return ast.UnaryOp(op=ast.USub(), operand=expr)
 
     def modulo(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.Mod(), right)
+        return self._binop(left, ast.Mod(), right)
 
     def moduloassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.Mod(), value=rhs)
+        return self._augassign(assignable, ast.Mod(), right_hand_side)
 
     def notequal(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.NotEq()], comparators=[right])
+        return self._compare(left, ast.NotEq(), right)
 
     def operatorexpression(self, expr):
         expr = self.to_python(expr)
@@ -427,8 +416,7 @@ class Transpiler:
         return ast.arg(arg=id, annotation=None)
 
     def power(self, base, exponent):
-        [base, exponent] = self.to_python([base, exponent])
-        return ast.BinOp(left=base, op=ast.Pow(), right=exponent)
+        return self._binop(base, ast.Pow(), exponent)
 
     def prefixoperator(self, expr, py_target_type):
         expr = self.to_python(expr)
@@ -478,28 +466,22 @@ class Transpiler:
             return ast.FunctionDef(name=name, args=params, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.Mult(), right)
+        return self._binop(left, ast.Mult(), right)
 
     def productassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.Mult(), value=rhs)
+        return self._augassign(assignable, ast.Mult(), right_hand_side)
 
     def productofmembers(self, expr):
-        expr = self.to_python(expr)
-        return setlx_function(self.state, "product", [expr])
+        self._prefix_operator("product",expr)
 
     def productofmembersbinary(self, left, right):
-        expr = self.to_python(right)
-        return setlx_function(self.state, "product", [expr])
+        self._prefix_operator("product",right)
 
     def quotient(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.Div(), right)
+        return self._binop(left, ast.Div(), right)
 
     def quotientassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.Div(), value=rhs)
+        return self._augassign(assignable, ast.Div(), right_hand_side)
 
     def range(self, start, step, end):
         start = self.to_python(start)
@@ -535,7 +517,6 @@ class Transpiler:
                 return ast.Set(elts=py_collection.elts)
 
     def setliteration(self, expr, iter_chain, condition):
-
         iter_chain = self.to_python(iter_chain)
         expr = self.to_python(expr)
         condition = [self.to_python(condition)] if condition != None else []
@@ -590,9 +571,7 @@ class Transpiler:
         return setlx_function(self.state, py_target_type, [expr])
 
     def setlxin(self, left, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
-        return ast.Compare(left=left, ops=[ast.In()], comparators=[right])
+        return self._compare(left, ast.In(), right)
 
     def setlxlist(self, expr):
         if expr != None:
@@ -629,20 +608,16 @@ class Transpiler:
         return ast.While(test=condition, body=block, orelse=[])
 
     def sum(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.BinOp(left, ast.Add(), right)
+        return self._binop(left, ast.Add(), right)
 
     def sumassignment(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.AugAssign(target=target, op=ast.Add(), value=rhs)
+        return self._augassign(assignable, ast.Add(), right_hand_side)
 
     def sumofmembers(self, expr):
-        expr = self.to_python(expr)
-        return setlx_function(self.state, "sum", [expr])
+        return self._prefix_operator("sum", expr)
 
     def sumofmembersbinary(self, left, right):
-        expr = self.to_python(right)
-        return setlx_function(self.state, "sum", [expr])
+        return self._prefix_operator("sum", right)
 
     def switch(self, case_list, default_branch):
         if len(case_list) == 0:
