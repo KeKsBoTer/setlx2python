@@ -1,10 +1,11 @@
-﻿import setlx
+﻿from setlx.native import *
+import setlx
 
 
 @setlx.procedure
 def erlangB(a, n):
-    p = a ** n / factorial(n)
-    p /= setlx.sum({(a ** i / factorial(i)) for i in set(range(0, n + 1))})
+    p = a ** n / setlx.factorial(n)
+    p /= setlx.sum({(a ** i / setlx.factorial(i)) for i in set(range(0, n + 1))})
     return p
 
 
@@ -33,8 +34,8 @@ def solveN(a, p):
 
 @setlx.procedure
 def erlangC(a, n):
-    p = a ** n * n / (factorial(n) * (n - a))
-    p /= setlx.sum({(a ** i / factorial(i)) for i in set(range(0, n - 1 + 1))}) + p
+    p = a ** n * n / (setlx.factorial(n) * (n - a))
+    p /= setlx.sum({(a ** i / setlx.factorial(i)) for i in set(range(0, n - 1 + 1))}) + p
     return p
 
 

@@ -1,5 +1,5 @@
+from setlx.native import *
 import setlx
-
 
 class Test:
     # static part

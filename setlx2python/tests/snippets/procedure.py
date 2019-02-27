@@ -1,3 +1,4 @@
+from setlx.native import *
 import setlx
 
 @setlx.procedure

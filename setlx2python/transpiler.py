@@ -1,3 +1,4 @@
+import keyword
 import ast
 from .utils import *
 from .grammar.types import Procedure, ListRange, CollectionAccess, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
@@ -40,6 +41,8 @@ class Transpiler:
     def transpile(self):
         body = self.to_python(self.root)
         imports = self.state.imports.to_python(self.state)
+        imports.insert(0, ast.ImportFrom(module='setlx.native', names=[
+                       ast.alias(name='*', asname=None)], level=0))
         return imports + body
 
     def to_python(self, node):
@@ -80,11 +83,11 @@ class Transpiler:
     def assignablecollectionaccess(self, assignable, exprs):
         assignable = self.to_python(assignable)
         if len(exprs) > 1:
-            expr = ast.List(elts=self.to_python(exprs))
+            index = ast.Index(value=ast.List(elts=self.to_python(exprs)))
         else:
             expr = self.to_python(exprs[0])
-        index = ast.Index(value=ast.BinOp(
-            left=expr, op=ast.Sub(), right=ast.Num(n=1)))
+            index = ast.Index(value=ast.BinOp(
+                left=expr, op=ast.Sub(), right=ast.Num(n=1)))
         return ast.Subscript(value=assignable, slice=index)
 
     def assignableignore(self):
@@ -145,10 +148,10 @@ class Transpiler:
         return ast.Compare(left=left, ops=[operator], comparators=[right])
 
     def booleanequal(self, left, right):
-        return self._bool_op(left,ast.Eq(),right)
+        return self._bool_op(left, ast.Eq(), right)
 
     def booleannotequal(self, left, right):
-        return self._bool_op(left,ast.NotEq(),right)
+        return self._bool_op(left, ast.NotEq(), right)
 
     def cachedprocedure(self, params, block, name):
         decorator = setlx_access(self.state, "cached_procedure")
@@ -209,9 +212,9 @@ class Transpiler:
                                     returns=None)]
         else:
             init = []
-
+        py_id = self.to_python(id)
         return ast.ClassDef(
-            name=id,
+            name=py_id.id,
             bases=[],
             keywords=[],
             body=static+init,
@@ -249,7 +252,7 @@ class Transpiler:
         return self._binop(left, ast.Sub(), right)
 
     def differenceassignment(self, assignable, right_hand_side):
-        return self._augassign(assignable,ast.Sub(),right_hand_side)
+        return self._augassign(assignable, ast.Sub(), right_hand_side)
 
     def disjunction(self, left, right):
         return self._boolop(left, ast.Or(), right)
@@ -280,7 +283,7 @@ class Transpiler:
 
     def factorial(self, expr):
         expr = self.to_python(expr)
-        return call_function("factorial", [expr])
+        return setlx_function(self.state, "factorial", [expr])
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
@@ -288,8 +291,6 @@ class Transpiler:
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
-        if isinstance(callable, Variable) and callable.id == "throw":
-            return setlx_function(self.state, "throw", params)
         expr = self.to_python(callable)
         return ast.Call(expr, params, [])
 
@@ -413,7 +414,8 @@ class Transpiler:
         return ast.Starred(value=expr)
 
     def parameter(self, id, default, read_write):
-        return ast.arg(arg=id, annotation=None)
+        py_id = self.to_python(id)
+        return ast.arg(arg=py_id.id, annotation=None)
 
     def power(self, base, exponent):
         return self._binop(base, ast.Pow(), exponent)
@@ -441,7 +443,8 @@ class Transpiler:
                     defaults.append(self.to_python(p.default))
                 params.append(prm)
             else:
-                vararg = ast.arg(arg=p.id, annotation=None)
+                py_id = self.to_python(p.id)
+                vararg = ast.arg(arg=py_id.id, annotation=None)
 
         params = ast.arguments(args=params,
                                vararg=vararg,
@@ -463,7 +466,8 @@ class Transpiler:
             self.state.procedure_counter += 1
             return ast.Name(id=proc_name)
         else:
-            return ast.FunctionDef(name=name, args=params, body=block, decorator_list=decorators, returns=None)
+            py_name = self.to_python(name)
+            return ast.FunctionDef(name=py_name.id, args=params, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
@@ -472,10 +476,10 @@ class Transpiler:
         return self._augassign(assignable, ast.Mult(), right_hand_side)
 
     def productofmembers(self, expr):
-        self._prefix_operator("product",expr)
+        return self._prefix_operator("product", expr)
 
     def productofmembersbinary(self, left, right):
-        self._prefix_operator("product",right)
+        return self._prefix_operator("product", right)
 
     def quotient(self, left, right):
         return self._binop(left, ast.Div(), right)
@@ -498,7 +502,8 @@ class Transpiler:
         return call_function("list", [range_call])
 
     def readwriteparameter(self, id):
-        return ast.arg(arg=id, annotation=None)
+        py_id = self.to_python(id)
+        return ast.arg(arg=py_id.id, annotation=None)
 
     def scan(self):
         raise NotSupported("scan is not supported")
@@ -646,7 +651,8 @@ class Transpiler:
             return block
         if trys == 1 and isinstance(try_list[0], TryCatchBranch):
             catch = try_list[0]
-            error = unpack_error(self.state, catch.variable.id)
+            var = self.to_python(catch.variable)
+            error = unpack_error(self.state, var)
             except_block = [error] + self.to_python(catch.block)
             ex = ast.ExceptHandler(
                 type=ast.Name(id="Exception"),
@@ -675,6 +681,9 @@ class Transpiler:
         raise NotSupported("catch user error is not supported")
 
     def variable(self, id):
+        # prefix variable with "v_" if the id is a python keyword
+        if id in keyword.kwlist:
+            id = f"v_{id}"
         id_str = id if id != "this" else "self"
         return ast.Name(id=id_str)
 

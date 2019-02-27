@@ -1,3 +1,5 @@
+from setlx.native import *
+
 x = "test"
 y = 2
 z = None

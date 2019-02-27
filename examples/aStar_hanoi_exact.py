@@ -1,4 +1,5 @@
-﻿import setlx
+﻿from setlx.native import *
+import setlx
 
 
 @setlx.procedure
@@ -51,19 +52,19 @@ def numberSteps(x, n):
 
 @setlx.procedure
 def transition(x):
-    return {moveFromTo(x, from, to) for from in {1, 2, 3} for to in {1, 2, 3} - {from}}
+    return {moveFromTo(x, v_from, to) for v_from in {1, 2, 3} for to in {1, 2, 3} - {v_from}}
 
 
 @setlx.procedure
-def moveFromTo(x, from, to):
-    origin = x[from - 1]
+def moveFromTo(x, v_from, to):
+    origin = x[v_from - 1]
     if len(origin) > 0:
         head = origin[1 - 1]
         goal = x[to - 1]
-        other = arb({1, 2, 3} - {from, to})
+        other = arb({1, 2, 3} - {v_from, to})
         if len(goal) == 0 or head < first(goal):
             new = []
-            new[from - 1] = origin[2 - 1:]
+            new[v_from - 1] = origin[2 - 1:]
             new[to - 1] = [head] + goal
             new[other - 1] = x[other - 1]
             return [new, 1]

@@ -1,4 +1,5 @@
-﻿import setlx
+﻿from setlx.native import *
+import setlx
 
 
 @setlx.procedure
@@ -37,7 +38,7 @@ def regressionB(xs, ys):
 def regressionA(xs, ys):
     xMean = mean(xs)
     yMean = mean(ys)
-    return yMean + 0.0
+    return yMean - regressionB(xs, ys) * xMean + 0.0
 
 
 @setlx.procedure

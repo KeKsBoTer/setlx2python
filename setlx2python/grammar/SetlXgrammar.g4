@@ -21,9 +21,9 @@ condition = None
 static = None
 block = None
     }:
-	'class' ID '(' procedureParameters[True] ')' '{' b1 = block (
+	'class' variable '(' procedureParameters[True] ')' '{' b1 = block (
 		'static' '{' b2 = block '}' {static = $b2.blk}
-	)? '}' {$stmnt = ClassConstructor($ID.text, $procedureParameters.paramList, $b1.blk, static)}
+	)? '}' {$stmnt = ClassConstructor($variable.v, $procedureParameters.paramList, $b1.blk, static)}
 	|'if' '(' c1 = condition ')' '{' b1 = block '}' (
 		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk,[])) 
 			}
@@ -105,7 +105,7 @@ regexBranch
 assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	variable ':=' procedure[$variable.v.id] {$assign = $procedure.pd }
+	variable ':=' procedure[$variable.v] {$assign = $procedure.pd }
 	| assignmentDirect {$assign = $assignmentDirect.assign };
 
 assignmentDirect
@@ -160,10 +160,10 @@ lambdaParameters
 	@init {
 $paramList = []
     }:
-	variable {$paramList.append(Parameter($variable.v.id, None, False)) }
+	variable {$paramList.append(Parameter($variable.v, None, False)) }
 	| '[' (
-		v1 = variable {$paramList.append(Parameter($v1.v.id, None, False))} (
-			',' v2 = variable {$paramList.append(Parameter($v2.v.id, None, False))}
+		v1 = variable {$paramList.append(Parameter($v1.v, None, False))} (
+			',' v2 = variable {$paramList.append(Parameter($v2.v, None, False))}
 		)*
 	)? ']';
 
@@ -201,8 +201,8 @@ comparison[enableIgnore]
 setlxSum[enableIgnore]
 	returns[s]:
 	p1 = product[$enableIgnore] {$s = $p1.p} (
-		'+' p2 = product[$enableIgnore] {$s = Sum($p1.p,$p2.p) }
-		| '-' p2 = product[$enableIgnore] {$s = Difference($p1.p,$p2.p) }
+		'+' p2 = product[$enableIgnore] {$s = Sum($s,$p2.p) }
+		| '-' p2 = product[$enableIgnore] {$s = Difference($s,$p2.p) }
 	)*;
 
 product[enableIgnore]
@@ -289,16 +289,16 @@ $paramList = []
 
 procedureParameter[enableRw]
 	returns[param]:
-	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v.id) }
-	| variable {$param = Parameter($variable.v.id, None, False) };
+	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v) }
+	| variable {$param = Parameter($variable.v, None, False) };
 
 procedureDefaultParameter
 	returns[param]:
-	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v.id, $expr.ex, False) };
+	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v, $expr.ex, False) };
 
 procedureListParameter
 	returns[param]:
-	'*' variable {$param = ListParameter($variable.v.id) };
+	'*' variable {$param = ListParameter($variable.v) };
 
 call[enableIgnore,callable]
 	returns[c]:

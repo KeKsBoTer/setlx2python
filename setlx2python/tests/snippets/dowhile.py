@@ -1,3 +1,5 @@
+from setlx.native import *
+
 x = 10
 while True:
     print(x)

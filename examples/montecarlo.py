@@ -1,4 +1,5 @@
-﻿n = 50000
+﻿from setlx.native import *
+n = 50000
 inCircle = 0
 for x in list(range(1, n + 1)):
     if sqrt(random() ** 2 + random() ** 2) <= 1:

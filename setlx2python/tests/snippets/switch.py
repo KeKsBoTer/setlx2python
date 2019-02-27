@@ -1,3 +1,5 @@
+from setlx.native import *
+
 if True:
     print("true")
 elif False:

@@ -1,3 +1,5 @@
+from setlx.native import *
+
 set()
 {1, 2, 3}
 set(range(1, 3+1))

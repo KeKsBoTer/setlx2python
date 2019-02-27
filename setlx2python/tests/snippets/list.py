@@ -1,3 +1,5 @@
+from setlx.native import *
+
 x = []
 x = [1, 2, 3, "test"]
 print(x[1-1])

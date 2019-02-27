@@ -4,7 +4,6 @@
 .antlr
 .vscode
 *.egg-info
-snippets
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

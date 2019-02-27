@@ -1,4 +1,5 @@
-﻿import setlx
+﻿from setlx.native import *
+import setlx
 
 
 class stoerWagnerMinCut:

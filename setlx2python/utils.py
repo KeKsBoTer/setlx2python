@@ -26,7 +26,7 @@ def setlx_function(state, name, args):
 def unpack_error(state, target):
     state.imports.add("setlx")
     unpack_call = setlx_function(state, "unpack_error", [ast.Name(id='e')])
-    return ast.Assign(targets=[ast.Name(id=target)], value=unpack_call)
+    return ast.Assign(targets=[target], value=unpack_call)
 
 
 def make_funcs_static(block):

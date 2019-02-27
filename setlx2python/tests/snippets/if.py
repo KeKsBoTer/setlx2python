@@ -1,3 +1,5 @@
+from setlx.native import *
+
 x = 1
 y = 3
 z = x
