@@ -36,7 +36,7 @@ Usage:
 
 # tasks daniel
 - [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
-- [ ] create list of all setlx specific functions
+- [X] create list of all setlx specific functions
 # Features that will not be supported
 - execute / eval
 - scan
