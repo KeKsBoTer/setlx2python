@@ -18,7 +18,7 @@ Usage:
 - [ ] lambdas
 - [x] sets
 - [x] lists
-- [ ] classes
+- [x] classes
 - [x] unpack procedure parameters
 - [x] implication (=>)
 - [x] boolean equal
@@ -31,7 +31,7 @@ Usage:
 - [x] procedureListParameter
 - [ ] load setlx files
 - [x] switch case
-- [ ] throw
+- [x] throw
 - [ ] check 
 
 # tasks daniel
