@@ -68,16 +68,16 @@ def prettyPrint(evidenceSet):
                     break
             m = evidence[2 - 1]
             if evidence[1 - 1] == omega():
-                print('$nbrFormat(m)$ == m( Omega )')
+                print(f'{nbrFormat(m)} == m( Omega )')
             else:
-                print('$nbrFormat(m)$ == m( $evidence[1]$ )')
+                print(f'{nbrFormat(m)} == m( {evidence[1 - 1]} )')
         print()
         print('Subject | Plausibility | Believe | Disbelieve')
         print('---------------------------------------------')
         for subject in omega():
             pl = plausibility(es, subject)
             b = believe(es, subject)
-            print('$subject$\\t|    $nbrFormat(pl)$     |  $nbrFormat(b)$  |   $nbrFormat(1 - pl)$')
+            print(f'{subject}\\t|    {nbrFormat(pl)}     |  {nbrFormat(b)}  |   {nbrFormat(1 - pl)}')
     else:
         print('Evidence set is empty!')
     print()

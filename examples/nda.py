@@ -23,11 +23,11 @@ class nda:
 
     @setlx.procedure
     def __init__(self, alphabet, states, initial, accepting, transitions):
-        self.ndaAlphabet = alphabet
-        self.ndaStates = states
-        self.ndaTransitions = transitions
-        self.ndaInitial = initial
-        self.ndaAccepting = accepting
+        self.ndaAlphabet = ndaAlphabet = alphabet
+        self.ndaStates = ndaStates = states
+        self.ndaTransitions = ndaTransitions = transitions
+        self.ndaInitial = ndaInitial = initial
+        self.ndaAccepting = ndaAccepting = accepting
 
 
 myNda = nda({'a', 'b'}, {0, 1, 2}, 0, {2}, {['a', 0, 1], ['b', 1, 2]})

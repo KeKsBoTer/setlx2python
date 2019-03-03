@@ -20,7 +20,7 @@ def aStar(s, t):
                 openQueue -= {[f[y - 1], y]}
                 f[y - 1] = g[y - 1] + graph.h[y - 1]
                 openQueue += {[f[y - 1], y]}
-    print('path $s$ -> $t$: no solution')
+    print(f'path {s} -> {t}: no solution')
 
 
 class graph:
@@ -35,7 +35,7 @@ def printPath(start, targets, end, cost, predecessor):
     while p != start:
         p = predecessor[p - 1]
         path += [p]
-    print('path $start$ -> $targets$: $path$, cost = $cost$, $#predecessor$ nodes expanded')
+    print(f'path {start} -> {targets}: {path}, cost = {cost}, {len(predecessor)} nodes expanded')
 
 
 aStar(1, {6})

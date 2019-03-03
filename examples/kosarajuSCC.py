@@ -1,17 +1,17 @@
-﻿from setlx.native import *
+from setlx.native import *
 import setlx
-
+import copy
 
 class kosarajuSCC:
 
     @setlx.procedure
     def __init__(self, nodeCount, edges, reverse):
-        self.mNodeCount = nodeCount
-        self.mEdges = edges
-        self.mReverse = reverse
-        self.mMarked = [False for _ in list(range(1, mNodeCount + 1))]
-        self.mSccId = [(-1) for _ in list(range(1, mNodeCount + 1))]
-        self.mCount = 0
+        self.mNodeCount = mNodeCount = nodeCount
+        self.mEdges = mEdges = edges
+        self.mReverse = mReverse = reverse
+        self.mMarked = mMarked = [False for _ in list(range(1, mNodeCount + 1))]
+        self.mSccId = mSccId = [(-1) for _ in list(range(1, mNodeCount + 1))]
+        self.mCount = mCount = 0
 
         @setlx.procedure
         def scc():
@@ -40,7 +40,9 @@ class kosarajuSCC:
             marked = [False for _ in list(range(1, mNodeCount + 1))]
             for v in list(range(1, mNodeCount + 1)):
                 if not marked[v - 1]:
+                    print(stack)
                     topologicalDFS(v, edges, marked, stack)
+                    print(stack)
             return stack
         self.topologicalSort = topologicalSort
 
@@ -81,7 +83,7 @@ def testSCC(file):
     [n, e, r] = readGraph(file)
     sccId = kosarajuSCC(n, e, r)
     sccId.scc()
-    print('number of strongly connected components in $file$ is $sccId.getCount()$')
+    print(f'number of strongly connected components in {file} is {sccId.getCount()}')
 
 
 testSCC('kosarajuSCC.data')

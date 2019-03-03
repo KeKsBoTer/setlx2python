@@ -1,5 +1,7 @@
 import keyword
 import ast
+import re
+import codecs
 from .utils import *
 from .grammar.types import Procedure, ListRange, CollectionAccess, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
 
@@ -174,8 +176,16 @@ class Transpiler:
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
-                s.targets[0] = ast.Attribute(
-                    value=ast.Name(id='self'), attr=s.targets[0])
+
+                s.targets[0] = ast.Assign(
+                    targets=[
+                        ast.Attribute(
+                            value=ast.Name(id='self'),
+                            attr=s.targets[0]
+                        )
+                    ],
+                    value= ast.Name(id=s.targets[0])
+                )
 
         for i, s in enumerate(body):
             if isinstance(s, ast.FunctionDef):
@@ -600,10 +610,49 @@ class Transpiler:
         expression = self.to_python(expression)
         return ast.Return(value=expression, decorator_list=[], returns=None)
 
-    def setlxstring(self, value):
-        if value.startswith('"') and value.endswith('"'):
-            value = value[1:-1]
-        return ast.Str(value)
+    def setlxstring(self, string):
+        value = string.strip('"')
+        if len(value) == 0:
+            # if the string is empty, so is the python string
+            return ast.Str(s="")
+
+        # split string by expressions in string
+        # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
+        matches = re.finditer(r'\$[^$]+\$', value)
+        indices = []
+        for i in matches:
+            indices += i.span()
+
+        if len(indices) == 0:
+            return ast.Str(s=value)
+
+        if indices[0] != 0:
+            indices.insert(0, 0)
+
+        slices = [value[i:j] for i, j in zip(
+            indices, indices[1:]+[None]) if len(value[i:j]) > 0]
+
+        values = []
+        for s in slices:
+            if s[0] == "$":
+                if len(s) == 1 or s[-1] != "$":
+                    raise SyntaxError(f'syntax error in string: {string}')
+
+                # escape backslashes
+                escaped = codecs.unicode_escape_decode(s.strip("$"))[0]
+                setlx_expr = parse_expr(escaped)
+                expr = self.to_python(setlx_expr)
+                values.append(
+                    ast.FormattedValue(
+                        value=expr, conversion=-1,
+                        format_spec=None)
+                )
+            else:
+                values.append(ast.Str(s))
+        if len(values) == 1 and isinstance(values[0], str):
+            return ast.Str(s=values[0])
+        else:
+            return ast.JoinedStr(values=values)
 
     def setlxtrue(self):
         return bool_true()

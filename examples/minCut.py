@@ -6,9 +6,9 @@ class stoerWagnerMinCut:
 
     @setlx.procedure
     def __init__(self, edges):
-        self.mNodeCount = len(edges)
-        self.mEdges = edges
-        self.mEquivNodes = [[i] for i in list(range(1, mNodeCount + 1))]
+        self.mNodeCount = mNodeCount = len(edges)
+        self.mEdges = mEdges = edges
+        self.mEquivNodes = mEquivNodes = [[i] for i in list(range(1, mNodeCount + 1))]
 
         @setlx.procedure
         def minCut():
@@ -105,8 +105,8 @@ def testSCC(file):
     edges = readGraph(file)
     graph = stoerWagnerMinCut(edges)
     [d, c] = graph.minCut()
-    print('value of minimum cut in $file$ is $d$')
-    print('minimum cut: $c$')
+    print(f'value of minimum cut in {file} is {d}')
+    print(f'minimum cut: {c}')
 
 
 testSCC('minCut.data')

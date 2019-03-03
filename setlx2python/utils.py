@@ -1,5 +1,9 @@
 import ast
 
+from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
+from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
+from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
+from antlr4 import InputStream, CommonTokenStream
 
 def call_function(name, params):
     return ast.Call(func=ast.Name(id=name), args=params, keywords=[])
@@ -34,3 +38,11 @@ def make_funcs_static(block):
         if isinstance(stmnt, ast.FunctionDef):
             stmnt.decorator_list = [
                 ast.Name(id="staticmethod")] + stmnt.decorator_list
+
+
+def parse_expr(string):
+    input = InputStream(string)
+    lexer = SetlXgrammarLexer(input)
+    stream = CommonTokenStream(lexer)
+    parser = SetlXgrammarParser(stream)
+    return parser.expr(False).ex

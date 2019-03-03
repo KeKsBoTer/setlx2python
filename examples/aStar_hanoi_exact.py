@@ -20,7 +20,7 @@ def aStar(s, t):
                 openQueue -= {[f[y - 1], y]}
                 f[y - 1] = g[y - 1] + h(y)
                 openQueue += {[f[y - 1], y]}
-    print('path $s$ -> $t$: no solution')
+    print(f'path {s} -> {t}: no solution')
 
 
 @setlx.procedure
@@ -77,16 +77,16 @@ def printPath(start, targets, end, cost, predecessor):
     while p != start:
         p = predecessor[p - 1]
         path += [p]
-    print('path $start$ -> $targets$:')
+    print(f'path {start} -> {targets}:')
     while len(path) > 0:
         print(fromE(path))
-    print('cost: $cost$')
-    print('nodes expanded: $#predecessor$')
+    print(f'cost: {cost}')
+    print(f'nodes expanded: {len(predecessor)}')
 
 
 @setlx.procedure
 def hanoi(n):
-    print('computing towers of hanoi with $n$ disks:')
+    print(f'computing towers of hanoi with {n} disks:')
     aStar([list(range(1, n + 1)), [], []], {[[], [], list(range(1, n + 1))]})
 
 

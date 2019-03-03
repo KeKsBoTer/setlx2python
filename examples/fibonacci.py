@@ -16,8 +16,8 @@ def fibonacci_1(n):
 
 start = now()
 tracker.ticks = 0
-print('Fibonacci Sequence: $[fibonacci_1(n) : n in [0..25]]$')
-print('($tracker.ticks$ ticks)')
+print(f'Fibonacci Sequence: {[fibonacci_1(n) for n in list(range(0, 25 + 1))]}')
+print(f'({tracker.ticks} ticks)')
 
 
 @setlx.cached_procedure
@@ -30,6 +30,6 @@ def fibonacci_2(n):
 
 start = now()
 tracker.ticks = 0
-print('Fibonacci Sequence: $[fibonacci_2(n) : n in [0..25]]$')
-print('($tracker.ticks$ ticks, $cacheStats(fibonacci_2)$)')
+print(f'Fibonacci Sequence: {[fibonacci_2(n) for n in list(range(0, 25 + 1))]}')
+print(f'({tracker.ticks} ticks, {cacheStats(fibonacci_2)})')
 

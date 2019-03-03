@@ -28,11 +28,11 @@ def zebraPuzzle():
                                 if (kools == yellow and luckies == orange) and japanese == camel:
                                     for [dog, snails, fox, horse, zebra] in orderings:
                                         if ((spaniard == dog and gold == snails) and nextTo(west, fox)) and nextTo(kools, horse):
-                                            print('colors:        $[red, green, ivory, yellow, blue]                  $')
-                                            print('nationalities: $[english, spaniard, ukrainian, japanese, norwegian]$')
-                                            print('drinks:        $[coffee, tea, milk, orange, water]                 $')
-                                            print('pet:           $[dog, snails, fox, horse, zebra]                   $')
-                                            print('cigarettes:    $[gold, kools, west, luckies, camel]                $')
+                                            print(f'colors:        {[red, green, ivory, yellow, blue]}')
+                                            print(f'nationalities: {[english, spaniard, ukrainian, japanese, norwegian]}')
+                                            print(f'drinks:        {[coffee, tea, milk, orange, water]}')
+                                            print(f'pet:           {[dog, snails, fox, horse, zebra]}')
+                                            print(f'cigarettes:    {[gold, kools, west, luckies, camel]}')
                                             result += {[water, zebra]}
     return result
 

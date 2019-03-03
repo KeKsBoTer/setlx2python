@@ -23,6 +23,6 @@ x = cyk(s, rules)
 for h in list(range(1, n + 1)):
     result = ''
     for i in list(range(1, n + 1 - h + 1)):
-        result += 'X[$i$, $i+h-1$] = $x[i, i+h-1]$, '
+        result += f'X[{i}, {(i + h - 1)}] = {x[[i + h - 1] - 1]}, '
     print(result)
 

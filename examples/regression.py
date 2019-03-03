@@ -49,7 +49,7 @@ def correlation(xs, ys):
 
 
 for n in [10, 15, 30]:
-    print('n = $n$')
+    print(f'n = {n}')
     l = list(range(1, 10 + 1))
     xs = [(i ** 2) for i in list(range(1, n + 1))]
     ys = [(i ** 3) for i in list(range(1, n + 1))]
