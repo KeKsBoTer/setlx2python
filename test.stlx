@@ -1,0 +1,8 @@
+
+append := procedure(a) {
+    a += [2];
+};
+
+a := [1];
+append(a);
+print(a);

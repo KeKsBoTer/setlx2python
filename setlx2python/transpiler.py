@@ -2,7 +2,12 @@ import keyword
 import ast
 import re
 import codecs
-from .utils import *
+
+from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
+from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
+from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
+from antlr4 import InputStream, CommonTokenStream
+
 from .grammar.types import Procedure, ListRange, CollectionAccess, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
 
 
@@ -32,7 +37,7 @@ class TranspilerState:
         self.level = 0
         # modules that need to be imported
         self.imports = ImportList()
-        self.in_init = False
+        self.variables = []
 
 
 class Transpiler:
@@ -62,15 +67,14 @@ class Transpiler:
 
     def _prefix_operator(self, operation, expr):
         expr = self.to_python(expr)
-        return setlx_function(self.state, operation, [expr])
+        return self.setlx_function(operation, [expr])
 
     def _binop(self, left, operator, right):
         [left, right] = self.to_python([left, right])
         return ast.BinOp(left, operator, right)
 
     def _compare(self, left, operator, right):
-        left = self.to_python(left)
-        right = self.to_python(right)
+        [left, right] = self.to_python([left, right])
         return ast.Compare(left=left, ops=[operator], comparators=[right])
 
     def _boolop(self, left, operator, right):
@@ -99,21 +103,26 @@ class Transpiler:
         assignables = [self.to_python(a) for a in assignables]
         return ast.List(elts=assignables)
 
-    def assignablemember(self, assignable, right_hand_side):
-        [target, rhs] = self.to_python([assignable, right_hand_side])
-        return ast.Attribute(value=target, attr=rhs)
+    def assignablemember(self, assignable, member):
+        [target, member] = self.to_python([assignable, member])
+        if assignable.id == "self":
+            self.state.variables.append(assignable.member)
+        return ast.Attribute(value=target, attr=member)
 
     def assignment(self, assignables, right_hand_side):
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
             right = right.value  # TODO fix this workaround. see tests/procedure
+
         return ast.Assign(targets=left, value=right)
 
     def backtrack(self):
         raise Exception("backtrack is not supported yet")
 
     def block(self, stmnts):
+        variables = self.state.variables[:]
+
         procedure_counter = self.state.procedure_counter
         self.state.procedure_counter = 0
 
@@ -141,6 +150,8 @@ class Transpiler:
             py_stmnts.append(stmnt)
 
         self.state.procedure_counter = procedure_counter
+
+        self.state.variables = variables
         return py_stmnts
 
     def _bool_op(self, left, operator, right):
@@ -156,7 +167,7 @@ class Transpiler:
         return self._bool_op(left, ast.NotEq(), right)
 
     def cachedprocedure(self, params, block, name):
-        decorator = setlx_access(self.state, "cached_procedure")
+        decorator = self.setlx_access("cached_procedure")
         return self.to_python(Procedure(params, block, name, decorator))
 
     def cardinality(self, expr):
@@ -165,7 +176,7 @@ class Transpiler:
 
     def cartesianproduct(self, left, right):
         params = self.to_python([left, right])
-        return setlx_function(self.state, "cartesian_product", params)
+        return self.setlx_function("cartesian_product", params)
 
     def check(self, check_block, backtrack_block):
         raise NotSupported("check/afterBacktrack is not supported")
@@ -177,15 +188,13 @@ class Transpiler:
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
 
-                s.targets[0] = ast.Assign(
-                    targets=[
-                        ast.Attribute(
-                            value=ast.Name(id='self'),
-                            attr=s.targets[0]
-                        )
-                    ],
-                    value= ast.Name(id=s.targets[0])
-                )
+                s.targets = [
+                    ast.Attribute(
+                        value=ast.Name(id='self'),
+                        attr=s.targets[0]
+                    ),
+                    ast.Name(id=s.targets[0])
+                ]
 
         for i, s in enumerate(body):
             if isinstance(s, ast.FunctionDef):
@@ -206,7 +215,7 @@ class Transpiler:
         else:
             static = []
 
-        func_decorator = setlx_access(self.state, "procedure")
+        func_decorator = self.setlx_access("procedure")
 
         if len(body) > 0:
             init = [ast.FunctionDef(name='__init__',
@@ -250,7 +259,7 @@ class Transpiler:
 
     def collectmap(self, expr, callable):
         access = self.to_python(CollectionAccess(expr, callable))
-        return setlx_function(self.state, "map", [access])
+        return self.setlx_function("map", [access])
 
     def condition(self, expression):
         return self.to_python(expression)
@@ -293,7 +302,7 @@ class Transpiler:
 
     def factorial(self, expr):
         expr = self.to_python(expr)
-        return setlx_function(self.state, "factorial", [expr])
+        return self.setlx_function("factorial", [expr])
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
@@ -361,8 +370,7 @@ class Transpiler:
         assignable = ast.List(elts=assignables)
 
         exprs = [self.to_python(e.expression) for e in iter_chain]
-        list_product = setlx_function(
-            self.state, "cartesian_product", exprs)
+        list_product = self.setlx_function("cartesian_product", exprs)
 
         return [assignable, list_product]
 
@@ -439,7 +447,7 @@ class Transpiler:
         stlx_params = params
 
         if decorator == None:
-            decorator = setlx_access(self.state, "procedure")
+            decorator = self.setlx_access("procedure")
 
         params = []
         defaults = []  # default values for parameters
@@ -583,7 +591,7 @@ class Transpiler:
 
     def setlxfunction(self, expr, py_target_type):
         expr = self.to_python(expr)
-        return setlx_function(self.state, py_target_type, [expr])
+        return self.setlx_function(py_target_type, [expr])
 
     def setlxin(self, left, right):
         return self._compare(left, ast.In(), right)
@@ -701,7 +709,7 @@ class Transpiler:
         if trys == 1 and isinstance(try_list[0], TryCatchBranch):
             catch = try_list[0]
             var = self.to_python(catch.variable)
-            error = unpack_error(self.state, var)
+            error = self.unpack_error(var)
             except_block = [error] + self.to_python(catch.block)
             ex = ast.ExceptHandler(
                 type=ast.Name(id="Exception"),
@@ -733,7 +741,12 @@ class Transpiler:
         # prefix variable with "v_" if the id is a python keyword
         if id in keyword.kwlist:
             id = f"v_{id}"
-        id_str = id if id != "this" else "self"
+
+        if id == "this":
+            id_str = "self"
+        else:
+            id_str = id
+            self.state.variables.append(id_str)
         return ast.Name(id=id_str)
 
     def variableignore(self):
@@ -741,3 +754,44 @@ class Transpiler:
 
     def withlevel(self, level, code):
         return code
+
+    def setlx_access(self, name):
+        self.state.imports.add("setlx")
+        return ast.Attribute(value=ast.Name(id="setlx"), attr=name)
+
+    def setlx_function(self, name, args):
+        self.state.imports.add("setlx")
+        return ast.Call(func=self.setlx_access(name), args=args, keywords=[])
+
+    def unpack_error(self, target):
+        self.state.imports.add("setlx")
+        unpack_call = self.setlx_function("unpack_error", [ast.Name(id='e')])
+        self.state.variables.append(target.Name())
+        return ast.Assign(targets=[target], value=unpack_call)
+
+
+def make_funcs_static(block):
+    for stmnt in block:
+        if isinstance(stmnt, ast.FunctionDef):
+            stmnt.decorator_list = [
+                ast.Name(id="staticmethod")] + stmnt.decorator_list
+
+
+def parse_expr(string):
+    input = InputStream(string)
+    lexer = SetlXgrammarLexer(input)
+    stream = CommonTokenStream(lexer)
+    parser = SetlXgrammarParser(stream)
+    return parser.expr(False).ex
+
+
+def call_function(name, params):
+    return ast.Call(func=ast.Name(id=name), args=params, keywords=[])
+
+
+def bool_true():
+    return ast.NameConstant(value=True)
+
+
+def bool_false():
+    return ast.NameConstant(value=False)

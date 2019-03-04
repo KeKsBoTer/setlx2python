@@ -13,8 +13,8 @@ class Test:
 
     @setlx.procedure
     def __init__(self, a, b):
-        self.mA = a
-        self.mB = b
+        self.mA = mA = a
+        self.mB = mB = b
         print("constructor")
 
         @setlx.cached_procedure
