@@ -769,7 +769,7 @@ class Transpiler:
     def unpack_error(self, target):
         self.state.imports.add("setlx")
         unpack_call = self.setlx_function("unpack_error", [ast.Name(id='e')])
-        self.state.variables.append(target.Name())
+        self.state.variables.append(target.id)
         return ast.Assign(targets=[target], value=unpack_call)
 
 

@@ -1,6 +1,6 @@
-from setlx.native import *
+﻿from setlx.native import *
 import setlx
-import copy
+
 
 class kosarajuSCC:
 
@@ -40,9 +40,7 @@ class kosarajuSCC:
             marked = [False for _ in list(range(1, mNodeCount + 1))]
             for v in list(range(1, mNodeCount + 1)):
                 if not marked[v - 1]:
-                    print(stack)
                     topologicalDFS(v, edges, marked, stack)
-                    print(stack)
             return stack
         self.topologicalSort = topologicalSort
 
