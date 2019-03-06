@@ -427,6 +427,9 @@ class Transpiler:
     def notequal(self, left, right):
         return self._compare(left, ast.NotEq(), right)
 
+    def notin(self, left, right):
+        return self._compare(left, ast.NotIn(), right)
+
     def operatorexpression(self, expr):
         expr = self.to_python(expr)
         return ast.Starred(value=expr)
