@@ -1,13 +1,13 @@
-from setlx.native import *
+import setlx
 
 x = 1
 y = 3
 z = x
 if x == y or x == z:
-    print("if")
+    setlx.print("if")
 elif x != z:
-    print("else if")
+    setlx.print("else if")
 elif x == z:
-    print("else if 2")
+    setlx.print("else if 2")
 else:
-    print("else")
+    setlx.print("else")

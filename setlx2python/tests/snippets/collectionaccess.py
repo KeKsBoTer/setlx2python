@@ -1,6 +1,6 @@
-from setlx.native import *
+import setlx
 
-x = set()
+x = setlx.Set()
 i = h = 0
 x[[1,i+h+1]] = "test"
-print(x)
+setlx.print(x)

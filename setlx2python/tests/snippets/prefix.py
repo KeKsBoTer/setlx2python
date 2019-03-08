@@ -1,4 +1,3 @@
-from setlx.native import *
 import setlx
 
 x = [1, 2, 3, 4]

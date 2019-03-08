@@ -1,8 +1,8 @@
-from setlx.native import *
+import setlx
 
 if True:
-    print("true")
+    setlx.print("true")
 elif False:
-    print("false")
+    setlx.print("false")
 else:
-    print("default")
+    setlx.print("default")

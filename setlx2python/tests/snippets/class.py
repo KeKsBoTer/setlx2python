@@ -1,10 +1,9 @@
-from setlx.native import *
 import setlx
 
 class Test:
     # static part
     className = "test"
-    print("static")
+    setlx.print("static")
 
     @staticmethod
     @setlx.procedure
@@ -15,7 +14,7 @@ class Test:
     def __init__(self, a, b):
         self.mA = mA = a
         self.mB = mB = b
-        print("constructor")
+        setlx.print("constructor")
 
         @setlx.cached_procedure
         def foo(x):
@@ -24,5 +23,5 @@ class Test:
 
 
 t = Test(1, 2)
-print(Test.name())
-print(t.foo(10))
+setlx.print(Test.name())
+setlx.print(t.foo(10))

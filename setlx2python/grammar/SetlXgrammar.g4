@@ -21,9 +21,9 @@ condition = None
 static = None
 block = None
     }:
-	'class' variable '(' procedureParameters[True] ')' '{' b1 = block (
+	'class' ID '(' procedureParameters[True] ')' '{' b1 = block (
 		'static' '{' b2 = block '}' {static = $b2.blk}
-	)? '}' {$stmnt = ClassConstructor($variable.v, $procedureParameters.paramList, $b1.blk, static)}
+	)? '}' {$stmnt = ClassConstructor($ID.text, $procedureParameters.paramList, $b1.blk, static)}
 	|'if' '(' c1 = condition ')' '{' b1 = block '}' (
 		'else' 'if' '(' c2 = condition ')' '{' b2 = block '}' {else_list.append(IfThenBranch($c2.cnd,$b2.blk,[])) 
 			}
@@ -105,7 +105,7 @@ regexBranch
 assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	variable ':=' procedure[$variable.v] {$assign = $procedure.pd }
+	ID ':=' procedure[$ID.text] {$assign = $procedure.pd }
 	| assignmentDirect {$assign = $assignmentDirect.assign };
 
 assignmentDirect
@@ -125,7 +125,7 @@ assignable[enableIgnore]
 	| {$enableIgnore}? '_' {$a = AssignableIgnore()};
 
 assignableVariable
-	returns[v]: ID {$v = Variable($ID.text) };
+	returns[v]: ID {$v = AssignableVariable($ID.text) };
 
 expr[enableIgnore]
 	returns[ex]:

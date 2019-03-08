@@ -1,5 +1,5 @@
-from setlx.native import *
+import setlx
 
 x = True
 y = not(x)
-print(y)
+setlx.print(y)

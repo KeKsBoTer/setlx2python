@@ -1,5 +1,3 @@
-from setlx.native import *
-
 x = 2
 y = 1
 

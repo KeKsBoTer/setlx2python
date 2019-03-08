@@ -1,7 +1,7 @@
-from setlx.native import *
+import setlx
 
 x = 2
-print(f"{x}")
-print(f"{x**2} = {x} * {x}")
-print("")
-print("test")
+setlx.print(f"{x}")
+setlx.print(f"{x**2} = {x} * {x}")
+setlx.print("")
+setlx.print("test")

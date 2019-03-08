@@ -1,9 +1,8 @@
-from setlx.native import *
 import setlx
 
 @setlx.procedure
 def t(a,*list):
-    print(*list)
+    setlx.print(*list)
 
 t(1,2,3)
 
@@ -17,5 +16,5 @@ def p(x, y: 'rw', z=1, w=2):
 a = ["can't write to x"]
 b = ["can't write to y"]
 p(a, b)
-print(a)
-print(b)
+setlx.print(a)
+setlx.print(b)

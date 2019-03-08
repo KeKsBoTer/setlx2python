@@ -1,6 +1,6 @@
-from setlx.native import *
+import setlx
 
-set()
-{1, 2, 3}
-set(range(1, 3+1))
-{x for x in [1, 2] if x > 0}
+setlx.Set()
+setlx.Set((1, 2, 3))
+setlx.Set(range(1, 3+1))
+setlx.Set((x for x in [1, 2] if x > 0))

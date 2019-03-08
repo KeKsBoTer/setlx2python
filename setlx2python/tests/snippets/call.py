@@ -1,4 +1,4 @@
-from setlx.native import *
+import setlx
 
 x = "py"
-print("setlx",2,x)
+setlx.print("setlx",2,x)

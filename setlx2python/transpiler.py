@@ -3,10 +3,12 @@ import ast
 import re
 import codecs
 
+
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
 from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
 from antlr4 import InputStream, CommonTokenStream
+from setlx import built_ins
 
 from .grammar.types import Procedure, ListRange, CollectionAccess, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
 
@@ -32,12 +34,17 @@ class TranspilerState:
     def __init__(self):
         # current statement
         self.before_stmnts = []
+        # number of procedures in this block
         self.procedure_counter = 0
         # scope level
         self.level = 0
         # modules that need to be imported
         self.imports = ImportList()
+        # a list of all valid variables
         self.variables = []
+
+        # keep track of all valid built in functions
+        self.built_ins = built_ins
 
 
 class Transpiler:
@@ -48,8 +55,6 @@ class Transpiler:
     def transpile(self):
         body = self.to_python(self.root)
         imports = self.state.imports.to_python(self.state)
-        imports.insert(0, ast.ImportFrom(module='setlx.native', names=[
-                       ast.alias(name='*', asname=None)], level=0))
         return imports + body
 
     def to_python(self, node):
@@ -109,6 +114,16 @@ class Transpiler:
             self.state.variables.append(assignable.member)
         return ast.Attribute(value=target, attr=member)
 
+    def assignablevariable(self, id):
+        self.check_built_ins(id)
+        if id == "this":
+            id_str = "self"
+        else:
+            id_str = id
+            self.state.variables.append(id_str)
+
+        return ast.Name(id=id_str)
+
     def assignment(self, assignables, right_hand_side):
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
@@ -122,6 +137,7 @@ class Transpiler:
 
     def block(self, stmnts):
         variables = self.state.variables[:]
+        built_ins = self.state.built_ins[:]
 
         procedure_counter = self.state.procedure_counter
         self.state.procedure_counter = 0
@@ -152,6 +168,7 @@ class Transpiler:
         self.state.procedure_counter = procedure_counter
 
         self.state.variables = variables
+        self.state.built_ins = built_ins
         return py_stmnts
 
     def _bool_op(self, left, operator, right):
@@ -231,9 +248,10 @@ class Transpiler:
                                     returns=None)]
         else:
             init = []
-        py_id = self.to_python(id)
+        py_id = escape_id(id)
+        self.check_built_ins(py_id)
         return ast.ClassDef(
-            name=py_id.id,
+            name=py_id,
             bases=[],
             keywords=[],
             body=static+init,
@@ -289,7 +307,7 @@ class Transpiler:
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        return call_function("any", [expr])
+        return call_function("any", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def exit(self):
         return call_function("exit", [])
@@ -306,7 +324,7 @@ class Transpiler:
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        return call_function("all", [expr])
+        return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
@@ -487,8 +505,9 @@ class Transpiler:
             self.state.procedure_counter += 1
             return ast.Name(id=proc_name)
         else:
-            py_name = self.to_python(name)
-            return ast.FunctionDef(name=py_name.id, args=params, body=block, decorator_list=decorators, returns=None)
+            py_name = escape_id(name)
+            self.check_built_ins(py_name)
+            return ast.FunctionDef(name=py_name, args=params, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
@@ -532,15 +551,15 @@ class Transpiler:
     def setlistconstructor(self, collection):
         # TODO use own sets
         if collection == None:
-            return call_function("set", [])
+            return self.setlx_function("Set", [])
         else:
             py_collection = self.to_python(collection)
             if isinstance(collection, Range):
-                return call_function("set", [py_collection.args[0]])
+                return self.setlx_function("Set", [py_collection.args[0]])
             elif isinstance(collection, SetlIteration):
-                return ast.SetComp(elt=py_collection.elt, generators=py_collection.generators)
+                return self.setlx_function("Set", [ast.GeneratorExp(elt=py_collection.elt, generators=py_collection.generators)])
             else:
-                return ast.Set(elts=py_collection.elts)
+                return self.setlx_function("Set", [ast.Tuple(elts=py_collection.elts)])
 
     def setliteration(self, expr, iter_chain, condition):
         iter_chain = self.to_python(iter_chain)
@@ -591,10 +610,6 @@ class Transpiler:
     def setlxfraction(self, number):
         num = int(number)
         return ast.Num(n=num)
-
-    def setlxfunction(self, expr, py_target_type):
-        expr = self.to_python(expr)
-        return self.setlx_function(py_target_type, [expr])
 
     def setlxin(self, left, right):
         return self._compare(left, ast.In(), right)
@@ -740,16 +755,17 @@ class Transpiler:
         # TODO trycatchusrbranch
         raise NotSupported("catch user error is not supported")
 
-    def variable(self, id):
+    def variable(self, id,):
         # prefix variable with "v_" if the id is a python keyword
-        if id in keyword.kwlist:
-            id = f"v_{id}"
+        id = escape_id(id)
+
+        if id in self.state.built_ins:
+            return self.setlx_access(id)
 
         if id == "this":
             id_str = "self"
         else:
             id_str = id
-            self.state.variables.append(id_str)
         return ast.Name(id=id_str)
 
     def variableignore(self):
@@ -771,6 +787,11 @@ class Transpiler:
         unpack_call = self.setlx_function("unpack_error", [ast.Name(id='e')])
         self.state.variables.append(target.id)
         return ast.Assign(targets=[target], value=unpack_call)
+
+    def check_built_ins(self, id):
+        # remove function from built_ins if it is overriden in the code
+        if id in self.state.built_ins:
+            del self.state.built_ins[self.state.built_ins.index(id)]
 
 
 def make_funcs_static(block):
@@ -798,3 +819,7 @@ def bool_true():
 
 def bool_false():
     return ast.NameConstant(value=False)
+
+
+def escape_id(id):
+    return f"v_{id}" if id in keyword.kwlist else id

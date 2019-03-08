@@ -1,0 +1,3 @@
+x := 2;
+value := eval("x*x+2");
+print(value);

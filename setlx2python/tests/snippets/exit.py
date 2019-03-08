@@ -1,5 +1,5 @@
-from setlx.native import *
+import setlx
 
 x = 2 
 exit()
-print("not reachable")
+setlx.print("not reachable")

@@ -1,7 +1,7 @@
-from setlx.native import *
+import setlx
 
 t = "test"
 
-lc = lambda a: print(a,t)
+lc = lambda a: setlx.print(a,t)
 
 lc("closure")

@@ -1,8 +1,8 @@
-from setlx.native import *
+import setlx
 
 x = 10
 while True:
-    print(x)
+    setlx.print(x)
     x = x - 1
     if not(x > 0):
         break
