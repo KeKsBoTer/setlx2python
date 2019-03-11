@@ -23,39 +23,23 @@ import sys
 from docopt import docopt
 from astor import to_source, string_repr
 
-from antlr4 import FileStream, CommonTokenStream
-from antlr4.error.ErrorListener import ErrorListener
+from antlr4 import FileStream
 
-from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
-from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
-from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
-
-from setlx2python.transpiler import Transpiler, NotSupported
+from setlx2python.transpiler import Transpiler, NotSupported, parse_input
 from . import __version__ as VERSION
-
-
-class ParserErrorListener(ErrorListener):
-
-    def __init__(self):
-        ErrorListener.__init__(self)
-
-    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        raise SyntaxError("line " + str(line) + ":" + str(column) + " " + msg)
 
 
 def transpile(file):
     input = FileStream(file, encoding="utf-8")
-    lexer = SetlXgrammarLexer(input)
-    stream = CommonTokenStream(lexer)
-    parser = SetlXgrammarParser(stream)
-    parser._listeners = [ParserErrorListener()]
+    parser = parse_input(input)
     tree = parser.block()
     t = Transpiler(tree.blk)
     try:
         body = t.transpile()
-    except NotSupported as e:
+    except (NotSupported, SyntaxError) as e:
         print(e)
         sys.exit(2)
+
     code = ast.Module(body=body)
     return code
 

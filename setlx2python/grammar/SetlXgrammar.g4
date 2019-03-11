@@ -20,6 +20,7 @@ expression = None
 condition = None
 static = None
 block = None
+default = None
     }:
 	'class' ID '(' procedureParameters[True] ')' '{' b1 = block (
 		'static' '{' b2 = block '}' {static = $b2.blk}
@@ -31,7 +32,7 @@ block = None
 		}
 	| 'switch' '{' (
 		'case' c1 = condition ':' b1 = block {caseList.append(($c1.cnd, $b1.blk)) }
-	)* ('default' ':' b2 = block)? '}' {$stmnt = Switch(caseList,$b2.blk) }
+	)* ('default' ':' b2 = block {default = $b2.blk})? '}' {$stmnt = Switch(caseList, default) }
 	| setlxmatch {$stmnt = $setlxmatch.m}
 	| scan {$stmnt = $scan.s}
 	| 'for' '(' iteratorChain[False] (
@@ -41,8 +42,8 @@ block = None
 	| 'do' '{' block '}' 'while' '(' condition ')' ';' {$stmnt = DoWhile($condition.cnd, $block.blk) 
 		}
 	| 'try' '{' b1 = block '}'(
-		'catchLng' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchLngBranch($v1.v, $b2.blk))}
-		'catchUsr' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append( TryCatchUsrBranch($v1.v, $b2.blk))}
+		'catchLng' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append(TryCatchLngBranch($v1.v, $b2.blk))}
+		| 'catchUsr' '(' v1 = assignableVariable ')' '{' b2 = block '}' {tryList.append(TryCatchUsrBranch($v1.v, $b2.blk))}
 	)*
 	(
 		'catch' '(' v2 = assignableVariable ')' '{' b3 = block '}' {tryList.append(TryCatchBranch($v2.v, $b3.blk)) }
@@ -160,10 +161,10 @@ lambdaParameters
 	@init {
 $paramList = []
     }:
-	variable {$paramList.append(Parameter($variable.v, None, False)) }
+	variable {$paramList.append(Parameter($variable.v, None)) }
 	| '[' (
-		v1 = variable {$paramList.append(Parameter($v1.v, None, False))} (
-			',' v2 = variable {$paramList.append(Parameter($v2.v, None, False))}
+		v1 = variable {$paramList.append(Parameter($v1.v, None))} (
+			',' v2 = variable {$paramList.append(Parameter($v2.v, None))}
 		)*
 	)? ']';
 
@@ -260,11 +261,11 @@ termArguments
 
 procedure[name]
 	returns[pd]:
-	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk,$name,None) 
+	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk, $name, None) 
 		}
 	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk,$name) 
 		}
-	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk) 
+	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk, $name) 
 		};
 
 procedureParameters[enableRw]
@@ -290,11 +291,11 @@ $paramList = []
 procedureParameter[enableRw]
 	returns[param]:
 	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v) }
-	| variable {$param = Parameter($variable.v, None, False) };
+	| variable {$param = Parameter($variable.v, None) };
 
 procedureDefaultParameter
 	returns[param]:
-	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v, $expr.ex, False) };
+	assignableVariable ':=' expr[False] {$param = Parameter($assignableVariable.v, $expr.ex) };
 
 procedureListParameter
 	returns[param]:

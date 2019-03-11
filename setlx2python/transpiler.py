@@ -7,6 +7,7 @@ import codecs
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
 from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
+from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
 from setlx import built_ins
 
@@ -115,6 +116,7 @@ class Transpiler:
         return ast.Attribute(value=target, attr=member)
 
     def assignablevariable(self, id):
+        id = escape_id(id)
         self.check_built_ins(id)
         if id == "this":
             id_str = "self"
@@ -258,8 +260,9 @@ class Transpiler:
             decorator_list=[]
         )
 
-    def closure(self, params, block):
+    def closure(self, params, block, name):
         raise NotSupported("closures are not supported")
+        # return self.to_python(Procedure(params, block, name, None))
 
     def collectionaccess(self, params, callable):
         callable = self.to_python(callable) if callable != None else None
@@ -404,7 +407,15 @@ class Transpiler:
                           body=expr)
 
     def lambdaprocedure(self, params, expr):
-        raise NotSupported("lambda procedures are not supported")
+        expr = self.to_python(expr)
+        params = self.to_python(params)
+        return ast.Lambda(args=ast.arguments(args=params,
+                                             vararg=None,
+                                             kwonlyargs=[],
+                                             kw_defaults=[],
+                                             kwarg=None,
+                                             defaults=[]),
+                          body=expr)
 
     def lessorequal(self, left, right):
         return self._compare(left, ast.LtE(), right)
@@ -452,9 +463,12 @@ class Transpiler:
         expr = self.to_python(expr)
         return ast.Starred(value=expr)
 
-    def parameter(self, id, default, read_write):
-        py_id = self.to_python(id)
-        return ast.arg(arg=py_id.id, annotation=None)
+    def parameter(self, id, default):
+        if id in self.state.built_ins:
+            del self.state.built_ins[self.state.built_ins.index(id)]
+        py_id = escape_id(id.id)
+        self.state.variables.append(py_id)
+        return ast.arg(arg=py_id, annotation=None)
 
     def power(self, base, exponent):
         return self._binop(base, ast.Pow(), exponent)
@@ -469,7 +483,7 @@ class Transpiler:
 
         if decorator == None:
             decorator = self.setlx_access("procedure")
-
+            
         params = []
         defaults = []  # default values for parameters
         vararg = None
@@ -519,6 +533,7 @@ class Transpiler:
         return self._prefix_operator("product", expr)
 
     def productofmembersbinary(self, left, right):
+        # if empty take left value
         return self._prefix_operator("product", right)
 
     def quotient(self, left, right):
@@ -644,7 +659,7 @@ class Transpiler:
 
         # split string by expressions in string
         # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
-        matches = re.finditer(r'\$[^$]+\$', value)
+        matches = re.finditer(r'\$(?!\\)[^$]+\$', value)
         indices = []
         for i in matches:
             indices += i.span()
@@ -661,12 +676,19 @@ class Transpiler:
         values = []
         for s in slices:
             if s[0] == "$":
+                newline = "\n"
+                tab = "\t"
                 if len(s) == 1 or s[-1] != "$":
-                    raise SyntaxError(f'syntax error in string: {string}')
+                    raise SyntaxError(
+                        f'Error(s) while parsing string "{value}" {"{"}{newline}{tab}{"$ missing"}{newline}{"}"}')
 
                 # escape backslashes
                 escaped = codecs.unicode_escape_decode(s.strip("$"))[0]
-                setlx_expr = parse_expr(escaped)
+                try:
+                    setlx_expr = parse_expr(escaped)
+                except Exception as e:
+                    raise SyntaxError(
+                        f'Error(s) while parsing string "{value}" {"{"}{newline}{tab}{e}{newline}{"}"}')
                 expr = self.to_python(setlx_expr)
                 values.append(
                     ast.FormattedValue(
@@ -697,6 +719,7 @@ class Transpiler:
         return self._prefix_operator("sum", expr)
 
     def sumofmembersbinary(self, left, right):
+        # if empty take left value
         return self._prefix_operator("sum", right)
 
     def switch(self, case_list, default_branch):
@@ -742,7 +765,7 @@ class Transpiler:
             )
         else:
             # TODO try_list
-            raise "only one catch is supported"
+            raise NotSupported("catchLng and catchUsr are not supported")
 
     def trycatchbranch(self, variable, block):
         raise "not reachable"
@@ -801,11 +824,24 @@ def make_funcs_static(block):
                 ast.Name(id="staticmethod")] + stmnt.decorator_list
 
 
-def parse_expr(string):
-    input = InputStream(string)
+class ParserErrorListener(ErrorListener):
+    def __init__(self):
+        ErrorListener.__init__(self)
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise SyntaxError("line " + str(line) + ":" + str(column) + " " + msg)
+
+def parse_input(input):
     lexer = SetlXgrammarLexer(input)
     stream = CommonTokenStream(lexer)
     parser = SetlXgrammarParser(stream)
+    parser._listeners = [ParserErrorListener()]
+    return parser
+
+
+def parse_expr(string):
+    input = InputStream(string)
+    parser = parse_input(input)
     return parser.expr(False).ex
 
 
