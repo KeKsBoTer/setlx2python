@@ -201,6 +201,7 @@ class Transpiler:
         raise NotSupported("check/afterBacktrack is not supported")
 
     def classconstructor(self, id, params, block, static_block):
+        params = self.to_python(params)
         body = self.to_python(block)
         for s in body:
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
@@ -226,7 +227,6 @@ class Transpiler:
                 )
                 body.insert(i+1, assign)
 
-        params = self.to_python(params)
         self_arg = ast.arg(arg='self', annotation=None)
         static = self.to_python(static_block)
         if static != None:
@@ -464,8 +464,8 @@ class Transpiler:
         return ast.Starred(value=expr)
 
     def parameter(self, id, default):
-        if id in self.state.built_ins:
-            del self.state.built_ins[self.state.built_ins.index(id)]
+        if id.id in self.state.built_ins:
+            del self.state.built_ins[self.state.built_ins.index(id.id)]
         py_id = escape_id(id.id)
         self.state.variables.append(py_id)
         return ast.arg(arg=py_id, annotation=None)
@@ -858,4 +858,7 @@ def bool_false():
 
 
 def escape_id(id):
+    """ Some ids in setlx code might be python keywords.
+        To avoid syntax errors, these ids are prefixed with "v_"
+    """
     return f"v_{id}" if id in keyword.kwlist else id
