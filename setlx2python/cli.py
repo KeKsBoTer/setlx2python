@@ -38,13 +38,14 @@ def transpile(file=None, code=None):
         input = FileStream(file, encoding="utf-8")
     else:
         raise Exception("no file or code provided")
-    parser = parse_input(input)
-    tree = parser.block()
-    t = Transpiler(tree.blk)
+
     try:
+        parser = parse_input(input)
+        tree = parser.block()
+        t = Transpiler(tree.blk)
         body = t.transpile()
     except (NotSupported, SyntaxError) as e:
-        print(e)
+        print(e, file=sys.stderr)
         sys.exit(2)
 
     code = ast.Module(body=body)
