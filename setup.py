@@ -49,8 +49,8 @@ setup(
         'Programming Language :: Python :: 3.7'
     ],
     keywords='cli',
-    packages=find_packages(exclude=['docs', 'tests*']),
-    install_requires=['docopt', 'antlr4-python3-runtime', 'astor', 'pytest'],
+    packages=find_packages(),
+    install_requires=['docopt', 'antlr4-python3-runtime', 'astor'],
     extras_require={
         'test': ['coverage', 'pytest', 'pytest-cov'],
     },
