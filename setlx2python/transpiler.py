@@ -331,6 +331,15 @@ class Transpiler:
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
+        """ TODO find proper way to handle this
+        if callable.id == "eval":
+            return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
+                            args=[params[0],
+                                  ast.Call(func=ast.Name(id='globals'),
+                                           args=[], keywords=[]),
+                                  ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
+                            keywords=[])
+        """
         expr = self.to_python(callable)
         return ast.Call(expr, params, [])
 
@@ -407,6 +416,7 @@ class Transpiler:
                           body=expr)
 
     def lambdaprocedure(self, params, expr):
+        # TODO correct procedure scope
         expr = self.to_python(expr)
         params = self.to_python(params)
         return ast.Lambda(args=ast.arguments(args=params,
@@ -483,7 +493,7 @@ class Transpiler:
 
         if decorator == None:
             decorator = self.setlx_access("procedure")
-            
+
         params = []
         defaults = []  # default values for parameters
         vararg = None
@@ -564,7 +574,6 @@ class Transpiler:
         raise NotSupported("scan is not supported")
 
     def setlistconstructor(self, collection):
-        # TODO use own sets
         if collection == None:
             return self.setlx_function("Set", [])
         else:
@@ -589,12 +598,12 @@ class Transpiler:
         return ast.comprehension(target=assignable, iter=expression, ifs=[], is_async=0)
 
     def setlvector(self, values):
-        # TODO vector
-        raise NotSupported("vectors are not supported")
+        py_values = self.to_python(values)
+        return self.setlx_function("Vector", py_values)
 
     def setlmatrix(self, vectors):
-        # TODO matrix
-        raise NotSupported("matrices are not supported")
+        py_vec = [ast.List(elts=self.to_python(v.values)) for v in vectors]
+        return self.setlx_function("Matrix", [ast.List(elts=py_vec)])
 
     def setlxassert(self, condition, expr):
         [condition, expr] = self.to_python([condition, expr])
@@ -830,6 +839,7 @@ class ParserErrorListener(ErrorListener):
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         raise SyntaxError("line " + str(line) + ":" + str(column) + " " + msg)
+
 
 def parse_input(input):
     lexer = SetlXgrammarLexer(input)
