@@ -11,7 +11,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
 from setlx import built_ins
 
-from .grammar.types import Procedure, ListRange, CollectionAccess, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
+from .grammar.types import Procedure, ListRange, CollectionAccess, ExplicitList, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
 
 
 class NotSupported(Exception):
@@ -555,16 +555,14 @@ class Transpiler:
     def range(self, start, step, end):
         start = self.to_python(start)
         end = self.to_python(end)
-        end_plus_one = ast.BinOp(left=end, op=ast.Add(), right=ast.Num(n=1))
-        range_params = [start, end_plus_one]
+        range_params = [start, end]
 
         if step != None:
             step = ast.BinOp(left=self.to_python(
                 step), op=ast.Sub(), right=start)
             range_params.append(step)
 
-        range_call = call_function("range", range_params)
-        return call_function("list", [range_call])
+        return self.setlx_function("_range", range_params)
 
     def readwriteparameter(self, id):
         py_id = self.to_python(id)
@@ -579,7 +577,7 @@ class Transpiler:
         else:
             py_collection = self.to_python(collection)
             if isinstance(collection, Range):
-                return self.setlx_function("Set", [py_collection.args[0]])
+                return self.setlx_function("Set", [py_collection])
             elif isinstance(collection, SetlIteration):
                 return self.setlx_function("Set", [ast.GeneratorExp(elt=py_collection.elt, generators=py_collection.generators)])
             else:
@@ -638,9 +636,16 @@ class Transpiler:
     def setlxin(self, left, right):
         return self._compare(left, ast.In(), right)
 
-    def setlxlist(self, expr):
-        if expr != None:
-            return self.to_python(expr)
+    def setlxlist(self, cb):
+        if cb != None:
+            cb_py = self.to_python(cb)
+            if isinstance(cb, ExplicitList):
+                return cb_py
+            if isinstance(cb,Range):
+                return call_function("list",[cb_py])
+            if isinstance(cb,SetlIteration):
+                return cb_py
+            return ast.List(elts=[cb_py])
         else:
             return ast.List(elts=[])
 
@@ -871,4 +876,4 @@ def escape_id(id):
     """ Some ids in setlx code might be python keywords.
         To avoid syntax errors, these ids are prefixed with "v_"
     """
-    return f"v_{id}" if id in keyword.kwlist else id
+    return f"v_{id}" if id in keyword.kwlist+["setlx"] else id

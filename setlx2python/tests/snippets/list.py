@@ -5,8 +5,8 @@ x = [1, 2, 3, "test"]
 setlx.print(x[1-1])
 y = x[x[1-1]-1]
 
-a = list(range(1, 10+1))
-b = list(range(1, 10+1, 3-1))
+a = list(setlx._range(1, 10))
+b = list(setlx._range(1, 10, 3-1))
 setlx.print(a)
 setlx.print(b)
 
