@@ -19,3 +19,7 @@
     - Keine "Sonderbehandlung" korrekte SelX Programme funktionieren trotzdem
     - Verpacken der Argumente in eine Funktion: `x && y ` wird übersetzt zu `bool(x) and bool(y)`. Funktion `bool` wirft einen Fehler, falls der übergebene Wert kein boolescher Wert ist
 
+
+## Values and References
+- SetlX-Mengen enthalten Values, Python References
+- Müssen alle Werte _deepcopied_ werden?
