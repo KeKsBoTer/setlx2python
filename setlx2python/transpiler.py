@@ -797,23 +797,21 @@ class Transpiler:
             )
             handlers.append(ex)
 
-            return ast.Try(
-                body=block,
+        return ast.Try(
+            body=block,
             handlers=handlers,
-                orelse=[],
-                finalbody=[]
-            )
+            orelse=[],
+            finalbody=[]
+        )
 
     def trycatchbranch(self, variable, block):
-        raise "not reachable"
+        raise Exception("not reachable")
 
     def trycatchlngbranch(self, variable, block):
-        # TODO trycatchlngbranch
-        raise NotSupported("catch language error is not supported")
+        raise Exception("not reachable")
 
     def trycatchusrbranch(self, variable, block):
-        # TODO trycatchusrbranch
-        raise NotSupported("catch user error is not supported")
+        raise Exception("not reachable")
 
     def variable(self, id,):
         # prefix variable with "v_" if the id is a python keyword
