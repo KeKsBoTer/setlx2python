@@ -1,6 +1,10 @@
 
 try{
     throw(1);
+}catchUsr(err){
+    print("user error",err);
+}catchLng(err){
+    print("language error",err);
 }catch(err){
     print("error",err);
 }

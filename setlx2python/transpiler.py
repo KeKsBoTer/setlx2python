@@ -11,7 +11,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
 from setlx import built_ins
 
-from .grammar.types import Procedure, ListRange, CollectionAccess, ExplicitList, SetlIteration, Variable, IfThenBranch, Block, ListParameter, WithLevel, Range, ReadWriteParameter, TryCatchBranch
+from .grammar.types import *
 
 
 class NotSupported(Exception):
@@ -43,6 +43,9 @@ class TranspilerState:
         self.imports = ImportList()
         # a list of all valid variables
         self.variables = []
+
+        # list of valid procedures
+        self.procedures = {}
 
         # keep track of all valid built in functions
         self.built_ins = built_ins
@@ -135,11 +138,15 @@ class Transpiler:
         return ast.Assign(targets=left, value=right)
 
     def backtrack(self):
-        raise Exception("backtrack is not supported yet")
+        return ast.Raise(
+            exc=self.setlx_function("BacktrackException", []),
+            cause=None
+        )
 
     def block(self, stmnts):
         variables = self.state.variables[:]
         built_ins = self.state.built_ins[:]
+        procedures = {**self.state.procedures}
 
         procedure_counter = self.state.procedure_counter
         self.state.procedure_counter = 0
@@ -171,6 +178,7 @@ class Transpiler:
 
         self.state.variables = variables
         self.state.built_ins = built_ins
+        self.procedures = procedures
         return py_stmnts
 
     def _bool_op(self, left, operator, right):
@@ -198,7 +206,18 @@ class Transpiler:
         return self.setlx_function("cartesian_product", params)
 
     def check(self, check_block, backtrack_block):
-        raise NotSupported("check/afterBacktrack is not supported")
+        body = self.to_python(check_block)
+        afterBacktrack = [ast.Pass()]
+        if backtrack_block != None:
+            afterBacktrack = self.to_python(backtrack_block)
+        return ast.Try(body=body,
+                       handlers=[
+                           ast.ExceptHandler(type=self.setlx_access('BacktrackException'),
+                                             name=None,
+                                             body=afterBacktrack)
+                       ],
+                       orelse=[],
+                       finalbody=[])
 
     def classconstructor(self, id, params, block, static_block):
         params = self.to_python(params)
@@ -354,7 +373,7 @@ class Transpiler:
 
         orelse = []
 
-        for e in else_list[::-1]:
+        for e in else_list[:: -1]:
             if isinstance(e, IfThenBranch):
                 if isinstance(orelse, list):
                     if len(orelse) > 0:
@@ -489,27 +508,26 @@ class Transpiler:
 
     def procedure(self, params, block, name, decorator):
         block = self.to_python(block)
-        stlx_params = params
 
         if decorator == None:
             decorator = self.setlx_access("procedure")
 
-        params = []
+        py_params = []
         defaults = []  # default values for parameters
         vararg = None
-        for p in stlx_params:
+        for p in params:
             if not isinstance(p, ListParameter):
                 prm = self.to_python(p)
                 if isinstance(p, ReadWriteParameter):  # only copy value parameters
                     prm.annotation = ast.Str("rw")
                 elif p.default != None:  # add default value if one is given
                     defaults.append(self.to_python(p.default))
-                params.append(prm)
+                py_params.append(prm)
             else:
                 py_id = self.to_python(p.id)
                 vararg = ast.arg(arg=py_id.id, annotation=None)
 
-        params = ast.arguments(args=params,
+        arguments = ast.arguments(args=py_params,
                                vararg=vararg,
                                kwonlyargs=[],
                                kw_defaults=[],
@@ -524,14 +542,15 @@ class Transpiler:
             proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
             self.state.before_stmnts.append(
-                WithLevel(self.state.level, ast.FunctionDef(name=proc_name, args=params, body=block, decorator_list=decorators)))
+                WithLevel(self.state.level, ast.FunctionDef(name=proc_name, args=arguments, body=block, decorator_list=decorators)))
 
             self.state.procedure_counter += 1
             return ast.Name(id=proc_name)
         else:
             py_name = escape_id(name)
             self.check_built_ins(py_name)
-            return ast.FunctionDef(name=py_name, args=params, body=block, decorator_list=decorators, returns=None)
+            self.state.procedures[py_name] = params
+            return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
@@ -641,9 +660,9 @@ class Transpiler:
             cb_py = self.to_python(cb)
             if isinstance(cb, ExplicitList):
                 return cb_py
-            if isinstance(cb,Range):
-                return call_function("list",[cb_py])
-            if isinstance(cb,SetlIteration):
+            if isinstance(cb, Range):
+                return call_function("list", [cb_py])
+            if isinstance(cb, SetlIteration):
                 return cb_py
             return ast.List(elts=[cb_py])
         else:
@@ -651,7 +670,7 @@ class Transpiler:
 
     def setlxliteral(self, value):
         if value.startswith("'") and value.endswith("'"):
-            value = value[1:-1]
+            value = value[1: -1]
         return ast.Str(s=value)
 
     def setlxnot(self, expr):
@@ -746,7 +765,7 @@ class Transpiler:
             if default_branch is not None:
                 orelse = self.to_python(default_branch)
 
-            for e in case_list[::-2]:  # cut first element
+            for e in case_list[:: -2]:  # cut first element
                 c = self.to_python(e[0])
                 b = self.to_python(e[1])
                 orelse = [ast.If(test=c, body=b, orelse=orelse)]
@@ -761,25 +780,29 @@ class Transpiler:
         trys = len(try_list)
         if trys == 0:
             return block
-        if trys == 1 and isinstance(try_list[0], TryCatchBranch):
-            catch = try_list[0]
-            var = self.to_python(catch.variable)
+        handlers = []
+        for b in try_list:
+            if isinstance(b, TryCatchUsrBranch):
+                error_type = self.setlx_access("UserException")
+            else:
+                error_type = ast.Name(id="Exception")
+
+            var = self.to_python(b.variable)
             error = self.unpack_error(var)
-            except_block = [error] + self.to_python(catch.block)
+            except_block = [error] + self.to_python(b.block)
             ex = ast.ExceptHandler(
-                type=ast.Name(id="Exception"),
+                type=error_type,
                 name="e",
                 body=except_block
             )
+            handlers.append(ex)
+
             return ast.Try(
                 body=block,
-                handlers=[ex],
+            handlers=handlers,
                 orelse=[],
                 finalbody=[]
             )
-        else:
-            # TODO try_list
-            raise NotSupported("catchLng and catchUsr are not supported")
 
     def trycatchbranch(self, variable, block):
         raise "not reachable"

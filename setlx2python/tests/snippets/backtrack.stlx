@@ -1,0 +1,10 @@
+test := procedure() {
+    print("before backtrack");
+    backtrack;
+};
+
+check{
+    test();
+}afterBacktrack{
+    print("after backtrack");
+}
