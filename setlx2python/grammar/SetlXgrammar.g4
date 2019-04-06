@@ -354,9 +354,7 @@ cb = None
 
 collectionBuilder[enableIgnore]
 	returns[cb]
-	@init {
-exprs = []
-    }:
+	@init {exprs = []}:
 	e1 = expr[$enableIgnore] (
 		',' e2 = expr[$enableIgnore] (
 			RANGE_SIGN e3 = expr[$enableIgnore] {$cb = Range($e1.ex, $e2.ex, $e3.ex) }

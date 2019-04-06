@@ -11,7 +11,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
 from setlx import built_ins
 
-from .grammar.types import *
+from .grammar.types import * # pylint: disable=unused-wildcard-import
 
 
 class NotSupported(Exception):
@@ -101,8 +101,7 @@ class Transpiler:
             index = ast.Index(value=ast.List(elts=self.to_python(exprs)))
         else:
             expr = self.to_python(exprs[0])
-            index = ast.Index(value=ast.BinOp(
-                left=expr, op=ast.Sub(), right=ast.Num(n=1)))
+            index = ast.Index(value=expr)
         return ast.Subscript(value=assignable, slice=index)
 
     def assignableignore(self):
@@ -293,8 +292,7 @@ class Transpiler:
         if isinstance(params, ListRange):  # TODO maby more elegant solution?
             return ast.Subscript(value=callable, slice=py_params)
         else:
-            index = ast.Index(value=ast.BinOp(
-                py_params, ast.Sub(), ast.Num(n=1)))
+            index = ast.Index(value=py_params)
             return ast.Subscript(value=callable, slice=index)
 
     def collectmap(self, expr, callable):
@@ -329,13 +327,15 @@ class Transpiler:
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
+        expr = expr.args[0] # unpack list from setlx.List object
         return call_function("any", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def exit(self):
         return call_function("exit", [])
 
     def explicitlist(self, exprs):
-        return ast.List(elts=[self.to_python(e) for e in exprs])
+        list_arg = ast.List(elts=[self.to_python(e) for e in exprs])
+        return self.setlx_function("List",[list_arg])
 
     def explicitlistwithrest(self, exprs, rest):
         raise NotSupported("explicit list with rest is not supported")
@@ -346,6 +346,7 @@ class Transpiler:
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
+        expr = expr.args[0] # unpack list from setlx.List object
         return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def functioncall(self, params, callable):
@@ -458,8 +459,6 @@ class Transpiler:
     def listrange(self, start, end):
         start = self.to_python(start) if start != None else None
         end = self.to_python(end) if end != None else None
-        if start != None:
-            start = ast.BinOp(left=start, op=ast.Sub(), right=ast.Num(1))
         return ast.Slice(lower=start, upper=end, step=None)
 
     def match(self):
@@ -598,9 +597,9 @@ class Transpiler:
             if isinstance(collection, Range):
                 return self.setlx_function("Set", [py_collection])
             elif isinstance(collection, SetlIteration):
-                return self.setlx_function("Set", [ast.GeneratorExp(elt=py_collection.elt, generators=py_collection.generators)])
+                return self.setlx_function("Set", [py_collection.args[0]])
             else:
-                return self.setlx_function("Set", [ast.Tuple(elts=py_collection.elts)])
+                return self.setlx_function("Set", [py_collection.args[0]]) # unpack setlx.List object
 
     def setliteration(self, expr, iter_chain, condition):
         iter_chain = self.to_python(iter_chain)
@@ -608,7 +607,7 @@ class Transpiler:
         condition = [self.to_python(condition)] if condition != None else []
 
         iter_chain[-1].ifs = condition
-        return ast.ListComp(elt=expr, generators=iter_chain)
+        return self.setlx_function("List",[ast.ListComp(elt=expr, generators=iter_chain)])
 
     def setliterator(self, assignable, expression):
         [assignable, expression] = self.to_python([assignable, expression])
@@ -661,12 +660,12 @@ class Transpiler:
             if isinstance(cb, ExplicitList):
                 return cb_py
             if isinstance(cb, Range):
-                return call_function("list", [cb_py])
+                return self.setlx_function("List",[cb_py])
             if isinstance(cb, SetlIteration):
                 return cb_py
-            return ast.List(elts=[cb_py])
+            return self.setlx_function("List",[cb_py])
         else:
-            return ast.List(elts=[])
+            return self.setlx_function("List",[])
 
     def setlxliteral(self, value):
         if value.startswith("'") and value.endswith("'"):
