@@ -11,7 +11,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
 from setlx import built_ins
 
-from .grammar.types import * # pylint: disable=unused-wildcard-import
+from .grammar.types import *  # pylint: disable=unused-wildcard-import
 
 
 class NotSupported(Exception):
@@ -44,7 +44,7 @@ class TranspilerState:
         # a list of all valid variables
         self.variables = []
 
-        # list of valid procedures
+        # track all valid procedures
         self.procedures = {}
 
         # keep track of all valid built in functions
@@ -118,12 +118,12 @@ class Transpiler:
         return ast.Attribute(value=target, attr=member)
 
     def assignablevariable(self, id):
-        id = escape_id(id)
-        self.check_built_ins(id)
-        if id == "this":
+        py_id = escape_id(id)
+        self.check_built_ins(py_id)
+        if py_id == "this":
             id_str = "self"
         else:
-            id_str = id
+            id_str = py_id
             self.state.variables.append(id_str)
 
         return ast.Name(id=id_str)
@@ -157,7 +157,7 @@ class Transpiler:
             stmnt = self.to_python(s)
             self.state.level = level
 
-            # TODO this needs a better solution
+            # certain elements need to be warped into an expression
             if isinstance(stmnt, (ast.Compare, ast.UnaryOp, ast.BinOp, ast.Call, ast.Set, ast.SetComp)):
                 stmnt = ast.Expr(value=stmnt)
 
@@ -177,7 +177,7 @@ class Transpiler:
 
         self.state.variables = variables
         self.state.built_ins = built_ins
-        self.procedures = procedures
+        self.state.procedures = procedures
         return py_stmnts
 
     def _bool_op(self, left, operator, right):
@@ -289,7 +289,7 @@ class Transpiler:
             py_params = ast.List(elts=[self.to_python(p) for p in params])
         else:
             py_params = self.to_python(params)
-        if isinstance(params, ListRange):  # TODO maby more elegant solution?
+        if isinstance(params, ListRange):
             return ast.Subscript(value=callable, slice=py_params)
         else:
             index = ast.Index(value=py_params)
@@ -327,7 +327,7 @@ class Transpiler:
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        expr = expr.args[0] # unpack list from setlx.List object
+        expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("any", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def exit(self):
@@ -335,7 +335,7 @@ class Transpiler:
 
     def explicitlist(self, exprs):
         list_arg = ast.List(elts=[self.to_python(e) for e in exprs])
-        return self.setlx_function("List",[list_arg])
+        return self.setlx_function("List", [list_arg])
 
     def explicitlistwithrest(self, exprs, rest):
         raise NotSupported("explicit list with rest is not supported")
@@ -346,12 +346,20 @@ class Transpiler:
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        expr = expr.args[0] # unpack list from setlx.List object
+        expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
+
         """ TODO find proper way to handle this
+
+        if isinstance(callable, Variable) and callable.id == "load":
+            import_stmnt = import_call(callable.id)
+            self.state.before_stmnts.append(
+                WithLevel(self.state.level, import_stmnt))
+            return None
+
         if callable.id == "eval":
             return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
                             args=[params[0],
@@ -492,9 +500,9 @@ class Transpiler:
         return ast.Starred(value=expr)
 
     def parameter(self, id, default):
-        if id.id in self.state.built_ins:
-            del self.state.built_ins[self.state.built_ins.index(id.id)]
         py_id = escape_id(id.id)
+        if py_id in self.state.built_ins:
+            del self.state.built_ins[self.state.built_ins.index(py_id)]
         self.state.variables.append(py_id)
         return ast.arg(arg=py_id, annotation=None)
 
@@ -506,7 +514,6 @@ class Transpiler:
         return call_function(py_target_type, [expr])
 
     def procedure(self, params, block, name, decorator):
-        block = self.to_python(block)
 
         if decorator == None:
             decorator = self.setlx_access("procedure")
@@ -532,12 +539,14 @@ class Transpiler:
                                kw_defaults=[],
                                kwarg=None,
                                defaults=defaults)
+
+        block = self.to_python(block)
+
         decorators = []
         if decorator != None:
             decorators = [ast.Name(id=decorator)] if isinstance(
                 decorator, str) else [decorator]
         if name == None:
-            # TODO find better naming
             proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
             self.state.before_stmnts.append(
@@ -561,8 +570,8 @@ class Transpiler:
         return self._prefix_operator("product", expr)
 
     def productofmembersbinary(self, left, right):
-        # if empty take left value
-        return self._prefix_operator("product", right)
+        [left, right] = self.to_python([left, right])
+        return self.setlx_function("product", [right, left])
 
     def quotient(self, left, right):
         return self._binop(left, ast.Div(), right)
@@ -599,7 +608,8 @@ class Transpiler:
             elif isinstance(collection, SetlIteration):
                 return self.setlx_function("Set", [py_collection.args[0]])
             else:
-                return self.setlx_function("Set", [py_collection.args[0]]) # unpack setlx.List object
+                # unpack setlx.List object
+                return self.setlx_function("Set", [py_collection.args[0]])
 
     def setliteration(self, expr, iter_chain, condition):
         iter_chain = self.to_python(iter_chain)
@@ -607,7 +617,7 @@ class Transpiler:
         condition = [self.to_python(condition)] if condition != None else []
 
         iter_chain[-1].ifs = condition
-        return self.setlx_function("List",[ast.ListComp(elt=expr, generators=iter_chain)])
+        return self.setlx_function("List", [ast.ListComp(elt=expr, generators=iter_chain)])
 
     def setliterator(self, assignable, expression):
         [assignable, expression] = self.to_python([assignable, expression])
@@ -660,12 +670,12 @@ class Transpiler:
             if isinstance(cb, ExplicitList):
                 return cb_py
             if isinstance(cb, Range):
-                return self.setlx_function("List",[cb_py])
+                return self.setlx_function("List", [cb_py])
             if isinstance(cb, SetlIteration):
                 return cb_py
-            return self.setlx_function("List",[cb_py])
+            return self.setlx_function("List", [cb_py])
         else:
-            return self.setlx_function("List",[])
+            return self.setlx_function("List", [])
 
     def setlxliteral(self, value):
         if value.startswith("'") and value.endswith("'"):
@@ -751,8 +761,8 @@ class Transpiler:
         return self._prefix_operator("sum", expr)
 
     def sumofmembersbinary(self, left, right):
-        # if empty take left value
-        return self._prefix_operator("sum", right)
+        [left, right] = self.to_python([left, right])
+        return self.setlx_function("sum", [right, left])
 
     def switch(self, case_list, default_branch):
         if len(case_list) == 0:
@@ -897,3 +907,9 @@ def escape_id(id):
         To avoid syntax errors, these ids are prefixed with "v_"
     """
     return f"v_{id}" if id in keyword.kwlist+["setlx"] else id
+
+
+def import_call(stlx_file):
+    file = stlx_file.rstrip(".stlx")
+    file = file.replace("-", "_")
+    return ast.ImportFrom(module=file, names=[ast.alias(name='*', asname=None)], level=0)

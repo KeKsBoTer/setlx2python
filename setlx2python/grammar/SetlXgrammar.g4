@@ -219,7 +219,6 @@ product[enableIgnore]
 setlxReduce[enableIgnore]
 	returns[r]:
 	p1 = prefixOperation[$enableIgnore] {$r = $p1.p} (
-		// TODO what does this do??
 		'+/' p2 = prefixOperation[$enableIgnore] {$r = SumOfMembersBinary($r,$p2.p) }
 		| '*/' p2 = prefixOperation[$enableIgnore] {$r = ProductOfMembersBinary($r,$p2.p) }
 	)*;
