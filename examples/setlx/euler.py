@@ -1,4 +1,3 @@
-﻿from setlx.native import *
 import setlx
 
 
@@ -6,14 +5,14 @@ import setlx
 def computeEuler(n):
     e = 1
     f = 1
-    for i in list(range(1, n + 1)):
+    for i in setlx.List(setlx._range(1, n)):
         e = e + 1 / f
         f = f * (i + 1)
-        print(nDecimalPlaces(e, n))
+        setlx.print(setlx.nDecimalPlaces(e, n))
     return e
 
 
-print('Computing e to 158 digits')
+setlx.print('Computing e to 158 digits')
 e = computeEuler(158)
-print(nDecimalPlaces(e, 158))
+setlx.print(setlx.nDecimalPlaces(e, 158))
 

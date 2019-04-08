@@ -1,4 +1,3 @@
-﻿from setlx.native import *
 import setlx
 
 
@@ -9,15 +8,15 @@ def isRightOf(h1, h2):
 
 @setlx.procedure
 def nextTo(h1, h2):
-    return abs(h1 - h2) == 1
+    return setlx.abs(h1 - h2) == 1
 
 
 @setlx.procedure
 def zebraPuzzle():
     first = 1
     middle = 3
-    result = set()
-    orderings = permutations(list(range(1, 5 + 1)))
+    result = setlx.Set()
+    orderings = setlx.permutations(setlx.List(setlx._range(1, 5)))
     for [red, green, ivory, yellow, blue] in orderings:
         if isRightOf(green, ivory):
             for [english, spaniard, ukrainian, japanese, norwegian] in orderings:
@@ -28,14 +27,14 @@ def zebraPuzzle():
                                 if (kools == yellow and luckies == orange) and japanese == camel:
                                     for [dog, snails, fox, horse, zebra] in orderings:
                                         if ((spaniard == dog and gold == snails) and nextTo(west, fox)) and nextTo(kools, horse):
-                                            print(f'colors:        {[red, green, ivory, yellow, blue]}')
-                                            print(f'nationalities: {[english, spaniard, ukrainian, japanese, norwegian]}')
-                                            print(f'drinks:        {[coffee, tea, milk, orange, water]}')
-                                            print(f'pet:           {[dog, snails, fox, horse, zebra]}')
-                                            print(f'cigarettes:    {[gold, kools, west, luckies, camel]}')
-                                            result += {[water, zebra]}
+                                            setlx.print(f'colors:        {setlx.List([red, green, ivory, yellow, blue])}')
+                                            setlx.print(f'nationalities: {setlx.List([english, spaniard, ukrainian, japanese, norwegian])}')
+                                            setlx.print(f'drinks:        {setlx.List([coffee, tea, milk, orange, water])}')
+                                            setlx.print(f'pet:           {setlx.List([dog, snails, fox, horse, zebra])}')
+                                            setlx.print(f'cigarettes:    {setlx.List([gold, kools, west, luckies, camel])}')
+                                            result += setlx.Set([setlx.List([water, zebra])])
     return result
 
 
-print(zebraPuzzle())
+setlx.print(zebraPuzzle())
 

@@ -1,11 +1,10 @@
-﻿from setlx.native import *
 import setlx
 
 
 @setlx.procedure
 def erlangB(a, n):
     p = a ** n / setlx.factorial(n)
-    p /= setlx.sum({(a ** i / setlx.factorial(i)) for i in set(range(0, n + 1))})
+    p /= setlx.sum(setlx.Set([(a ** i / setlx.factorial(i)) for i in setlx.Set(setlx._range(0, n))]))
     return p
 
 
@@ -35,12 +34,12 @@ def solveN(a, p):
 @setlx.procedure
 def erlangC(a, n):
     p = a ** n * n / (setlx.factorial(n) * (n - a))
-    p /= setlx.sum({(a ** i / setlx.factorial(i)) for i in set(range(0, n - 1 + 1))}) + p
+    p /= setlx.sum(setlx.Set([(a ** i / setlx.factorial(i)) for i in setlx.Set(setlx._range(0, n - 1))])) + p
     return p
 
 
-print('maximum A (for N = 5,      P <= 5%) is ', solveA(5, 0.05, 0.0001), '.')
-print('minimum N (for A = 1.75,   P <= 7%) is ', solveN(1.75, 0.07), '.')
-print('Erlang B  (for A = 0.2*48, N = 20 ) is ', erlangB(0.2 * 48, 20), '.')
-print('Erlang C  (for A = 0.2*48, N = 20 ) is ', erlangC(0.2 * 48, 20), '.')
+setlx.print('maximum A (for N = 5,      P <= 5%) is ', solveA(5, 0.05, 0.0001), '.')
+setlx.print('minimum N (for A = 1.75,   P <= 7%) is ', solveN(1.75, 0.07), '.')
+setlx.print('Erlang B  (for A = 0.2*48, N = 20 ) is ', erlangB(0.2 * 48, 20), '.')
+setlx.print('Erlang C  (for A = 0.2*48, N = 20 ) is ', erlangC(0.2 * 48, 20), '.')
 
