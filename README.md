@@ -15,7 +15,7 @@ Usage:
 ```
 
 # Missing features 
-- [ ] lambdas
+- [x] lambdas
 - [x] sets
 - [x] lists
 - [x] classes
@@ -23,16 +23,16 @@ Usage:
 - [x] implication (=>)
 - [x] boolean equal
 - [x] cartesian product
-- [ ] vector
-- [ ] matrix
-- [ ] closure 
+- [x] vector
+- [x] matrix
+- [x] closure (no write access to variables)
 - [x] cached procedure
 - [x] read/write procedure param
 - [x] procedureListParameter
-- [ ] load setlx files
+- [x] load setlx files
 - [x] switch case
 - [x] throw
-- [ ] check 
+- [x] check 
 
 # tasks daniel
 - [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)

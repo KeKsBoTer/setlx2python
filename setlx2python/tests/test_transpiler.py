@@ -65,7 +65,7 @@ def no_exit(): pass  # do not exit
 
 @pytest.mark.parametrize('files', loadTestSnippets("snippets"))
 def test_snippet(files):
-    TestCase.maxDiff = 5000
+    TestCase.maxDiff = None
 
     with warnings.catch_warnings(record=True) as w:
         (code, ast_setlx, ast_py) = gen_code(files[0], files[1])
