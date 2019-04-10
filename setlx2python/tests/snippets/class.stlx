@@ -12,12 +12,16 @@ class Test(a,b){
         className := "test";
         print("static");
 
-        name := procedure(){
+        name := procedure(value){
+            if (this != om){
+                print("method calls");
+            }
             return Test.className;
         };
     }
 }
 
 t := Test(1,2);
-print(Test.name());
+print(Test.name(20));
 print(t.foo(10));
+print(t.name(20));
