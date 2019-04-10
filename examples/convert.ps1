@@ -3,6 +3,7 @@ foreach($f in $files){
     echo "$($f.FullName)" 
     $target = $f.DirectoryName +"\"+ $f.Basename + ".py"
     $gen = setlx2python "$($f.FullName)" 
+    $target = $target -replace "-","_"
     if($?){
         $gen | out-file -encoding utf8 "$target"
     }else{
