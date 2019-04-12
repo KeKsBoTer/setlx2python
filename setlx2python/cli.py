@@ -55,7 +55,6 @@ def transpile(file=None, code=None):
 def pretty_source(source):
     """ Prettify the source.
     """
-    # TODO we should split somewhere
     return ''.join(source)
 
 
