@@ -106,8 +106,8 @@ regexBranch
 assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	ID ':=' procedure[$ID.text] {$assign = $procedure.pd }
-	| assignmentDirect {$assign = $assignmentDirect.assign };
+	ID ':=' procedure {$assign = ProcedureDefinition($procedure.pd, $ID.text)}
+	| assignmentDirect {$assign = $assignmentDirect.assign};
 
 assignmentDirect
 	returns[assign]:
@@ -243,7 +243,7 @@ factor[enableIgnore]
 		}
 	| (
 		'(' exprContent[$enableIgnore] ')' {$f = $exprContent.ex }
-		| procedure[None] {$f = $procedure.pd }
+		| procedure {$f = $procedure.pd }
 		| variable {$f = $variable.v }
 	) (
 		'.' variable {$f = MemberAccess($f,$variable.v) }
@@ -258,13 +258,13 @@ termArguments
 	exprList[True]
 	| /* epsilon */;
 
-procedure[name]
+procedure
 	returns[pd]:
-	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk, $name, None) 
+	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk) 
 		}
-	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk,$name) 
+	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) 
 		}
-	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk, $name) 
+	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk) 
 		};
 
 procedureParameters[enableRw]

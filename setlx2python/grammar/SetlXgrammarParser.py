@@ -1815,15 +1815,15 @@ class SetlXgrammarParser ( Parser ):
                 self.state = 398
                 self.match(SetlXgrammarParser.T__41)
                 self.state = 399
-                localctx._procedure = self.procedure((None if localctx._ID is None else localctx._ID.text))
-                localctx.assign = localctx._procedure.pd 
+                localctx._procedure = self.procedure()
+                localctx.assign = ProcedureDefinition(localctx._procedure.pd, (None if localctx._ID is None else localctx._ID.text))
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 402
                 localctx._assignmentDirect = self.assignmentDirect()
-                localctx.assign = localctx._assignmentDirect.assign 
+                localctx.assign = localctx._assignmentDirect.assign
                 pass
 
 
@@ -3244,7 +3244,7 @@ class SetlXgrammarParser ( Parser ):
                     pass
                 elif token in [SetlXgrammarParser.T__75, SetlXgrammarParser.T__76, SetlXgrammarParser.T__77]:
                     self.state = 688
-                    localctx._procedure = self.procedure(None)
+                    localctx._procedure = self.procedure()
                     localctx.f = localctx._procedure.pd 
                     pass
                 elif token in [SetlXgrammarParser.ID]:
@@ -3372,14 +3372,12 @@ class SetlXgrammarParser ( Parser ):
 
     class ProcedureContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1, name=None):
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name = None
             self.pd = None
             self._procedureParameters = None # ProcedureParametersContext
             self._block = None # BlockContext
-            self.name = name
 
         def procedureParameters(self):
             return self.getTypedRuleContext(SetlXgrammarParser.ProcedureParametersContext,0)
@@ -3403,9 +3401,9 @@ class SetlXgrammarParser ( Parser ):
 
 
 
-    def procedure(self, name):
+    def procedure(self):
 
-        localctx = SetlXgrammarParser.ProcedureContext(self, self._ctx, self.state, name)
+        localctx = SetlXgrammarParser.ProcedureContext(self, self._ctx, self.state)
         self.enterRule(localctx, 50, self.RULE_procedure)
         try:
             self.state = 751
@@ -3427,7 +3425,7 @@ class SetlXgrammarParser ( Parser ):
                 localctx._block = self.block()
                 self.state = 730
                 self.match(SetlXgrammarParser.T__5)
-                localctx.pd = Procedure(localctx._procedureParameters.paramList, localctx._block.blk, localctx.name, None) 
+                localctx.pd = Procedure(localctx._procedureParameters.paramList, localctx._block.blk) 
                 		
                 pass
             elif token in [SetlXgrammarParser.T__76]:
@@ -3446,7 +3444,7 @@ class SetlXgrammarParser ( Parser ):
                 localctx._block = self.block()
                 self.state = 739
                 self.match(SetlXgrammarParser.T__5)
-                localctx.pd = CachedProcedure(localctx._procedureParameters.paramList, localctx._block.blk,localctx.name) 
+                localctx.pd = CachedProcedure(localctx._procedureParameters.paramList, localctx._block.blk) 
                 		
                 pass
             elif token in [SetlXgrammarParser.T__77]:
@@ -3465,7 +3463,7 @@ class SetlXgrammarParser ( Parser ):
                 localctx._block = self.block()
                 self.state = 748
                 self.match(SetlXgrammarParser.T__5)
-                localctx.pd = Closure(localctx._procedureParameters.paramList, localctx._block.blk, localctx.name) 
+                localctx.pd = Closure(localctx._procedureParameters.paramList, localctx._block.blk) 
                 		
                 pass
             else:
@@ -4306,9 +4304,7 @@ class SetlXgrammarParser ( Parser ):
 
         localctx = SetlXgrammarParser.CollectionBuilderContext(self, self._ctx, self.state, enableIgnore)
         self.enterRule(localctx, 68, self.RULE_collectionBuilder)
-
         exprs = []
-            
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)

@@ -154,8 +154,12 @@ class Transpiler:
     def booleannotequal(self, left, right):
         return self._bool_op(left, ast.NotEq(), right)
 
-    def cachedprocedure(self, params, block, name):
-        return self.to_python(Procedure(params, block, name, True))
+    def cachedprocedure(self, params, block):
+        proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
+
+        self.state.add_before(self.proceduredefinition(CachedProcedure(params,block),proc_name))
+        
+        return ast.Name(id=proc_name)
 
     def cardinality(self, expr):
         expr = self.to_python(expr)
@@ -261,9 +265,13 @@ class Transpiler:
             decorator_list=[]
         )
 
-    def closure(self, params, block, name):
+    def closure(self, params, block):
         warn("closures are translated as normal python functions, so they can only read from variables outside the scope")
-        return self.to_python(Procedure(params, block, name, False))
+        proc_name = f"closure_{self.state.level}_{self.state.procedure_counter}"
+
+        self.state.add_before(self.proceduredefinition(Closure(params,block),proc_name))
+ 
+        return ast.Name(id=proc_name)
 
     def collectionaccess(self, params, callable):
         callable = self.to_python(callable) if callable != None else None
@@ -497,10 +505,19 @@ class Transpiler:
         expr = self.to_python(expr)
         return call_function(py_target_type, [expr])
 
-    def procedure(self, params, block, name, cached=False):
+    def procedure(self, params, block):
+        proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
+        self.state.add_before(self.proceduredefinition(Procedure(params,block),proc_name))
+ 
+        return ast.Name(id=proc_name)
+
+    def proceduredefinition(self, procedure, name):
+        self.state.procedure_counter += 1
+
+        [params,block] = procedure
         decorator = self.setlx_access(
-            "procedure" if not cached else "cached_procedure"
+            "cached_procedure" if isinstance(procedure, CachedProcedure) else "procedure"
         )
 
         py_params = []
@@ -538,19 +555,11 @@ class Transpiler:
         if self.state.is_class_static():
             decorators.insert(0, ast.Name(id="staticmethod"))
 
-        if name == None:
-            proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
+        py_name = escape_id(name)
+        self.state.check_built_ins(py_name)
+        self.state.procedures[py_name] = params
+        return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
 
-            self.state.add_before(ast.FunctionDef(
-                name=proc_name, args=arguments, body=block, decorator_list=decorators))
-
-            self.state.procedure_counter += 1
-            return ast.Name(id=proc_name)
-        else:
-            py_name = escape_id(name)
-            self.state.check_built_ins(py_name)
-            self.state.procedures[py_name] = params
-            return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
