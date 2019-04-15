@@ -12,13 +12,13 @@ class stack:
     @setlx.procedure
     def pop(self=None):
         assert len(self.mStackElements) > 0, 'popping empty stack'
-        self.mStackElements = self.mStackElements[1:-2]
+        self.mStackElements = self.mStackElements[1:len(self.mStackElements) - 1]
 
     @staticmethod
     @setlx.procedure
     def top(self=None):
         assert len(self.mStackElements) > 0, 'top of empty stack'
-        return self.mStackElements[-1]
+        return self.mStackElements[len(self.mStackElements)]
 
     @staticmethod
     @setlx.procedure
@@ -28,9 +28,12 @@ class stack:
     @staticmethod
     @setlx.procedure
     def f_str(self=None):
-        result = self.convert(self)
-        dashes = '-' * len(result)
-        return setlx.join(setlx.List([dashes, result, dashes]), '\\n')
+        copy = setlx.copy(self)
+        result = self.convert(copy)
+        dashes = '\\n'
+        for i in setlx.Set(setlx._range(1, len(result))):
+            dashes += '-'
+        return dashes + '\\n' + result + dashes + '\\n'
 
     @staticmethod
     @setlx.procedure
@@ -55,16 +58,8 @@ class stack:
 @setlx.procedure
 def createStack(l):
     result = stack()
-    for i in setlx.List(setlx._range(1, len(l))):
-        result.push(l[-i])
+    n = len(l)
+    for i in setlx.List(setlx._range(n, 1, n - 1 - n)):
+        result.push(l[i])
     return result
-
-
-s = createStack(setlx.List(setlx._range(1, 10)))
-setlx.print(s)
-while not s.isEmpty():
-    t = s.top()
-    setlx.print(t)
-    s.pop()
-    setlx.print(s, '\\n')
 

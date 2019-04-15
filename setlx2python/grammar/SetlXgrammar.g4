@@ -106,8 +106,9 @@ regexBranch
 assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	ID ':=' procedure[$ID.text] {$assign = $procedure.pd }
-	| assignmentDirect {$assign = $assignmentDirect.assign };
+	v1 = variable[True] ':=' v2 = variable[True] {$assign = CopyVariable($v1.v,$v2.v)}
+	| ID ':=' procedure {$assign = ProcedureDefinition($procedure.pd, $ID.text)}
+	| assignmentDirect {$assign = $assignmentDirect.assign};
 
 assignmentDirect
 	returns[assign]:
@@ -119,7 +120,7 @@ assignmentDirect
 assignable[enableIgnore]
 	returns[a]:
 	assignableVariable {$a = $assignableVariable.v} (
-		'.' variable {$a = AssignableMember($a, $variable.v)}
+		'.' variable[False] {$a = AssignableMember($a, $variable.v)}
 		| '[' exprList[False] ']' {$a = AssignableCollectionAccess($a, $exprList.exprs)}
 	)*
 	| '[' assignmentList ']' {$a = AssignableList($assignmentList.al)}
@@ -161,10 +162,10 @@ lambdaParameters
 	@init {
 $paramList = []
     }:
-	variable {$paramList.append(Parameter($variable.v, None)) }
+	variable[False] {$paramList.append(Parameter($variable.v, None)) }
 	| '[' (
-		v1 = variable {$paramList.append(Parameter($v1.v, None))} (
-			',' v2 = variable {$paramList.append(Parameter($v2.v, None))}
+		v1 = variable[False] {$paramList.append(Parameter($v1.v, None))} (
+			',' v2 = variable[False] {$paramList.append(Parameter($v2.v, None))}
 		)*
 	)? ']';
 
@@ -219,7 +220,6 @@ product[enableIgnore]
 setlxReduce[enableIgnore]
 	returns[r]:
 	p1 = prefixOperation[$enableIgnore] {$r = $p1.p} (
-		// TODO what does this do??
 		'+/' p2 = prefixOperation[$enableIgnore] {$r = SumOfMembersBinary($r,$p2.p) }
 		| '*/' p2 = prefixOperation[$enableIgnore] {$r = ProductOfMembersBinary($r,$p2.p) }
 	)*;
@@ -244,10 +244,10 @@ factor[enableIgnore]
 		}
 	| (
 		'(' exprContent[$enableIgnore] ')' {$f = $exprContent.ex }
-		| procedure[None] {$f = $procedure.pd }
-		| variable {$f = $variable.v }
+		| procedure {$f = $procedure.pd }
+		| variable[True] {$f = $variable.v }
 	) (
-		'.' variable {$f = MemberAccess($f,$variable.v) }
+		'.' variable[False] {$f = MemberAccess($f,$variable.v) }
 		| call[$enableIgnore,$f] {$f = $call.c }
 	)* ('!' {$f = Factorial($f) })?
 	| value[$enableIgnore] {$f = $value.v } (
@@ -259,13 +259,13 @@ termArguments
 	exprList[True]
 	| /* epsilon */;
 
-procedure[name]
+procedure
 	returns[pd]:
-	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk, $name, None) 
+	'procedure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Procedure($procedureParameters.paramList, $block.blk) 
 		}
-	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk,$name) 
+	| 'cachedProcedure' '(' procedureParameters[False] ')' '{' block '}' {$pd = CachedProcedure($procedureParameters.paramList, $block.blk) 
 		}
-	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk, $name) 
+	| 'closure' '(' procedureParameters[True] ')' '{' block '}' {$pd = Closure($procedureParameters.paramList, $block.blk) 
 		};
 
 procedureParameters[enableRw]
@@ -291,7 +291,7 @@ $paramList = []
 procedureParameter[enableRw]
 	returns[param]:
 	{$enableRw}? 'rw' assignableVariable {$param = ReadWriteParameter($assignableVariable.v) }
-	| variable {$param = Parameter($variable.v, None) };
+	| variable[False] {$param = Parameter($variable.v, None) };
 
 procedureDefaultParameter
 	returns[param]:
@@ -299,7 +299,7 @@ procedureDefaultParameter
 
 procedureListParameter
 	returns[param]:
-	'*' variable {$param = ListParameter($variable.v) };
+	'*' variable[False] {$param = ListParameter($variable.v) };
 
 call[enableIgnore,callable]
 	returns[c]:
@@ -416,8 +416,8 @@ atomicValue
 	| 'true' {$av = SetlXTrue() }
 	| 'false' {$av = SetlXFalse() };
 
-variable
-	returns[Variable v]: ID {$v = Variable($ID.text) };
+variable[standalone=False]
+	returns[Variable v]: ID {$v = Variable($ID.text,standalone) };
 
 condition
 	returns[cnd]:

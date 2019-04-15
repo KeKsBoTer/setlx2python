@@ -13,33 +13,20 @@ Usage:
   setlx2python -h | --help
   setlx2python --version
 ```
+# TODO
+Simon:
+- support file loading
+- recognize lambda functions as class functions (see heap.stlx)
+- support f_str as __str__ method
+- no None (om) in Lists!
+- make tic-tac-toe work
 
-# Missing features 
-- [ ] lambdas
-- [x] sets
-- [x] lists
-- [x] classes
-- [x] unpack procedure parameters
-- [x] implication (=>)
-- [x] boolean equal
-- [x] cartesian product
-- [ ] vector
-- [ ] matrix
-- [ ] closure 
-- [x] cached procedure
-- [x] read/write procedure param
-- [x] procedureListParameter
-- [ ] load setlx files
-- [x] switch case
-- [x] throw
-- [ ] check 
+Daniel:
+- fix "could not delete {1}" in union_find_naive.py
+- union_find_oo.py: R is missing element [1,9] (line 42) (wrong map behaviour)
 
-# tasks daniel
-- [ ] check setlx vector/matrix behavior vs python vector/matrix (numpy -> wrapper)
-- [X] create list of all setlx specific functions
 # Features that will not be supported
 - execute / eval
 - scan
 - terms
 - term matching
-- variables / statements in strings

@@ -3,6 +3,9 @@ x = setlx.List()
 x = setlx.List([1, 2, 3, 'test'])
 setlx.print(x[1])
 y = x[x[1]]
+
+t = setlx.List(["with_rest" , *x])
+
 a = setlx.List(setlx._range(1, 10))
 b = setlx.List(setlx._range(1, 10, 3 - 1))
 setlx.print(a)

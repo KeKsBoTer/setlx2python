@@ -2,53 +2,16 @@ import keyword
 import ast
 import re
 import codecs
-
+from warnings import warn
 
 from setlx2python.grammar.SetlXgrammarParser import SetlXgrammarParser
 from setlx2python.grammar.SetlXgrammarLexer import SetlXgrammarLexer
 from setlx2python.grammar.SetlXgrammarListener import SetlXgrammarListener
 from antlr4.error.ErrorListener import ErrorListener
 from antlr4 import InputStream, CommonTokenStream
-from setlx import built_ins
 
-from .grammar.types import * # pylint: disable=unused-wildcard-import
-
-
-class NotSupported(Exception):
-    def __init__(self, msg=""):
-        Exception.__init__(self, msg)
-
-
-class ImportList:
-    def __init__(self):
-        self.imports = []
-
-    def add(self, module):
-        if module not in self.imports:
-            self.imports.append(module)
-
-    def to_python(self, state):
-        return [ast.Import(names=[ast.alias(name=i, asname=None)]) for i in self.imports]
-
-
-class TranspilerState:
-    def __init__(self):
-        # current statement
-        self.before_stmnts = []
-        # number of procedures in this block
-        self.procedure_counter = 0
-        # scope level
-        self.level = 0
-        # modules that need to be imported
-        self.imports = ImportList()
-        # a list of all valid variables
-        self.variables = []
-
-        # list of valid procedures
-        self.procedures = {}
-
-        # keep track of all valid built in functions
-        self.built_ins = built_ins
+from .grammar.types import *  # pylint: disable=unused-wildcard-import
+from .state import TranspilerState, ClassContext
 
 
 class Transpiler:
@@ -118,19 +81,23 @@ class Transpiler:
         return ast.Attribute(value=target, attr=member)
 
     def assignablevariable(self, id):
-        id = escape_id(id)
-        self.check_built_ins(id)
-        if id == "this":
+        py_id = escape_id(id)
+        self.state.check_built_ins(py_id)
+        if py_id == "this":
             id_str = "self"
         else:
-            id_str = id
+            id_str = py_id
             self.state.variables.append(id_str)
+
+        if self.state.class_context != None:
+            self.state.class_context.variables.append(py_id)
 
         return ast.Name(id=id_str)
 
     def assignment(self, assignables, right_hand_side):
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
+
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
             right = right.value  # TODO fix this workaround. see tests/procedure
 
@@ -143,10 +110,12 @@ class Transpiler:
         )
 
     def block(self, stmnts):
+        # copy state variables to restore them after block translation
         variables = self.state.variables[:]
         built_ins = self.state.built_ins[:]
         procedures = {**self.state.procedures}
 
+        # count number of procedures in a block for non ambigous function naming
         procedure_counter = self.state.procedure_counter
         self.state.procedure_counter = 0
 
@@ -154,30 +123,23 @@ class Transpiler:
         for s in stmnts:
             level = self.state.level
             self.state.level += 1  # next depth level
+            self.state.add_before = lambda stmnt: py_stmnts.append(stmnt)
+
             stmnt = self.to_python(s)
+
+            self.state.add_before = None
             self.state.level = level
 
-            # TODO this needs a better solution
+            # certain elements need to be warped into an expression
             if isinstance(stmnt, (ast.Compare, ast.UnaryOp, ast.BinOp, ast.Call, ast.Set, ast.SetComp)):
                 stmnt = ast.Expr(value=stmnt)
-
-            if len(self.state.before_stmnts) > 0:
-                # prepend self.statements that need to be executed before self.statement (e.g. function declaration)
-                before, not_before = [], []
-                for x in self.state.before_stmnts:
-                    # only append before self.statements that were generated in higher levels
-                    (not_before, before)[x.level > self.state.level].append(x)
-
-                py_stmnts += [self.to_python(b) for b in before]
-                self.state.before_stmnts = not_before
-
             py_stmnts.append(stmnt)
 
         self.state.procedure_counter = procedure_counter
 
         self.state.variables = variables
         self.state.built_ins = built_ins
-        self.procedures = procedures
+        self.state.procedures = procedures
         return py_stmnts
 
     def _bool_op(self, left, operator, right):
@@ -192,9 +154,13 @@ class Transpiler:
     def booleannotequal(self, left, right):
         return self._bool_op(left, ast.NotEq(), right)
 
-    def cachedprocedure(self, params, block, name):
-        decorator = self.setlx_access("cached_procedure")
-        return self.to_python(Procedure(params, block, name, decorator))
+    def cachedprocedure(self, params, block):
+        proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
+
+        self.state.add_before(self.proceduredefinition(
+            CachedProcedure(params, block), proc_name))
+
+        return ast.Name(id=proc_name)
 
     def cardinality(self, expr):
         expr = self.to_python(expr)
@@ -219,13 +185,20 @@ class Transpiler:
                        finalbody=[])
 
     def classconstructor(self, id, params, block, static_block):
+        static_block = static_block or Block([])  # convert None to empty list
+
+        py_id = escape_id(id)
+        self.state.check_built_ins(py_id)
+
+        self.state.class_context = ClassContext(py_id)
+        self.state.class_context.variables += [escape_id(s.name) for s in block.stmnts+static_block.stmnts if isinstance(s,ProcedureDefinition)]
+
         params = self.to_python(params)
         body = self.to_python(block)
-        for s in body:
+        for i, s in enumerate(body):
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
-
                 s.targets = [
                     ast.Attribute(
                         value=ast.Name(id='self'),
@@ -233,8 +206,8 @@ class Transpiler:
                     ),
                     ast.Name(id=s.targets[0])
                 ]
-
-        for i, s in enumerate(body):
+            # enumerate over all generated functions and assign them as class method
+            # e.g. self.method = method
             if isinstance(s, ast.FunctionDef):
                 assign = ast.Assign(
                     targets=[ast.Attribute(
@@ -245,31 +218,47 @@ class Transpiler:
                 )
                 body.insert(i+1, assign)
 
-        self_arg = ast.arg(arg='self', annotation=None)
+        # translate static part of class
+        self.state.class_context.static = True
         static = self.to_python(static_block)
-        if static != None:
-            make_funcs_static(static)
-        else:
-            static = []
+        self.state.class_context.static = False
 
-        func_decorator = self.setlx_access("procedure")
+        # in setlx static functions can be called as method
+        # in order to translate this properly, every static function is converted to a method in the constructor
+        # looks like this: self.static_function = setlx.to_method(self,static_function)
+        for s in static:
+            if isinstance(s, ast.FunctionDef):
+                assign = self.to_method(s.name)
+                body.insert(0, assign)
+            # check for all static lambda definitions and make them none static
+            elif isinstance(s, ast.Assign) and isinstance(s.value, ast.Lambda):
+                assign = self.to_method(s.targets[0].id)
+                body.insert(0, assign)
 
+        self_arg = ast.arg(arg='self', annotation=None)
+
+        init = []
         if len(body) > 0:
-            init = [ast.FunctionDef(name='__init__',
-                                    args=ast.arguments(
-                                        args=[self_arg]+params,
-                                        vararg=None,
-                                        kwonlyargs=[],
-                                        kw_defaults=[],
-                                        kwarg=None,
-                                        defaults=[]),
-                                    body=body,
-                                    decorator_list=[func_decorator],
-                                    returns=None)]
-        else:
-            init = []
-        py_id = escape_id(id)
-        self.check_built_ins(py_id)
+            """ add init function for class
+                example:
+                    @setlx.procedure
+                    def __init__(self,x,y):
+                        ...
+            """
+            init.append(ast.FunctionDef(name='__init__',
+                                        args=ast.arguments(
+                                            args=[self_arg]+params,
+                                            vararg=None,
+                                            kwonlyargs=[],
+                                            kw_defaults=[],
+                                            kwarg=None,
+                                            defaults=[]),
+                                        body=body,
+                                        decorator_list=[
+                                            self.setlx_access("procedure")],
+                                        returns=None))
+
+        self.state.class_context = None
         return ast.ClassDef(
             name=py_id,
             bases=[],
@@ -278,9 +267,14 @@ class Transpiler:
             decorator_list=[]
         )
 
-    def closure(self, params, block, name):
-        raise NotSupported("closures are not supported")
-        # return self.to_python(Procedure(params, block, name, None))
+    def closure(self, params, block):
+        warn("closures are translated as normal python functions, so they can only read from variables outside the scope")
+        proc_name = f"closure_{self.state.level}_{self.state.procedure_counter}"
+
+        self.state.add_before(self.proceduredefinition(
+            Closure(params, block), proc_name))
+
+        return ast.Name(id=proc_name)
 
     def collectionaccess(self, params, callable):
         callable = self.to_python(callable) if callable != None else None
@@ -289,7 +283,7 @@ class Transpiler:
             py_params = ast.List(elts=[self.to_python(p) for p in params])
         else:
             py_params = self.to_python(params)
-        if isinstance(params, ListRange):  # TODO maby more elegant solution?
+        if isinstance(params, ListRange):
             return ast.Subscript(value=callable, slice=py_params)
         else:
             index = ast.Index(value=py_params)
@@ -304,6 +298,13 @@ class Transpiler:
 
     def conjunction(self, left, right):
         return self._boolop(left, ast.And(), right)
+
+    def copyvariable(self, left, right):
+        [left,right] = self.to_python([left,right])
+        return ast.Assign(
+                    targets=[left],
+                    value=self.setlx_function("copy",[right])
+                )
 
     def difference(self, left, right):
         return self._binop(left, ast.Sub(), right)
@@ -327,18 +328,22 @@ class Transpiler:
 
     def exists(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        expr = expr.args[0] # unpack list from setlx.List object
+        expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("any", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def exit(self):
         return call_function("exit", [])
 
     def explicitlist(self, exprs):
-        list_arg = ast.List(elts=[self.to_python(e) for e in exprs])
-        return self.setlx_function("List",[list_arg])
+        list_arg = ast.List(elts=self.to_python(exprs))
+        return self.setlx_function("List", [list_arg])
 
     def explicitlistwithrest(self, exprs, rest):
-        raise NotSupported("explicit list with rest is not supported")
+        py_exprs = self.to_python(exprs)
+        py_exprs.append(ast.Starred(
+            value=self.to_python(rest)
+        ))
+        return ast.List(elts=py_exprs)
 
     def factorial(self, expr):
         expr = self.to_python(expr)
@@ -346,12 +351,20 @@ class Transpiler:
 
     def forall(self, iter_chain, condition):
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
-        expr = expr.args[0] # unpack list from setlx.List object
+        expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def functioncall(self, params, callable):
         params = [self.to_python(p) for p in params]
+
         """ TODO find proper way to handle this
+
+        if isinstance(callable, Variable) and callable.id == "load":
+            import_stmnt = import_call(callable.id)
+            self.state.before_stmnts.append(
+                WithLevel(self.state.level, import_stmnt))
+            return None
+
         if callable.id == "eval":
             return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
                             args=[params[0],
@@ -425,26 +438,23 @@ class Transpiler:
         return [assignable, list_product]
 
     def lambdaclosure(self, params, expr):
-        expr = self.to_python(expr)
-        params = self.to_python(params)
-        return ast.Lambda(args=ast.arguments(args=params,
-                                             vararg=None,
-                                             kwonlyargs=[],
-                                             kw_defaults=[],
-                                             kwarg=None,
-                                             defaults=[]),
-                          body=expr)
+        return self.lambdaprocedure(params, expr)
 
     def lambdaprocedure(self, params, expr):
-        # TODO correct procedure scope
         expr = self.to_python(expr)
         params = self.to_python(params)
+
+        defaults = []
+        if self.state.is_class_static():
+            params.append(ast.arg(arg="self", annotation=None))
+            defaults.append(ast.NameConstant(None))
+
         return ast.Lambda(args=ast.arguments(args=params,
                                              vararg=None,
                                              kwonlyargs=[],
                                              kw_defaults=[],
                                              kwarg=None,
-                                             defaults=[]),
+                                             defaults=defaults),
                           body=expr)
 
     def lessorequal(self, left, right):
@@ -492,9 +502,9 @@ class Transpiler:
         return ast.Starred(value=expr)
 
     def parameter(self, id, default):
-        if id.id in self.state.built_ins:
-            del self.state.built_ins[self.state.built_ins.index(id.id)]
         py_id = escape_id(id.id)
+        if py_id in self.state.built_ins:
+            del self.state.built_ins[self.state.built_ins.index(py_id)]
         self.state.variables.append(py_id)
         return ast.arg(arg=py_id, annotation=None)
 
@@ -505,11 +515,22 @@ class Transpiler:
         expr = self.to_python(expr)
         return call_function(py_target_type, [expr])
 
-    def procedure(self, params, block, name, decorator):
-        block = self.to_python(block)
+    def procedure(self, params, block):
+        proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
-        if decorator == None:
-            decorator = self.setlx_access("procedure")
+        self.state.add_before(self.proceduredefinition(
+            Procedure(params, block), proc_name))
+
+        return ast.Name(id=proc_name)
+
+    def proceduredefinition(self, procedure, name):
+        self.state.procedure_counter += 1
+
+        [params, block] = procedure
+        decorator = self.setlx_access(
+            "cached_procedure" if isinstance(
+                procedure, CachedProcedure) else "procedure"
+        )
 
         py_params = []
         defaults = []  # default values for parameters
@@ -526,30 +547,34 @@ class Transpiler:
                 py_id = self.to_python(p.id)
                 vararg = ast.arg(arg=py_id.id, annotation=None)
 
+        if self.state.is_class_static():
+            # if function is static, add self=None as optinal parameter to the end
+            py_params.append(ast.arg(arg="self", annotation=None))
+            defaults.append(ast.NameConstant(value=None))
+
         arguments = ast.arguments(args=py_params,
-                               vararg=vararg,
-                               kwonlyargs=[],
-                               kw_defaults=[],
-                               kwarg=None,
-                               defaults=defaults)
-        decorators = []
-        if decorator != None:
-            decorators = [ast.Name(id=decorator)] if isinstance(
-                decorator, str) else [decorator]
-        if name == None:
-            # TODO find better naming
-            proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
+                                  vararg=vararg,
+                                  kwonlyargs=[],
+                                  kw_defaults=[],
+                                  kwarg=None,
+                                  defaults=defaults)
 
-            self.state.before_stmnts.append(
-                WithLevel(self.state.level, ast.FunctionDef(name=proc_name, args=arguments, body=block, decorator_list=decorators)))
+        block = self.to_python(block)
 
-            self.state.procedure_counter += 1
-            return ast.Name(id=proc_name)
-        else:
-            py_name = escape_id(name)
-            self.check_built_ins(py_name)
-            self.state.procedures[py_name] = params
-            return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
+        decorators = [ast.Name(id=decorator)] if isinstance(
+            decorator, str) else [decorator]
+
+        if self.state.is_class_static():
+            decorators.insert(0, ast.Name(id="staticmethod"))
+
+        py_name = escape_id(name)
+
+        if self.state.class_context != None:
+            self.state.class_context.variables.append(py_name)
+
+        self.state.check_built_ins(py_name)
+        self.state.procedures[py_name] = params
+        return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
@@ -561,8 +586,8 @@ class Transpiler:
         return self._prefix_operator("product", expr)
 
     def productofmembersbinary(self, left, right):
-        # if empty take left value
-        return self._prefix_operator("product", right)
+        [left, right] = self.to_python([left, right])
+        return self.setlx_function("product", [right, left])
 
     def quotient(self, left, right):
         return self._binop(left, ast.Div(), right)
@@ -599,7 +624,8 @@ class Transpiler:
             elif isinstance(collection, SetlIteration):
                 return self.setlx_function("Set", [py_collection.args[0]])
             else:
-                return self.setlx_function("Set", [py_collection.args[0]]) # unpack setlx.List object
+                # unpack setlx.List object
+                return self.setlx_function("Set", [py_collection.args[0]])
 
     def setliteration(self, expr, iter_chain, condition):
         iter_chain = self.to_python(iter_chain)
@@ -607,7 +633,7 @@ class Transpiler:
         condition = [self.to_python(condition)] if condition != None else []
 
         iter_chain[-1].ifs = condition
-        return self.setlx_function("List",[ast.ListComp(elt=expr, generators=iter_chain)])
+        return self.setlx_function("List", [ast.ListComp(elt=expr, generators=iter_chain)])
 
     def setliterator(self, assignable, expression):
         [assignable, expression] = self.to_python([assignable, expression])
@@ -660,12 +686,12 @@ class Transpiler:
             if isinstance(cb, ExplicitList):
                 return cb_py
             if isinstance(cb, Range):
-                return self.setlx_function("List",[cb_py])
+                return self.setlx_function("List", [cb_py])
             if isinstance(cb, SetlIteration):
                 return cb_py
-            return self.setlx_function("List",[cb_py])
+            return self.setlx_function("List", [cb_py])
         else:
-            return self.setlx_function("List",[])
+            return self.setlx_function("List", [])
 
     def setlxliteral(self, value):
         if value.startswith("'") and value.endswith("'"):
@@ -751,8 +777,8 @@ class Transpiler:
         return self._prefix_operator("sum", expr)
 
     def sumofmembersbinary(self, left, right):
-        # if empty take left value
-        return self._prefix_operator("sum", right)
+        [left, right] = self.to_python([left, right])
+        return self.setlx_function("sum", [right, left])
 
     def switch(self, case_list, default_branch):
         if len(case_list) == 0:
@@ -812,24 +838,22 @@ class Transpiler:
     def trycatchusrbranch(self, variable, block):
         raise Exception("not reachable")
 
-    def variable(self, id,):
+    def variable(self, id, standalone):
         # prefix variable with "v_" if the id is a python keyword
-        id = escape_id(id)
+        py_id = escape_id(id)
 
-        if id in self.state.built_ins:
-            return self.setlx_access(id)
+        if py_id in self.state.built_ins:
+            return self.setlx_access(py_id)
 
-        if id == "this":
-            id_str = "self"
-        else:
-            id_str = id
-        return ast.Name(id=id_str)
+        if py_id == "this":
+            py_id = "self"
+        elif standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
+            return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
+
+        return ast.Name(id=py_id)
 
     def variableignore(self):
         return ast.Name(id="_")
-
-    def withlevel(self, level, code):
-        return code
 
     def setlx_access(self, name):
         self.state.imports.add("setlx")
@@ -845,17 +869,18 @@ class Transpiler:
         self.state.variables.append(target.id)
         return ast.Assign(targets=[target], value=unpack_call)
 
-    def check_built_ins(self, id):
-        # remove function from built_ins if it is overriden in the code
-        if id in self.state.built_ins:
-            del self.state.built_ins[self.state.built_ins.index(id)]
-
-
-def make_funcs_static(block):
-    for stmnt in block:
-        if isinstance(stmnt, ast.FunctionDef):
-            stmnt.decorator_list = [
-                ast.Name(id="staticmethod")] + stmnt.decorator_list
+    def to_method(self, id):
+        return ast.Assign(
+            targets=[ast.Attribute(
+                value=ast.Name(id='self'),
+                attr=id
+            )],
+            value=self.setlx_function("to_method", [
+                ast.Name(id="self"),
+                ast.Attribute(value=ast.Name(
+                    id=self.state.class_context.id), attr=id)
+            ])
+        )
 
 
 class ParserErrorListener(ErrorListener):
@@ -897,3 +922,14 @@ def escape_id(id):
         To avoid syntax errors, these ids are prefixed with "v_"
     """
     return f"v_{id}" if id in keyword.kwlist+["setlx"] else id
+
+
+def import_call(stlx_file):
+    file = stlx_file.rstrip(".stlx")
+    file = file.replace("-", "_")
+    return ast.ImportFrom(module=file, names=[ast.alias(name='*', asname=None)], level=0)
+
+
+class NotSupported(Exception):
+    def __init__(self, msg=""):
+        Exception.__init__(self, msg)
