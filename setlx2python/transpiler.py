@@ -60,12 +60,10 @@ class Transpiler:
 
     def assignablecollectionaccess(self, assignable, exprs):
         assignable = self.to_python(assignable)
-        if len(exprs) > 1:
-            index = ast.Index(value=ast.List(elts=self.to_python(exprs)))
-        else:
-            expr = self.to_python(exprs[0])
-            index = ast.Index(value=expr)
-        return ast.Subscript(value=assignable, slice=index)
+        py_exprs = self.to_python(exprs)
+        # unpack collections with only one memeber
+        index = ast.List(elts=py_exprs) if len(exprs) > 1 else py_exprs[0]
+        return ast.Subscript(value=assignable, slice=ast.Index(index))
 
     def assignableignore(self):
         return ast.Name(id="_")
@@ -81,16 +79,15 @@ class Transpiler:
         return ast.Attribute(value=target, attr=member)
 
     def assignablevariable(self, id):
-        py_id = escape_id(id)
-        self.state.check_built_ins(py_id)
-        if py_id == "this":
+        if id == "this":
             id_str = "self"
         else:
-            id_str = py_id
+            id_str = escape_id(id)
+            self.state.check_built_ins(id_str)
             self.state.variables.append(id_str)
 
-        if self.state.class_context != None:
-            self.state.class_context.variables.append(py_id)
+            if self.state.class_context != None:
+                self.state.class_context.variables.append(id_str)
 
         return ast.Name(id=id_str)
 
@@ -98,8 +95,9 @@ class Transpiler:
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
 
+        # unpack function calls (calls are not wraped in expressions in python)
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
-            right = right.value  # TODO fix this workaround. see tests/procedure
+            right = right.value
 
         return ast.Assign(targets=left, value=right)
 
@@ -177,7 +175,7 @@ class Transpiler:
             afterBacktrack = self.to_python(backtrack_block)
         return ast.Try(body=body,
                        handlers=[
-                           ast.ExceptHandler(type=self.setlx_access('BacktrackException'),
+                            ast.ExceptHandler(type=self.setlx_access('BacktrackException'),
                                              name=None,
                                              body=afterBacktrack)
                        ],
@@ -316,12 +314,12 @@ class Transpiler:
         return self._boolop(left, ast.Or(), right)
 
     def dowhile(self, condition, block):
-        [condition, block] = self.to_python([condition, block])
+        [py_condition, py_block] = self.to_python([condition, block])
         break_block = [ast.Break()]
-        negate = ast.UnaryOp(op=ast.Not(), operand=condition)
+        negate = ast.UnaryOp(op=ast.Not(), operand=py_condition)
         if_break = ast.If(test=negate, body=break_block, orelse=[])
-        block.append(if_break)
-        return ast.While(test=bool_true(), body=block, orelse=[])
+        py_block.append(if_break)
+        return ast.While(test=bool_true(), body=py_block, orelse=[])
 
     def equal(self, left, right):
         return self._compare(left, ast.Eq(), right)
@@ -343,7 +341,8 @@ class Transpiler:
         py_exprs.append(ast.Starred(
             value=self.to_python(rest)
         ))
-        return ast.List(elts=py_exprs)
+        elts = ast.List(elts=py_exprs)
+        return self.setlx_function("List", [elts])
 
     def factorial(self, expr):
         expr = self.to_python(expr)
@@ -683,20 +682,15 @@ class Transpiler:
     def setlxlist(self, cb):
         if cb != None:
             cb_py = self.to_python(cb)
-            if isinstance(cb, ExplicitList):
-                return cb_py
-            if isinstance(cb, Range):
-                return self.setlx_function("List", [cb_py])
-            if isinstance(cb, SetlIteration):
+            if isinstance(cb, (ExplicitList,ExplicitListWithRest,SetlIteration)):
                 return cb_py
             return self.setlx_function("List", [cb_py])
         else:
             return self.setlx_function("List", [])
 
     def setlxliteral(self, value):
-        if value.startswith("'") and value.endswith("'"):
-            value = value[1: -1]
-        return ast.Str(s=value)
+        # cut " from start and end
+        return ast.Str(s=value[1: -1])
 
     def setlxnot(self, expr):
         expr = self.to_python(expr)
@@ -710,7 +704,7 @@ class Transpiler:
         return ast.Return(value=expression, decorator_list=[], returns=None)
 
     def setlxstring(self, string):
-        value = string.strip('"')
+        value = string[1:-1]
         if len(value) == 0:
             # if the string is empty, so is the python string
             return ast.Str(s="")
@@ -764,8 +758,8 @@ class Transpiler:
         return bool_true()
 
     def setlxwhile(self, condition, block):
-        [condition, block] = self.to_python([condition, block])
-        return ast.While(test=condition, body=block, orelse=[])
+        [py_condition, py_block] = self.to_python([condition, block])
+        return ast.While(test=py_condition, body=py_block, orelse=[])
 
     def sum(self, left, right):
         return self._binop(left, ast.Add(), right)
@@ -782,29 +776,27 @@ class Transpiler:
 
     def switch(self, case_list, default_branch):
         if len(case_list) == 0:
+            # in setlx try can standalone, in python not
             return default_branch
-        else:
-            cond = self.to_python(case_list[0][0])
-            blk = self.to_python(case_list[0][1])
-            orelse = []
-            if default_branch is not None:
-                orelse = self.to_python(default_branch)
+        
+        cond = self.to_python(case_list[0][0])
+        blk = self.to_python(case_list[0][1])
+        orelse = self.to_python(default_branch) or []
 
-            for e in case_list[:: -2]:  # cut first element
-                c = self.to_python(e[0])
-                b = self.to_python(e[1])
-                orelse = [ast.If(test=c, body=b, orelse=orelse)]
+        for e in case_list[:: -2]:  # invert list and cut first element
+            [test,block] = self.to_python(list(e[0:2]))
+            orelse = [ast.If(test=test, body=block, orelse=orelse)]
 
-            return ast.If(test=cond, body=blk, orelse=orelse)
+        return ast.If(test=cond, body=blk, orelse=orelse)
 
     def term(self):
         raise NotSupported("terms are not supported")
 
     def trycatch(self, block, try_list):
         block = self.to_python(block)
-        trys = len(try_list)
-        if trys == 0:
+        if len(try_list) == 0:
             return block
+        
         handlers = []
         for b in try_list:
             if isinstance(b, TryCatchUsrBranch):
@@ -839,16 +831,17 @@ class Transpiler:
         raise Exception("not reachable")
 
     def variable(self, id, standalone):
+        if id == "this":
+            return ast.Name(id="self")
+
         # prefix variable with "v_" if the id is a python keyword
         py_id = escape_id(id)
 
+        if standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
+            return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
+            
         if py_id in self.state.built_ins:
             return self.setlx_access(py_id)
-
-        if py_id == "this":
-            py_id = "self"
-        elif standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
-            return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
 
         return ast.Name(id=py_id)
 
