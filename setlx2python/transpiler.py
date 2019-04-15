@@ -185,7 +185,7 @@ class Transpiler:
                        finalbody=[])
 
     def classconstructor(self, id, params, block, static_block):
-        static_block = static_block or []  # convert None to empty list
+        static_block = static_block or Block([])  # convert None to empty list
 
         py_id = escape_id(id)
         self.state.check_built_ins(py_id)
