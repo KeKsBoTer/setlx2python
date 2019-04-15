@@ -1,9 +1,9 @@
 $files = get-childitem -recurse  $args[0] | where {$_.extension -eq ".stlx"}
 foreach($f in $files){ 
     echo "$($f.FullName)" 
-    $target = $f.DirectoryName +"\"+ $f.Basename + ".py"
+    $basename = $f.Basename -replace "-","_"
+    $target = $f.DirectoryName +"\"+ $basename + ".py"
     $gen = setlx2python "$($f.FullName)" 
-    $target = $target -replace "-","_"
     if($?){
         $gen | out-file -encoding utf8 "$target"
     }else{
