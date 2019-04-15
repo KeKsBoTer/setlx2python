@@ -51,6 +51,9 @@ class TranspilerState:
     def is_class_static(self):
         return self.class_context != None and self.class_context.static == True
 
+    def is_class_variable(self,id):
+        return self.class_context != None and id in self.class_context.variables
+
     def check_built_ins(self, id):
         # remove function from built_ins if it is overriden in the code
         if id in self.built_ins:

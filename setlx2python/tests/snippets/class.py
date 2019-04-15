@@ -15,8 +15,8 @@ class Test:
     @setlx.procedure
     def __init__(self, a, b):
         self.name = setlx.to_method(self,Test.name)
-        self.mA = mA = a
-        self.mB = mB = b
+        self.mA = mA = setlx.copy(a)
+        self.mB = mB = setlx.copy(b)
         setlx.print("constructor")
 
         @setlx.cached_procedure

@@ -2,7 +2,7 @@ import setlx
 
 x = 1
 y = 3
-z = x
+z = setlx.copy(x)
 if x == y or x == z:
     setlx.print("if")
 elif x != z:

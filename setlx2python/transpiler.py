@@ -157,8 +157,9 @@ class Transpiler:
     def cachedprocedure(self, params, block):
         proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
-        self.state.add_before(self.proceduredefinition(CachedProcedure(params,block),proc_name))
-        
+        self.state.add_before(self.proceduredefinition(
+            CachedProcedure(params, block), proc_name))
+
         return ast.Name(id=proc_name)
 
     def cardinality(self, expr):
@@ -190,6 +191,7 @@ class Transpiler:
         self.state.check_built_ins(py_id)
 
         self.state.class_context = ClassContext(py_id)
+        self.state.class_context.variables += [escape_id(s.name) for s in block.stmnts+static_block.stmnts if isinstance(s,ProcedureDefinition)]
 
         params = self.to_python(params)
         body = self.to_python(block)
@@ -269,8 +271,9 @@ class Transpiler:
         warn("closures are translated as normal python functions, so they can only read from variables outside the scope")
         proc_name = f"closure_{self.state.level}_{self.state.procedure_counter}"
 
-        self.state.add_before(self.proceduredefinition(Closure(params,block),proc_name))
- 
+        self.state.add_before(self.proceduredefinition(
+            Closure(params, block), proc_name))
+
         return ast.Name(id=proc_name)
 
     def collectionaccess(self, params, callable):
@@ -295,6 +298,13 @@ class Transpiler:
 
     def conjunction(self, left, right):
         return self._boolop(left, ast.And(), right)
+
+    def copyvariable(self, left, right):
+        [left,right] = self.to_python([left,right])
+        return ast.Assign(
+                    targets=[left],
+                    value=self.setlx_function("copy",[right])
+                )
 
     def difference(self, left, right):
         return self._binop(left, ast.Sub(), right)
@@ -508,16 +518,18 @@ class Transpiler:
     def procedure(self, params, block):
         proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
-        self.state.add_before(self.proceduredefinition(Procedure(params,block),proc_name))
- 
+        self.state.add_before(self.proceduredefinition(
+            Procedure(params, block), proc_name))
+
         return ast.Name(id=proc_name)
 
     def proceduredefinition(self, procedure, name):
         self.state.procedure_counter += 1
 
-        [params,block] = procedure
+        [params, block] = procedure
         decorator = self.setlx_access(
-            "cached_procedure" if isinstance(procedure, CachedProcedure) else "procedure"
+            "cached_procedure" if isinstance(
+                procedure, CachedProcedure) else "procedure"
         )
 
         py_params = []
@@ -556,10 +568,13 @@ class Transpiler:
             decorators.insert(0, ast.Name(id="staticmethod"))
 
         py_name = escape_id(name)
+
+        if self.state.class_context != None:
+            self.state.class_context.variables.append(py_name)
+
         self.state.check_built_ins(py_name)
         self.state.procedures[py_name] = params
         return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
-
 
     def product(self, left, right):
         return self._binop(left, ast.Mult(), right)
@@ -823,7 +838,7 @@ class Transpiler:
     def trycatchusrbranch(self, variable, block):
         raise Exception("not reachable")
 
-    def variable(self, id):
+    def variable(self, id, standalone):
         # prefix variable with "v_" if the id is a python keyword
         py_id = escape_id(id)
 
@@ -832,6 +847,8 @@ class Transpiler:
 
         if py_id == "this":
             py_id = "self"
+        elif standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
+            return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
 
         return ast.Name(id=py_id)
 
