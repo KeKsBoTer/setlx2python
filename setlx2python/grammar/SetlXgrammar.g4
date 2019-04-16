@@ -416,7 +416,7 @@ atomicValue
 	| 'true' {$av = SetlXTrue() }
 	| 'false' {$av = SetlXFalse() };
 
-variable[standalone=False]
+variable[standalone]
 	returns[Variable v]: ID {$v = Variable($ID.text,standalone) };
 
 condition

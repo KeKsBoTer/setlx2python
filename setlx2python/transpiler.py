@@ -175,7 +175,7 @@ class Transpiler:
             afterBacktrack = self.to_python(backtrack_block)
         return ast.Try(body=body,
                        handlers=[
-                            ast.ExceptHandler(type=self.setlx_access('BacktrackException'),
+                           ast.ExceptHandler(type=self.setlx_access('BacktrackException'),
                                              name=None,
                                              body=afterBacktrack)
                        ],
@@ -189,12 +189,20 @@ class Transpiler:
         self.state.check_built_ins(py_id)
 
         self.state.class_context = ClassContext(py_id)
-        self.state.class_context.variables += [escape_id(s.name) for s in block.stmnts+static_block.stmnts if isinstance(s,ProcedureDefinition)]
+        self.state.class_context.variables = [escape_id(
+            s.name) for s in block.stmnts+static_block.stmnts if isinstance(s, ProcedureDefinition)]
 
-        params = self.to_python(params)
-        body = self.to_python(block)
+        procedure = Procedure(params, block)
+        init = self.proceduredefinition(procedure, "__init__")
+        [args,body] = [init.args.args, init.body]
+        
+        args.insert(0, ast.arg(arg="self", annotation=None))
+
         for i, s in enumerate(body):
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
+                # prefix all variable assignments with self.*
+                # e.g. test = 2 
+                #   => self.test = 2
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
                 s.targets = [
@@ -233,35 +241,12 @@ class Transpiler:
                 assign = self.to_method(s.targets[0].id)
                 body.insert(0, assign)
 
-        self_arg = ast.arg(arg='self', annotation=None)
-
-        init = []
-        if len(body) > 0:
-            """ add init function for class
-                example:
-                    @setlx.procedure
-                    def __init__(self,x,y):
-                        ...
-            """
-            init.append(ast.FunctionDef(name='__init__',
-                                        args=ast.arguments(
-                                            args=[self_arg]+params,
-                                            vararg=None,
-                                            kwonlyargs=[],
-                                            kw_defaults=[],
-                                            kwarg=None,
-                                            defaults=[]),
-                                        body=body,
-                                        decorator_list=[
-                                            self.setlx_access("procedure")],
-                                        returns=None))
-
         self.state.class_context = None
         return ast.ClassDef(
             name=py_id,
             bases=[],
             keywords=[],
-            body=static+init,
+            body=static+[init],
             decorator_list=[]
         )
 
@@ -298,11 +283,11 @@ class Transpiler:
         return self._boolop(left, ast.And(), right)
 
     def copyvariable(self, left, right):
-        [left,right] = self.to_python([left,right])
+        [left, right] = self.to_python([left, right])
         return ast.Assign(
-                    targets=[left],
-                    value=self.setlx_function("copy",[right])
-                )
+            targets=[left],
+            value=self.setlx_function("copy", [right])
+        )
 
     def difference(self, left, right):
         return self._binop(left, ast.Sub(), right)
@@ -526,24 +511,22 @@ class Transpiler:
         self.state.procedure_counter += 1
 
         [params, block] = procedure
-        decorator = self.setlx_access(
-            "cached_procedure" if isinstance(
-                procedure, CachedProcedure) else "procedure"
-        )
 
         py_params = []
         defaults = []  # default values for parameters
         vararg = None
+        value_params = []
         for p in params:
             if not isinstance(p, ListParameter):
                 prm = self.to_python(p)
-                if isinstance(p, ReadWriteParameter):  # only copy value parameters
-                    prm.annotation = ast.Str("rw")
-                elif p.default != None:  # add default value if one is given
-                    defaults.append(self.to_python(p.default))
+                if not isinstance(p, ReadWriteParameter):  # only copy value parameters
+                    value_params.append(prm.arg)
+                    if p.default != None:  # add default value if one is given
+                        defaults.append(self.to_python(p.default))
                 py_params.append(prm)
             else:
                 py_id = self.to_python(p.id)
+                value_params.append(py_id.id)
                 vararg = ast.arg(arg=py_id.id, annotation=None)
 
         if self.state.is_class_static():
@@ -559,9 +542,11 @@ class Transpiler:
                                   defaults=defaults)
 
         block = self.to_python(block)
+        if len(value_params) > 0:
+            block.insert(0, self.copy_params(value_params))
 
-        decorators = [ast.Name(id=decorator)] if isinstance(
-            decorator, str) else [decorator]
+        decorators = [self.setlx_access("cached_procedure")] if isinstance(
+            procedure, CachedProcedure) else []
 
         if self.state.is_class_static():
             decorators.insert(0, ast.Name(id="staticmethod"))
@@ -608,7 +593,7 @@ class Transpiler:
 
     def readwriteparameter(self, id):
         py_id = self.to_python(id)
-        return ast.arg(arg=py_id.id, annotation=None)
+        return ast.arg(arg=py_id.id, annotation=ast.Str("rw"))
 
     def scan(self):
         raise NotSupported("scan is not supported")
@@ -682,7 +667,7 @@ class Transpiler:
     def setlxlist(self, cb):
         if cb != None:
             cb_py = self.to_python(cb)
-            if isinstance(cb, (ExplicitList,ExplicitListWithRest,SetlIteration)):
+            if isinstance(cb, (ExplicitList, ExplicitListWithRest, SetlIteration)):
                 return cb_py
             return self.setlx_function("List", [cb_py])
         else:
@@ -778,13 +763,13 @@ class Transpiler:
         if len(case_list) == 0:
             # in setlx try can standalone, in python not
             return default_branch
-        
+
         cond = self.to_python(case_list[0][0])
         blk = self.to_python(case_list[0][1])
         orelse = self.to_python(default_branch) or []
 
         for e in case_list[:: -2]:  # invert list and cut first element
-            [test,block] = self.to_python(list(e[0:2]))
+            [test, block] = self.to_python(list(e[0:2]))
             orelse = [ast.If(test=test, body=block, orelse=orelse)]
 
         return ast.If(test=cond, body=blk, orelse=orelse)
@@ -796,7 +781,7 @@ class Transpiler:
         block = self.to_python(block)
         if len(try_list) == 0:
             return block
-        
+
         handlers = []
         for b in try_list:
             if isinstance(b, TryCatchUsrBranch):
@@ -839,7 +824,7 @@ class Transpiler:
 
         if standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
             return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
-            
+
         if py_id in self.state.built_ins:
             return self.setlx_access(py_id)
 
@@ -874,6 +859,11 @@ class Transpiler:
                     id=self.state.class_context.id), attr=id)
             ])
         )
+
+    def copy_params(self, params):
+        elts = ast.List(elts=[ast.Name(p) for p in params])
+        return ast.Assign(targets=[elts],
+                          value=self.setlx_function("copy", [elts]))
 
 
 class ParserErrorListener(ErrorListener):
