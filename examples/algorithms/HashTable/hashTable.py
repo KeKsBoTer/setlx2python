@@ -7,30 +7,30 @@ class hashTable:
 
     @staticmethod
     @setlx.procedure
-    def hashCode(s):
-        return hashCodeAux(s) + 1
+    def hashCode(s, self=None):
+        return self.hashCodeAux(s) + 1
 
     @staticmethod
     @setlx.procedure
-    def hashCodeAux(s):
+    def hashCodeAux(s, self=None):
         if s == '':
             return 0
-        return (sOrd[s[1]] + 128 * hashCodeAux(s[2:])) % mSize
+        return (sOrd[s[1]] + 128 * self.hashCodeAux(s[2:])) % mSize
 
     @staticmethod
     @setlx.procedure
-    def find(key):
-        index = hashCode(key)
-        aList = mArray[index]
+    def find(key, self=None):
+        index = self.hashCode(key)
+        aList = self.mArray[index]
         return aList[key]
 
     @staticmethod
     @setlx.procedure
-    def insert(key, value):
-        if mEntries > mSize * mAlpha:
-            rehash()
-        index = hashCode(key)
-        aList = mArray[index]
+    def insert(key, value, self=None):
+        if self.mEntries > mSize * self.mAlpha:
+            self.rehash()
+        index = self.hashCode(key)
+        aList = self.mArray[index]
         oldSz = len(aList)
         aList[key] = value
         newSz = len(aList)
@@ -40,20 +40,20 @@ class hashTable:
 
     @staticmethod
     @setlx.procedure
-    def rehash():
-        prime = setlx.min(setlx.Set([p for p in sPrimes if p * mAlpha > mEntries]))
+    def rehash(self=None):
+        prime = setlx.min(setlx.Set([p for p in sPrimes if p * self.mAlpha > self.mEntries]))
         bigMap = hashTable(prime)
-        for aList in mArray:
-            for [k, v] in aList:
+        for aList in self.mArray:
+            for [k, v] in self.aList:
                 bigMap.insert(k, v)
         self.mSize = prime
         self.mArray = bigMap.mArray
 
     @staticmethod
     @setlx.procedure
-    def delete(key):
-        index = hashCode(key)
-        aList = mArray[index]
+    def delete(key, self=None):
+        index = self.hashCode(key)
+        aList = self.mArray[index]
         oldSz = len(aList)
         aList[key] = None
         newSz = len(aList)
@@ -63,15 +63,22 @@ class hashTable:
 
     @staticmethod
     @setlx.procedure
-    def f_str():
+    def f_str(self=None):
         result = ''
-        for i in setlx.List(setlx._range(1, len(mArray))):
-            result += f'{i}: {mArray[i]}\\n'
+        for i in setlx.List(setlx._range(1, len(self.mArray))):
+            result += f'{i}: {self.mArray[i]}\\n'
         return result
 
     @setlx.procedure
     def __init__(self, n):
-        self.mSize = mSize = n
+        self.f_str = setlx.to_method(self, hashTable.f_str)
+        self.delete = setlx.to_method(self, hashTable.delete)
+        self.rehash = setlx.to_method(self, hashTable.rehash)
+        self.insert = setlx.to_method(self, hashTable.insert)
+        self.find = setlx.to_method(self, hashTable.find)
+        self.hashCodeAux = setlx.to_method(self, hashTable.hashCodeAux)
+        self.hashCode = setlx.to_method(self, hashTable.hashCode)
+        self.mSize = mSize = setlx.copy(n)
         self.mEntries = mEntries = 0
         self.mArray = mArray = setlx.List([setlx.Set() for i in setlx.List(setlx._range(1, mSize))])
         self.mAlpha = mAlpha = 2

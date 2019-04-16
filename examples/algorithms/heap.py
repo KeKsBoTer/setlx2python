@@ -5,12 +5,12 @@ class Heap:
 
     @staticmethod
     @setlx.procedure
-    def top():
-        return setlx.List([mPriority, mValue])
+    def top(self=None):
+        return setlx.List([self.mPriority, self.mValue])
 
     @staticmethod
     @setlx.procedure
-    def insert(priority, value):
+    def insert(priority, value, self=None):
         if isEmpty():
             self.mPriority = priority
             self.mValue = value
@@ -19,59 +19,66 @@ class Heap:
             self.mCount = 1
             return
         self.mCount += 1
-        if priority < mPriority:
-            if mLeft.mCount > mRight.mCount:
-                mRight.insert(mPriority, mValue)
+        if priority < self.mPriority:
+            if self.mLeft.mCount > self.mRight.mCount:
+                self.mRight.insert(self.mPriority, self.mValue)
             else:
-                mLeft.insert(mPriority, mValue)
+                self.mLeft.insert(self.mPriority, self.mValue)
             self.mPriority = priority
             self.mValue = value
-        elif mLeft.mCount > mRight.mCount:
-            mRight.insert(priority, value)
+        elif self.mLeft.mCount > self.mRight.mCount:
+            self.mRight.insert(priority, value)
         else:
-            mLeft.insert(priority, value)
+            self.mLeft.insert(priority, value)
 
     @staticmethod
     @setlx.procedure
-    def remove():
-        assert mCount > 0, 'mCount == 0'
+    def remove(self=None):
+        assert self.mCount > 0, 'mCount == 0'
         self.mCount -= 1
-        if mLeft.isEmpty():
-            update(mRight)
+        if self.mLeft.isEmpty():
+            self.update(self.mRight)
             return
-        if mRight.isEmpty():
-            update(mLeft)
+        if self.mRight.isEmpty():
+            self.update(self.mLeft)
             return
-        if mLeft.mPriority < mRight.mPriority:
-            self.mPriority = mLeft.mPriority
-            self.mValue = mLeft.mValue
-            mLeft.remove()
+        if self.mLeft.mPriority < self.mRight.mPriority:
+            self.mPriority = self.mLeft.mPriority
+            self.mValue = self.mLeft.mValue
+            self.mLeft.remove()
         else:
-            self.mPriority = mRight.mPriority
-            self.mValue = mRight.mValue
-            mRight.remove()
+            self.mPriority = self.mRight.mPriority
+            self.mValue = self.mRight.mValue
+            self.mRight.remove()
 
     @staticmethod
     @setlx.procedure
-    def update(t):
+    def update(t, self=None):
         self.mPriority = t.mPriority
         self.mValue = t.mValue
         self.mLeft = t.mLeft
         self.mRight = t.mRight
         self.mCount = t.mCount
-    isEmpty = lambda : mCount == 0
-    f_str = lambda : toString(0)
+    isEmpty = lambda self=None: self.mCount == 0
+    f_str = lambda self=None: self.toString(0)
 
     @staticmethod
     @setlx.procedure
-    def toString(n):
+    def toString(n, self=None):
         if isEmpty():
             return ' ' * n + 'Nil'
         else:
-            return mLeft.toString(n + 4) + '\\n' + ' ' * n + '<' + mValue + ', ' + mPriority + '>\\n' + mRight.toString(n + 4)
+            return self.mLeft.toString(n + 4) + '\\n' + ' ' * n + '<' + self.mValue + ', ' + self.mPriority + '>\\n' + self.mRight.toString(n + 4)
 
     @setlx.procedure
     def __init__(self):
+        self.toString = setlx.to_method(self, Heap.toString)
+        self.f_str = setlx.to_method(self, Heap.f_str)
+        self.isEmpty = setlx.to_method(self, Heap.isEmpty)
+        self.update = setlx.to_method(self, Heap.update)
+        self.remove = setlx.to_method(self, Heap.remove)
+        self.insert = setlx.to_method(self, Heap.insert)
+        self.top = setlx.to_method(self, Heap.top)
         self.mPriority = mPriority = None
         self.mValue = mValue = None
         self.mLeft = mLeft = None
