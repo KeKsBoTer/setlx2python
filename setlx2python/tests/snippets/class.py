@@ -13,17 +13,17 @@ class Test:
         return Test.className
 
     def __init__(self, a, b):
-        self.name = setlx.to_method(self,Test.name)
+        self.name = setlx.to_method(self,Test.name,True)
         [a,b] = setlx.copy([a,b])
         self.mA = mA = setlx.copy(a)
         self.mB = mB = setlx.copy(b)
         setlx.print("constructor")
 
         @setlx.cached_procedure
-        def foo(x):
+        def foo(self, x):
             [x] = setlx.copy([x])
             return x+self.mA
-        self.foo = foo
+        self.foo = setlx.to_method(self,foo)
 
 
 

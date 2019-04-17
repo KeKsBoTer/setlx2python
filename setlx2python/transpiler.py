@@ -86,14 +86,14 @@ class Transpiler:
             self.state.check_built_ins(id_str)
             self.state.variables.append(id_str)
 
-            if self.state.class_context != None:
-                self.state.class_context.variables.append(id_str)
-
         return ast.Name(id=id_str)
 
     def assignment(self, assignables, right_hand_side):
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
+
+        if isinstance(right_hand_side, Variable):
+            right = self.setlx_function("copy", [right])
 
         # unpack function calls (calls are not wraped in expressions in python)
         if isinstance(right, ast.Expr) and isinstance(right.value, ast.Call):
@@ -190,14 +190,17 @@ class Transpiler:
 
         self.state.class_context = ClassContext(py_id)
         self.state.class_context.variables = [escape_id(
-            s.name) for s in block.stmnts+static_block.stmnts if isinstance(s, ProcedureDefinition)]
+            s.name) for s in block.stmnts+static_block.stmnts if isinstance(s, (ProcedureDefinition, LambdaDefinition))]
+
+        for s in block.stmnts:
+            if isinstance(s, Assignment):
+                self.state.class_context.variables.append(
+                    escape_id(s.assignables[0].id))
 
         procedure = Procedure(params, block)
         init = self.proceduredefinition(procedure, "__init__")
-        [args,body] = [init.args.args, init.body]
+        body = init.body  # pylint: disable=no-member
         
-        args.insert(0, ast.arg(arg="self", annotation=None))
-
         for i, s in enumerate(body):
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
                 # prefix all variable assignments with self.*
@@ -205,6 +208,7 @@ class Transpiler:
                 #   => self.test = 2
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
+                self.state.class_context.variables.append(s.targets[0])
                 s.targets = [
                     ast.Attribute(
                         value=ast.Name(id='self'),
@@ -213,15 +217,10 @@ class Transpiler:
                     ast.Name(id=s.targets[0])
                 ]
             # enumerate over all generated functions and assign them as class method
-            # e.g. self.method = method
+            # e.g. self.method = setlx.to_method(self,method)
             if isinstance(s, ast.FunctionDef):
-                assign = ast.Assign(
-                    targets=[ast.Attribute(
-                        value=ast.Name(id='self'),
-                        attr=s.name
-                    )],
-                    value=ast.Name(id=s.name)
-                )
+                assign = self.to_method(s.name, False)
+                self.state.class_context.variables.append(s.name)
                 body.insert(i+1, assign)
 
         # translate static part of class
@@ -234,11 +233,11 @@ class Transpiler:
         # looks like this: self.static_function = setlx.to_method(self,static_function)
         for s in static:
             if isinstance(s, ast.FunctionDef):
-                assign = self.to_method(s.name)
+                assign = self.to_method(s.name, True)
                 body.insert(0, assign)
             # check for all static lambda definitions and make them none static
             elif isinstance(s, ast.Assign) and isinstance(s.value, ast.Lambda):
-                assign = self.to_method(s.targets[0].id)
+                assign = self.to_method(s.targets[0].id, True)
                 body.insert(0, assign)
 
         self.state.class_context = None
@@ -339,26 +338,21 @@ class Transpiler:
         return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def functioncall(self, params, callable):
-        params = [self.to_python(p) for p in params]
+        py_params = self.to_python(params)
 
-        """ TODO find proper way to handle this
-
-        if isinstance(callable, Variable) and callable.id == "load":
-            import_stmnt = import_call(callable.id)
-            self.state.before_stmnts.append(
-                WithLevel(self.state.level, import_stmnt))
-            return None
-
-        if callable.id == "eval":
+        if isinstance(callable, Variable):
+            if callable.id == "load":
+                return import_call(py_params[0].s)
+            elif callable.id == "eval":
             return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
-                            args=[params[0],
+                                args=[py_params[0],
                                   ast.Call(func=ast.Name(id='globals'),
                                            args=[], keywords=[]),
                                   ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
                             keywords=[])
-        """
+
         expr = self.to_python(callable)
-        return ast.Call(expr, params, [])
+        return ast.Call(expr, py_params, [])
 
     def greaterorequal(self, left, right):
         return self._compare(left, ast.GtE(), right)
@@ -423,6 +417,11 @@ class Transpiler:
 
     def lambdaclosure(self, params, expr):
         return self.lambdaprocedure(params, expr)
+
+    def lambdadefinition(self, procedure, name):
+        py_id = escape_id(name)
+        lambda_py = self.lambdaprocedure(procedure.params, procedure.expr)
+        return ast.Assign(targets=[ast.Name(id=py_id)], value=lambda_py)
 
     def lambdaprocedure(self, params, expr):
         expr = self.to_python(expr)
@@ -508,6 +507,7 @@ class Transpiler:
         return ast.Name(id=proc_name)
 
     def proceduredefinition(self, procedure, name):
+        py_name = escape_id(name)
         self.state.procedure_counter += 1
 
         [params, block] = procedure
@@ -529,10 +529,17 @@ class Transpiler:
                 value_params.append(py_id.id)
                 vararg = ast.arg(arg=py_id.id, annotation=None)
 
+        decorators = [self.setlx_access("cached_procedure")] if isinstance(
+            procedure, CachedProcedure) else []
+
         if self.state.is_class_static():
             # if function is static, add self=None as optinal parameter to the end
             py_params.append(ast.arg(arg="self", annotation=None))
             defaults.append(ast.NameConstant(value=None))
+            decorators.insert(0, ast.Name(id="staticmethod"))
+        elif self.state.class_context != None:
+            self.state.class_context.variables.append(py_name)
+            py_params.insert(0, ast.arg(arg="self", annotation=None))
 
         arguments = ast.arguments(args=py_params,
                                   vararg=vararg,
@@ -544,17 +551,6 @@ class Transpiler:
         block = self.to_python(block)
         if len(value_params) > 0:
             block.insert(0, self.copy_params(value_params))
-
-        decorators = [self.setlx_access("cached_procedure")] if isinstance(
-            procedure, CachedProcedure) else []
-
-        if self.state.is_class_static():
-            decorators.insert(0, ast.Name(id="staticmethod"))
-
-        py_name = escape_id(name)
-
-        if self.state.class_context != None:
-            self.state.class_context.variables.append(py_name)
 
         self.state.check_built_ins(py_name)
         self.state.procedures[py_name] = params
@@ -822,7 +818,7 @@ class Transpiler:
         # prefix variable with "v_" if the id is a python keyword
         py_id = escape_id(id)
 
-        if standalone == True and py_id not in self.state.variables and self.state.is_class_variable(py_id):
+        if standalone == True and self.state.is_class_variable(py_id):
             return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
 
         if py_id in self.state.built_ins:
@@ -847,17 +843,23 @@ class Transpiler:
         self.state.variables.append(target.id)
         return ast.Assign(targets=[target], value=unpack_call)
 
-    def to_method(self, id):
+    def to_method(self, id, static):
+        args = [ast.Name(id="self")]
+        if static:
+            args.append(ast.Attribute(
+                value=ast.Name(
+                    id=self.state.class_context.id), attr=id)
+            )
+            args.append(bool_true())
+        else:
+            args.append(ast.Name(id=id))
+
         return ast.Assign(
             targets=[ast.Attribute(
                 value=ast.Name(id='self'),
                 attr=id
             )],
-            value=self.setlx_function("to_method", [
-                ast.Name(id="self"),
-                ast.Attribute(value=ast.Name(
-                    id=self.state.class_context.id), attr=id)
-            ])
+            value=self.setlx_function("to_method", args)
         )
 
     def copy_params(self, params):
@@ -908,7 +910,8 @@ def escape_id(id):
 
 
 def import_call(stlx_file):
-    file = stlx_file.rstrip(".stlx")
+    if stlx_file[-5:len(stlx_file)] == ".stlx":
+        file = stlx_file[0:-5]
     file = file.replace("-", "_")
     return ast.ImportFrom(module=file, names=[ast.alias(name='*', asname=None)], level=0)
 
