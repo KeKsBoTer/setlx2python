@@ -22,8 +22,9 @@ Simon:
 - make tic-tac-toe work
 
 Daniel:
-- fix "could not delete {1}" in union_find_naive.py
-- union_find_oo.py: R is missing element [1,9] (line 42) (wrong map behaviour)
+- FIXED: fix "could not delete {1}" in union_find_naive.py
+- FIXED: union_find_oo.py: R is missing element [1,9] (line 42) (wrong map behaviour)
+- merge_sort_array.py line 75 assertion fails, but shouldn't
 
 # Features that will not be supported
 - execute / eval
