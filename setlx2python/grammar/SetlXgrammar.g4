@@ -106,8 +106,8 @@ regexBranch
 assignment
 	returns[assign]:
 	// special case for transpiler: name := procedure(){...}
-	v1 = variable[True] ':=' v2 = variable[True] {$assign = CopyVariable($v1.v,$v2.v)}
-	| ID ':=' procedure {$assign = ProcedureDefinition($procedure.pd, $ID.text)}
+	assignableVariable ':=' procedure {$assign = ProcedureDefinition($procedure.pd, $assignableVariable.v.id)}
+	| assignableVariable ':=' lambdaProcedure {$assign = LambdaDefinition($lambdaProcedure.lp, $assignableVariable.v.id)}
 	| assignmentDirect {$assign = $assignmentDirect.assign};
 
 assignmentDirect
@@ -416,7 +416,7 @@ atomicValue
 	| 'true' {$av = SetlXTrue() }
 	| 'false' {$av = SetlXFalse() };
 
-variable[standalone=False]
+variable[standalone]
 	returns[Variable v]: ID {$v = Variable($ID.text,standalone) };
 
 condition
