@@ -166,7 +166,7 @@ def demo(cmp):
         m.insert(k, v)
     setlx.print(m)
     while True:
-        k = setlx.read('zu loeschenden Schl´┐¢ssel eingeben: ')
+        k = setlx.read('zu loeschenden Schl�ssel eingeben: ')
         m.delete(k)
         setlx.print(m)
 
