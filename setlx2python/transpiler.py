@@ -15,70 +15,170 @@ from .state import TranspilerState, ClassContext
 
 
 class Transpiler:
+    """ A class to transpile a SetlX-AST to a Python-AST
+    
+    Takes the root element of the SetlX-AST as argument.
+    The AST can be transformed with method transpile.
+
+    Attributes
+    ----------
+    root : Block
+        the root element of the SetlX-AST
+    state : TranspilerState
+        the state of the transpiler
+    """
     def __init__(self, root):
+        """
+        Parameters
+        ----------
+        root : Block
+            the root element of the SetlX-AST
+        """
         self.root = root
-        self.state = TranspilerState()
+        self.state = None
 
     def transpile(self):
+        """ Translates the SetlX-AST to an equal Python-AST
+
+        Returns the generated Python-AST
+        """
+        self.state = TranspilerState()
+
         body = self.to_python(self.root)
         imports = self.state.imports.to_python(self.state)
         return imports + body
 
     def to_python(self, node):
-        if node == None:
+        """ Tranlates a given node / node list to a python AST
+        
+        The method calls the translation function based on the node's type and returns the result.
+        The translation function of a node is the type name in lower case.
+
+        If node is list, every element is translated and the translations are returned as a list in the same order. 
+        If node is None, None is returned
+        """
+        if node is None:
             return None
-        if not isinstance(node, list):
+        if isinstance(node, list):
+            return [self.to_python(n) for n in node]
+        else:
             name = node.__class__.__name__.lower()
             return getattr(self, name)(*list(node))
-        else:
-            py_nodes = []
-            for n in node:
-                name = n.__class__.__name__.lower()
-                py_nodes.append(getattr(self, name)(*list(n)))
-            return py_nodes
 
-    def _prefix_operator(self, operation, expr):
+    def _prefix_operator(self, operation: str, expr) -> ast.Call:
+        """ Turns a prefix operator into a function call
+
+        The function translates the given expression and calls the function *operation*
+        with the translated expression as argument.
+        e.g. +/[1,2] -> sum([1,2])
+
+        Parameters
+        ----------
+        operation : str
+            The name of the function
+        expr :
+            The Setlx-Expression that is translated and used as argument for the function
+        """
         expr = self.to_python(expr)
         return self.setlx_function(operation, [expr])
 
-    def _binop(self, left, operator, right):
+    def _binop(self, left, operator, right) -> ast.BinOp:
+        """ A helper function to generate infix operations
+        
+        The function translates the left and right side of an operation
+        and creates a BinOp with the given operation.
+        """
         [left, right] = self.to_python([left, right])
         return ast.BinOp(left, operator, right)
 
-    def _compare(self, left, operator, right):
+    def _compare(self, left, operator, right) -> ast.Compare:
+        """ A helper function to generate comparisions
+        
+        The function translates the left and right side of an operation
+        and creates a Compare ast operation with the given operator.
+        """
         [left, right] = self.to_python([left, right])
         return ast.Compare(left=left, ops=[operator], comparators=[right])
 
-    def _boolop(self, left, operator, right):
+    def _boolop(self, left, operator, right) -> ast.BoolOp:
+        """ A helper function to generate the ast for boolean operators 
+        
+        The function translates the left and right side of an operation
+        and creates a BoolOp ast operation with the given operator.
+        """
         left = self.to_python(left)
         right = self.to_python(right)
         return ast.BoolOp(op=operator, values=[left, right])
 
-    def _augassign(self, assignable, operator, right_hand_side):
+    def _augassign(self, assignable, operator, right_hand_side) -> ast.AugAssign:
+        """ A helper function to generate augmented assignments (e.g +=, -=) 
+        
+        The function translates the assignables and right hand side of an augmented assignment
+        and creates a AugAssign ast object with the given operator.
+        """
         [target, rhs] = self.to_python([assignable, right_hand_side])
         return ast.AugAssign(target=target, op=operator, value=rhs)
 
-    def assignablecollectionaccess(self, assignable, exprs):
+    def assignablecollectionaccess(self, assignable, exprs) -> ast.Subscript:
+        """ Translates a AssignableCollectionAccess object
+
+        A AssignableCollectionAccess is an assignment to the key of a object (e.g. a_list[2] = "test")
+        It is translates to a python Subscript object, which is the corresponding python lexical element.
+        e.g. a_list[2] -> a_list[2]
+        """
         assignable = self.to_python(assignable)
         py_exprs = self.to_python(exprs)
         # unpack collections with only one memeber
         index = ast.List(elts=py_exprs) if len(exprs) > 1 else py_exprs[0]
         return ast.Subscript(value=assignable, slice=ast.Index(index))
 
-    def assignableignore(self):
+    def assignableignore(self) -> ast.Name:
+        """ Translates an assignment to a variable which is ignored
+
+        In python the variable "_" is used to ignore an assignment.
+        So we translate this to ast.Name(id="_").
+        """
         return ast.Name(id="_")
 
-    def assignablelist(self, assignables):
+    def assignablelist(self, assignables: list) -> ast.List:
+        """ Translates an assigment to a list of variables
+        
+        A list in python ca be unpacked by writing::
+
+            [var1, var2, var3] := a_list;
+
+        The same is possible in python so the element is just translated
+        to a list with the variables as elements.
+
+        """
         assignables = [self.to_python(a) for a in assignables]
         return ast.List(elts=assignables)
 
-    def assignablemember(self, assignable, member):
+    def assignablemember(self, assignable, member) -> ast.Attribute:
+        """ Translates the assignment to the member of an object
+
+        Attributes of objects can be assigned by writing::
+
+            object.attribute := value;
+
+        This notation is the same in python so it can be translated
+        to an ast.Attribute object.
+        """
         [target, member] = self.to_python([assignable, member])
-        if assignable.id == "self":
-            self.state.variables.append(assignable.member)
         return ast.Attribute(value=target, attr=member)
 
-    def assignablevariable(self, id):
+    def assignablevariable(self, id: str):
+        """ Translates a variable which is on the right hand side of an assignment
+
+        By default this is translated to a python variable (ast.Name),
+        but there are two special cases:
+
+        1.  If the variable is called "this" we need to translate it to the corresponding keyword which is "self".
+        
+        2.  If the transpiler is in a class and the variable is a class attribute 
+            the variable needs to be prefixed with "self." to enable the attribute access in pythons
+
+        """
         if id == "this":
             return ast.Name(id="self")
 
@@ -92,7 +192,13 @@ class Transpiler:
 
         return ast.Name(id=py_id)
 
-    def assignment(self, assignables, right_hand_side):
+    def assignment(self, assignables, right_hand_side) -> ast.Assign:
+        """ Translates an assignment to a python assignment 
+
+        If the right hand side is a single variable,
+        it is wraped into a copy statement, since setlx is value based
+        and this behaviour needs to be mimicked in python.
+        """
         left = self.to_python(assignables)
         right = self.to_python(right_hand_side)
 
@@ -105,7 +211,8 @@ class Transpiler:
 
         return ast.Assign(targets=left, value=right)
 
-    def backtrack(self):
+    def backtrack(self) -> ast.Raise:
+        """ Translates a backtrack statement to a python BacktrackException raise"""
         return ast.Raise(
             exc=self.setlx_function("BacktrackException", []),
             cause=None
@@ -205,11 +312,11 @@ class Transpiler:
         procedure = Procedure(params, block)
         init = self.proceduredefinition(procedure, "__init__")
         body = init.body  # pylint: disable=no-member
-        
+
         for i, s in enumerate(body):
             if isinstance(s, ast.Assign) and isinstance(s.targets[0], ast.Name):
                 # prefix all variable assignments with self.*
-                # e.g. test = 2 
+                # e.g. test = 2
                 #   => self.test = 2
                 if isinstance(s.targets[0], ast.Name):
                     s.targets[0] = s.targets[0].id
@@ -350,10 +457,10 @@ class Transpiler:
                 return import_call(py_params[0].s)
             elif callable.id == "eval":
                 return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
-                                args=[  py_params[0],
-                                        ast.Call(func=ast.Name(id='globals'),
-                                                args=[], keywords=[]),
-                                        ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
+                                args=[py_params[0],
+                                      ast.Call(func=ast.Name(id='globals'),
+                                               args=[], keywords=[]),
+                                      ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
                                 keywords=[])
 
         expr = self.to_python(callable)
@@ -556,8 +663,6 @@ class Transpiler:
         block = self.to_python(block)
         if len(value_params) > 0:
             block.insert(0, self.copy_params(value_params))
-        if len(block) == 0:
-            block.append(ast.Pass())
 
         self.state.check_built_ins(py_name)
         self.state.procedures[py_name] = params
@@ -696,7 +801,7 @@ class Transpiler:
         if len(value) == 0:
             # if the string is empty, so is the python string
             return ast.Str(s="")
-        value = value.replace("\\n","\n").replace("\\t","\t")
+        value = value.replace("\\n", "\n").replace("\\t", "\t")
         # split string by expressions in string
         # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
         matches = re.finditer(r'\$(?!\\)[^$]+\$', value)
@@ -712,7 +817,7 @@ class Transpiler:
 
         slices = [value[i:j] for i, j in zip(
             indices, indices[1:]+[None]) if len(value[i:j]) > 0]
-
+ 
         values = []
         for s in slices:
             if s[0] == "$":
@@ -869,21 +974,39 @@ class Transpiler:
             value=self.setlx_function("to_method", args)
         )
 
-    def copy_params(self, params):
+    def copy_params(self, params: list) -> ast.Assign:
+        """ Creates the ast structure for deep copying procedure parameters
+        
+        This structure is used to copy all parameters at the beginning of a function.
+        e.g. For the parameters x,y,z the code looks like this::
+
+            [x,y,z] = setlx.copy([x,y,z])
+        
+        Parameters
+        ----------
+        params : list
+            A list of strings with the name of the parameters 
+        """
         elts = ast.List(elts=[ast.Name(p) for p in params])
         return ast.Assign(targets=[elts],
                           value=self.setlx_function("copy", [elts]))
 
 
 class ParserErrorListener(ErrorListener):
+    """ An ANTLR error listener that only raises syntax errors """
     def __init__(self):
         ErrorListener.__init__(self)
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        """ Raises a SyntaxError with the line, collumn and message as information """
         raise SyntaxError("line " + str(line) + ":" + str(column) + " " + msg)
 
 
-def parse_input(input):
+def parse_input(input: InputStream) -> SetlXgrammarParser:
+    """ Parses a input stream and returns the generated parser Object 
+    
+    Only syntax errors in the code are thrown (see ParserErrorListener)
+    """
     lexer = SetlXgrammarLexer(input)
     stream = CommonTokenStream(lexer)
     parser = SetlXgrammarParser(stream)
@@ -891,32 +1014,45 @@ def parse_input(input):
     return parser
 
 
-def parse_expr(string):
+def parse_expr(string: str):
+    """ Parses a Setlx-expression-string and returns the generated AST """
     input = InputStream(string)
     parser = parse_input(input)
     return parser.expr(False).ex
 
 
-def call_function(name, params):
+def call_function(name: str, params: list) -> ast.Call:
+    """ Generates a ast for calling a function with parameters """
     return ast.Call(func=ast.Name(id=name), args=params, keywords=[])
 
 
-def bool_true():
+def bool_true() -> ast.NameConstant:
+    """ Returns the ast for "True" """
     return ast.NameConstant(value=True)
 
 
-def bool_false():
+def bool_false() -> ast.NameConstant:
+    """ Returns the ast for "False" """
     return ast.NameConstant(value=False)
 
 
-def escape_id(id):
-    """ Some ids in setlx code might be python keywords.
+def escape_id(id: str) -> str:
+    """ Some ids in Setlx code might be Python keywords.
         To avoid syntax errors, these ids are prefixed with "v_"
     """
     return f"v_{id}" if id in keyword.kwlist+["setlx"] else id
 
 
-def import_call(stlx_file):
+def import_call(stlx_file: str) -> ast.ImportFrom:
+    """ Generates a ast structure for importing the given setlx file
+
+    The function takes a SetlX file import, strips the .stlx extension and replaces all "-" 
+    with underscores. 
+    e.g. "depth-first-search.stlx" -> depth_first_search
+
+    Based on this generated module name a wildcard import statement is generated.
+    e.g. from depth_first_search import *
+    """
     if stlx_file[-5:len(stlx_file)] == ".stlx":
         file = stlx_file[0:-5]
     file = file.replace("-", "_")
@@ -924,5 +1060,7 @@ def import_call(stlx_file):
 
 
 class NotSupported(Exception):
+    """ This exception is thrown when a lexical element is not supported """
+
     def __init__(self, msg=""):
         Exception.__init__(self, msg)
