@@ -1,6 +1,6 @@
 import setlx
 
-class Test:
+class Test(setlx.SetlXClass):
     # static part
     className = "test"
     setlx.print("static")
@@ -15,8 +15,8 @@ class Test:
     def __init__(self, a, b):
         self.name = setlx.to_method(self,Test.name,True)
         [a,b] = setlx.copy([a,b])
-        self.mA = mA = setlx.copy(a)
-        self.mB = mB = setlx.copy(b)
+        self.mA = setlx.copy(a)
+        self.mB = setlx.copy(b)
         setlx.print("constructor")
 
         @setlx.cached_procedure
