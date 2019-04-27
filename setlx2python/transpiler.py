@@ -80,13 +80,17 @@ class Transpiler:
 
     def assignablevariable(self, id):
         if id == "this":
-            id_str = "self"
-        else:
-            id_str = escape_id(id)
-            self.state.check_built_ins(id_str)
-            self.state.variables.append(id_str)
+            return ast.Name(id="self")
 
-        return ast.Name(id=id_str)
+        # prefix variable with "v_" if the id is a python keyword
+        py_id = escape_id(id)
+
+        if self.state.is_class_variable(py_id) and py_id not in self.state.variables and py_id not in self.state.procedures:
+            return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
+        else:
+            self.state.variables.append(py_id)
+
+        return ast.Name(id=py_id)
 
     def assignment(self, assignables, right_hand_side):
         left = self.to_python(assignables)
@@ -110,6 +114,7 @@ class Transpiler:
     def block(self, stmnts):
         # copy state variables to restore them after block translation
         variables = self.state.variables[:]
+        self.state.variables = []
         built_ins = self.state.built_ins[:]
         procedures = {**self.state.procedures}
 
@@ -243,7 +248,7 @@ class Transpiler:
         self.state.class_context = None
         return ast.ClassDef(
             name=py_id,
-            bases=[],
+            bases=[self.setlx_access("SetlXClass")],
             keywords=[],
             body=static+[init],
             decorator_list=[]
@@ -344,12 +349,12 @@ class Transpiler:
             if callable.id == "load":
                 return import_call(py_params[0].s)
             elif callable.id == "eval":
-            return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
-                                args=[py_params[0],
-                                  ast.Call(func=ast.Name(id='globals'),
-                                           args=[], keywords=[]),
-                                  ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
-                            keywords=[])
+                return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
+                                args=[  py_params[0],
+                                        ast.Call(func=ast.Name(id='globals'),
+                                                args=[], keywords=[]),
+                                        ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
+                                keywords=[])
 
         expr = self.to_python(callable)
         return ast.Call(expr, py_params, [])
@@ -551,6 +556,8 @@ class Transpiler:
         block = self.to_python(block)
         if len(value_params) > 0:
             block.insert(0, self.copy_params(value_params))
+        if len(block) == 0:
+            block.append(ast.Pass())
 
         self.state.check_built_ins(py_name)
         self.state.procedures[py_name] = params
@@ -689,7 +696,7 @@ class Transpiler:
         if len(value) == 0:
             # if the string is empty, so is the python string
             return ast.Str(s="")
-
+        value = value.replace("\\n","\n").replace("\\t","\t")
         # split string by expressions in string
         # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
         matches = re.finditer(r'\$(?!\\)[^$]+\$', value)
@@ -818,7 +825,7 @@ class Transpiler:
         # prefix variable with "v_" if the id is a python keyword
         py_id = escape_id(id)
 
-        if standalone == True and self.state.is_class_variable(py_id):
+        if standalone == True and self.state.is_class_variable(py_id) and py_id not in self.state.variables:
             return ast.Attribute(value=ast.Name(id="self"), attr=py_id)
 
         if py_id in self.state.built_ins:

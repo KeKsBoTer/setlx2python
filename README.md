@@ -15,11 +15,9 @@ Usage:
 ```
 # TODO
 Simon:
-- support file loading
-- recognize lambda functions as class functions (see heap.stlx)
-- support f_str as __str__ method
-- no None (om) in Lists!
 - make tic-tac-toe work
+- fix strings in map_trivial.py
+- topological_sorting not working
 
 Daniel:
 - fix "could not delete {1}" in union_find_naive.py
@@ -31,3 +29,4 @@ Daniel:
 - scan
 - terms
 - term matching
+
