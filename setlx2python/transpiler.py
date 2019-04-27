@@ -16,7 +16,7 @@ from .state import TranspilerState, ClassContext
 
 class Transpiler:
     """ A class to transpile a SetlX-AST to a Python-AST
-    
+
     Takes the root element of the SetlX-AST as argument.
     The AST can be transformed with method transpile.
 
@@ -27,6 +27,7 @@ class Transpiler:
     state : TranspilerState
         the state of the transpiler
     """
+
     def __init__(self, root):
         """
         Parameters
@@ -50,7 +51,7 @@ class Transpiler:
 
     def to_python(self, node):
         """ Tranlates a given node / node list to a python AST
-        
+
         The method calls the translation function based on the node's type and returns the result.
         The translation function of a node is the type name in lower case.
 
@@ -84,7 +85,7 @@ class Transpiler:
 
     def _binop(self, left, operator, right) -> ast.BinOp:
         """ A helper function to generate infix operations
-        
+
         The function translates the left and right side of an operation
         and creates a BinOp with the given operation.
         """
@@ -93,7 +94,7 @@ class Transpiler:
 
     def _compare(self, left, operator, right) -> ast.Compare:
         """ A helper function to generate comparisions
-        
+
         The function translates the left and right side of an operation
         and creates a Compare ast operation with the given operator.
         """
@@ -102,7 +103,7 @@ class Transpiler:
 
     def _boolop(self, left, operator, right) -> ast.BoolOp:
         """ A helper function to generate the ast for boolean operators 
-        
+
         The function translates the left and right side of an operation
         and creates a BoolOp ast operation with the given operator.
         """
@@ -112,7 +113,7 @@ class Transpiler:
 
     def _augassign(self, assignable, operator, right_hand_side) -> ast.AugAssign:
         """ A helper function to generate augmented assignments (e.g +=, -=) 
-        
+
         The function translates the assignables and right hand side of an augmented assignment
         and creates a AugAssign ast object with the given operator.
         """
@@ -142,7 +143,7 @@ class Transpiler:
 
     def assignablelist(self, assignables: list) -> ast.List:
         """ Translates an assigment to a list of variables
-        
+
         A list in python ca be unpacked by writing::
 
             [var1, var2, var3] := a_list;
@@ -174,7 +175,7 @@ class Transpiler:
         but there are two special cases:
 
         1.  If the variable is called "this" we need to translate it to the corresponding keyword which is "self".
-        
+
         2.  If the transpiler is in a class and the variable is a class attribute 
             the variable needs to be prefixed with "self." to enable the attribute access in pythons
 
@@ -219,6 +220,7 @@ class Transpiler:
         )
 
     def block(self, stmnts):
+        """ TODO documentation """
         # copy state variables to restore them after block translation
         variables = self.state.variables[:]
         self.state.variables = []
@@ -252,19 +254,23 @@ class Transpiler:
         self.state.procedures = procedures
         return py_stmnts
 
-    def _bool_op(self, left, operator, right):
+    def _bool_op(self, left, operator, right) -> ast.Compare:
+        """ Helper function that generates a Compare element and wraps the left and right side into the bool function """
         [left_cond, right_cond] = self.to_python([left, right])
         left = call_function("bool", [left_cond])
         right = call_function("bool", [right_cond])
         return ast.Compare(left=left, ops=[operator], comparators=[right])
 
-    def booleanequal(self, left, right):
+    def booleanequal(self, left, right) -> ast.BoolOp:
+        """ x <==> y -> bool(x) == bool(y) """
         return self._bool_op(left, ast.Eq(), right)
 
-    def booleannotequal(self, left, right):
+    def booleannotequal(self, left, right) -> ast.BoolOp:
+        """ x <!=> y -> bool(x) != bool(y) """
         return self._bool_op(left, ast.NotEq(), right)
 
-    def cachedprocedure(self, params, block):
+    def cachedprocedure(self, params, block) -> ast.Name:
+        """ See method proceduredefinition(...) """
         proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
         self.state.add_before(self.proceduredefinition(
@@ -272,15 +278,37 @@ class Transpiler:
 
         return ast.Name(id=proc_name)
 
-    def cardinality(self, expr):
+    def cardinality(self, expr) -> ast.Call:
+        """ Python equivilant is len function 
+
+        e.g. #A -> len(A)
+        """
         expr = self.to_python(expr)
         return call_function("len", [expr])
 
-    def cartesianproduct(self, left, right):
+    def cartesianproduct(self, left, right) -> ast.Call:
+        """ Translated with setlx.cartesian_product function
+
+        e.g. x >< y -> setlx.cartesian_product(x,y)
+        """
         params = self.to_python([left, right])
         return self.setlx_function("cartesian_product", params)
 
-    def check(self, check_block, backtrack_block):
+    def check(self, check_block, backtrack_block) -> ast.Try:
+        """ Check is translated to a try-catch which catches BacktrackExceptions and does nothing on exception
+
+        e.g.::
+
+            check{
+                ...
+            }
+
+        is translated to::
+
+            try:
+                ..
+            except BacktrackException: pass
+        """
         body = self.to_python(check_block)
         afterBacktrack = [ast.Pass()]
         if backtrack_block != None:
@@ -295,6 +323,7 @@ class Transpiler:
                        finalbody=[])
 
     def classconstructor(self, id, params, block, static_block):
+        """ TODO documentation """
         static_block = static_block or Block([])  # convert None to empty list
 
         py_id = escape_id(id)
@@ -361,7 +390,8 @@ class Transpiler:
             decorator_list=[]
         )
 
-    def closure(self, params, block):
+    def closure(self, params, block) -> ast.Name:
+        """ Closures are translated like normal procedures (see procedure(..))"""
         warn("closures are translated as normal python functions, so they can only read from variables outside the scope")
         proc_name = f"closure_{self.state.level}_{self.state.procedure_counter}"
 
@@ -370,46 +400,71 @@ class Transpiler:
 
         return ast.Name(id=proc_name)
 
-    def collectionaccess(self, params, callable):
-        callable = self.to_python(callable) if callable != None else None
+    def collectionaccess(self, params, callable) -> ast.SubScript:
+        """ Tranalated to Python SubScript 
+
+        Three possible params described by the following examples:
+        e.g.    collection[1] -> collection[1]
+                collection[1,2] -> collection[[1,2]]
+                collection[1..2] -> collection[1:2]
+        """
+        py_callable = self.to_python(callable)
 
         if isinstance(params, list):
-            py_params = ast.List(elts=[self.to_python(p) for p in params])
+            py_params = ast.List(elts=self.to_python(params))
         else:
             py_params = self.to_python(params)
+
         if isinstance(params, ListRange):
-            return ast.Subscript(value=callable, slice=py_params)
+            return ast.Subscript(value=py_callable, slice=py_params)
         else:
             index = ast.Index(value=py_params)
-            return ast.Subscript(value=callable, slice=index)
+            return ast.Subscript(value=py_callable, slice=index)
 
-    def collectmap(self, expr, callable):
-        access = self.to_python(CollectionAccess(expr, callable))
-        return self.setlx_function("map", [access])
+    def collectmap(self, expr, callable) -> ast.Call:
+        """ Translated by calling the method "collect" on the object 
+
+        e.g. collection{1} -> collection.collect(1)
+        """
+        [py_var, py_expr] = self.to_python([callable, expr])
+        return ast.Call(func=ast.Attribute(value=py_var, attr='collect'), args=[py_expr], keywords=[])
 
     def condition(self, expression):
+        """ Translated by translating the cxondition's expression """
         return self.to_python(expression)
 
-    def conjunction(self, left, right):
+    def conjunction(self, left, right) -> ast.BoolOp:
+        """ Same in SetlX and Python (and, &&) """
         return self._boolop(left, ast.And(), right)
 
-    def copyvariable(self, left, right):
-        [left, right] = self.to_python([left, right])
-        return ast.Assign(
-            targets=[left],
-            value=self.setlx_function("copy", [right])
-        )
-
-    def difference(self, left, right):
+    def difference(self, left, right) -> ast.BinOp:
+        """ Same in SetlX and Python (-) """
         return self._binop(left, ast.Sub(), right)
 
-    def differenceassignment(self, assignable, right_hand_side):
+    def differenceassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ Same in SetlX and Python (-=) """
         return self._augassign(assignable, ast.Sub(), right_hand_side)
 
-    def disjunction(self, left, right):
+    def disjunction(self, left, right) -> ast.BoolOp:
+        """ Same in SetlX and Python (or, ||) """
         return self._boolop(left, ast.Or(), right)
 
-    def dowhile(self, condition, block):
+    def dowhile(self, condition, block) -> ast.While:
+        """ Translated by converting to Python while structure with condition at end
+
+        e.g.::
+
+            do{
+                ...
+            }while(x > 10);
+
+        is transalted to::
+
+            while True:
+                ...
+                if not(x > 10):
+                    break
+        """
         [py_condition, py_block] = self.to_python([condition, block])
         break_block = [ast.Break()]
         negate = ast.UnaryOp(op=ast.Not(), operand=py_condition)
@@ -417,22 +472,36 @@ class Transpiler:
         py_block.append(if_break)
         return ast.While(test=bool_true(), body=py_block, orelse=[])
 
-    def equal(self, left, right):
+    def equal(self, left, right) -> ast.Compare:
+        """ Same in SetlX and Python (==)"""
         return self._compare(left, ast.Eq(), right)
 
-    def exists(self, iter_chain, condition):
+    def exists(self, iter_chain, condition) -> ast.Call:
+        """ Translated with Python's any function 
+
+        e.g. exists(x in y | x > 2) -> any(x > 2 for x in y)
+        """
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
         expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("any", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
     def exit(self):
+        """ Translated by calling python's exit function"""
         return call_function("exit", [])
 
-    def explicitlist(self, exprs):
+    def explicitlist(self, exprs) -> ast.Call:
+        """ Translated by using custom setlx.List 
+
+        e.g. [1,2,3] -> seltx.List([1,2,3])
+        """
         list_arg = ast.List(elts=self.to_python(exprs))
         return self.setlx_function("List", [list_arg])
 
-    def explicitlistwithrest(self, exprs, rest):
+    def explicitlistwithrest(self, exprs, rest) -> ast.Call:
+        """ Translated by adding the rest as starred element to the list
+
+        e.g. [1,2|x] -> setlx.List([1,2,*x])
+        """
         py_exprs = self.to_python(exprs)
         py_exprs.append(ast.Starred(
             value=self.to_python(rest)
@@ -440,39 +509,54 @@ class Transpiler:
         elts = ast.List(elts=py_exprs)
         return self.setlx_function("List", [elts])
 
-    def factorial(self, expr):
+    def factorial(self, expr) -> ast.Call:
+        """ Translated by using the setlx.factorial function 
+
+        e.g. 5! -> setlx.factorial(5)
+        """
         expr = self.to_python(expr)
         return self.setlx_function("factorial", [expr])
 
-    def forall(self, iter_chain, condition):
+    def forall(self, iter_chain, condition) -> ast.Call:
+        """ Translated with Python all function 
+
+        e.g. forall(x in y | x > 2) -> all(x > 2 for x in y)
+        """
         expr = self.to_python(SetlIteration(condition, iter_chain, None))
         expr = expr.args[0]  # unpack list from setlx.List object
         return call_function("all", [ast.GeneratorExp(elt=expr.elt, generators=expr.generators)])
 
-    def functioncall(self, params, callable):
+    def functioncall(self, params, callable) -> ast.Call:
+        """ Function calls in SetlX and Python are the same so they are translated equally 
+
+        There two speciall functions:
+        1. "load" is translated to a import statement (load("test.stlx") -> from test import *)
+        2. "eval" gets the global and local variables as extra parameters (eval(x) -> setlx.eval(x,globals(),locals()))
+        """
         py_params = self.to_python(params)
 
         if isinstance(callable, Variable):
             if callable.id == "load":
                 return import_call(py_params[0].s)
             elif callable.id == "eval":
-                return ast.Call(func=ast.Attribute(value=ast.Name(id='setlx'), attr='eval'),
-                                args=[py_params[0],
-                                      ast.Call(func=ast.Name(id='globals'),
-                                               args=[], keywords=[]),
-                                      ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])],
-                                keywords=[])
+                return self.setlx_function("eval", [py_params[0],
+                                                    ast.Call(func=ast.Name(id='globals'),
+                                                             args=[], keywords=[]),
+                                                    ast.Call(func=ast.Name(id='locals'), args=[], keywords=[])])
 
         expr = self.to_python(callable)
         return ast.Call(expr, py_params, [])
 
-    def greaterorequal(self, left, right):
+    def greaterorequal(self, left, right) -> ast.Compare:
+        """ same in SetlX and Python (>=) """
         return self._compare(left, ast.GtE(), right)
 
-    def greaterthan(self, left, right):
+    def greaterthan(self, left, right) -> ast.Compare:
+        """ same in SetlX and Python (>) """
         return self._compare(left, ast.Gt(), right)
 
-    def ifthen(self, condition, block, else_list):
+    def ifthen(self, condition, block, else_list) -> ast.If:
+        """ Translated to a Python If statement, which has the same structure as in SetlX """
         [condition, block] = self.to_python([condition, block])
 
         orelse = []
@@ -492,7 +576,8 @@ class Transpiler:
             self.to_python(e) for e in orelse]
         return ast.If(test=condition, body=block, orelse=orelse)
 
-    def ifthenbranch(self, condition, block, orelse):
+    def ifthenbranch(self, condition, block, orelse) -> ast.If:
+        """ Translated to a Python If statement, which has the same structure as in SetlX """
         [condition, block] = self.to_python([condition, block])
         if len(orelse) > 0:
             if isinstance(orelse[0], Block):
@@ -504,18 +589,22 @@ class Transpiler:
 
         return ast.If(test=condition, body=block, orelse=else_list)
 
-    def implication(self, left, right):
+    def implication(self, left, right) -> ast.Compare:
+        """ "x => y" is translated to "not x or y" """
         [left, right] = self.to_python([left, right])
         not_left = ast.UnaryOp(op=ast.Not(), operand=left)
         return ast.Compare(left=not_left, ops=[ast.Or()], comparators=[right])
 
-    def integerdivision(self, left, right):
+    def integerdivision(self, left, right) -> ast.BinOp:
+        """ same in SetlX and Python (\\) """
         return self._binop(left, ast.FloorDiv(), right)
 
-    def integerdivisionassignment(self, assignable, right_hand_side):
+    def integerdivisionassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ same in SetlX and Python (\\=) """
         return self._augassign(assignable, ast.FloorDiv(), right_hand_side)
 
     def iterator_from_chain(self, iter_chain):
+        """ TODO documentation """
         if len(iter_chain) == 1:
             return self.to_python([iter_chain[0].assignable, iter_chain[0].expression])
 
@@ -527,20 +616,37 @@ class Transpiler:
 
         return [assignable, list_product]
 
-    def lambdaclosure(self, params, expr):
+    def lambdaclosure(self, params, expr) -> ast.Lambda:
+        """ Translated like LambdaProcedure (see lambdaprocedure method) """
         return self.lambdaprocedure(params, expr)
 
-    def lambdadefinition(self, procedure, name):
+    def lambdadefinition(self, procedure, name: str) -> ast.Assign:
+        """ Translated to assignment of lambda function
+
+        e.g.::
+
+            x := a,b |-> a*b;
+
+        is translated to::
+
+            x = lambda a,b: a*b
+        """
         py_id = escape_id(name)
         lambda_py = self.lambdaprocedure(procedure.params, procedure.expr)
         return ast.Assign(targets=[ast.Name(id=py_id)], value=lambda_py)
 
-    def lambdaprocedure(self, params, expr):
+    def lambdaprocedure(self, params: list, expr) -> ast.Lambda:
+        """ Translated to Python Lambda 
+
+        If the lambda is in the static block of a class, the parameter "self=None"
+        is added to support a call as class function.
+        """
         expr = self.to_python(expr)
         params = self.to_python(params)
 
         defaults = []
         if self.state.is_class_static():
+            # add self=None as parameter in static class block
             params.append(ast.arg(arg="self", annotation=None))
             defaults.append(ast.NameConstant(None))
 
@@ -552,65 +658,93 @@ class Transpiler:
                                              defaults=defaults),
                           body=expr)
 
-    def lessorequal(self, left, right):
+    def lessorequal(self, left, right) -> ast.Compare:
+        """ Same in SetlX and Python (<=)"""
         return self._compare(left, ast.LtE(), right)
 
-    def lessthan(self, left, right):
+    def lessthan(self, left, right) -> ast.Compare:
+        """ Same in SetlX and Python (<)"""
         return self._compare(left, ast.Lt(), right)
 
     def listparameter(self, id):
         raise "not reachable"
 
-    def listrange(self, start, end):
-        start = self.to_python(start) if start != None else None
-        end = self.to_python(end) if end != None else None
+    def listrange(self, start, end) -> ast.Slice:
+        """ same in SetlX and Python """
+        [start, end] = self.to_python([start, end])
         return ast.Slice(lower=start, upper=end, step=None)
 
     def match(self):
         raise NotSupported("match is not supported")
 
-    def memberaccess(self, parent, child):
-        parent = self.to_python(parent)
-        child = self.to_python(child)
+    def memberaccess(self, parent, child) -> ast.Attribute:
+        """ Translated to ast.Attribute (same in SetlX and Python)"""
+        [parent, child] = self.to_python([parent, child])
         if isinstance(child, ast.Name):
+            # unpack id to generate correct python ast
             child = child.id
         return ast.Attribute(value=parent, attr=child)
 
-    def minus(self, expr):
+    def minus(self, expr) -> ast.UnaryOp:
+        """ Same in SetlX and Python (-)"""
         expr = self.to_python(expr)
         return ast.UnaryOp(op=ast.USub(), operand=expr)
 
-    def modulo(self, left, right):
+    def modulo(self, left, right) -> ast.BinOp:
+        """ Same in SetlX and Python (%)"""
         return self._binop(left, ast.Mod(), right)
 
-    def moduloassignment(self, assignable, right_hand_side):
+    def moduloassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ Same as in python (%=) """
         return self._augassign(assignable, ast.Mod(), right_hand_side)
 
-    def notequal(self, left, right):
+    def notequal(self, left, right) -> ast.Compare:
+        """ Translated to python "!=" """
         return self._compare(left, ast.NotEq(), right)
 
-    def notin(self, left, right):
+    def notin(self, left, right) -> ast.Compare:
+        """ Translated to python "not in" """
         return self._compare(left, ast.NotIn(), right)
 
-    def operatorexpression(self, expr):
+    def operatorexpression(self, expr) -> ast.Starred:
+        """ Translated to starred argument """
         expr = self.to_python(expr)
         return ast.Starred(value=expr)
 
-    def parameter(self, id, default):
+    def parameter(self, id, default) -> ast.arg:
+        """ Translated to ast.arg.
+
+        The default parameter is not used since in python
+        it is not stored in the argument but in a seperated list.
+        """
         py_id = escape_id(id.id)
         if py_id in self.state.built_ins:
             del self.state.built_ins[self.state.built_ins.index(py_id)]
         self.state.variables.append(py_id)
         return ast.arg(arg=py_id, annotation=None)
 
-    def power(self, base, exponent):
+    def power(self, base, exponent) -> ast.BinOp:
+        """ "**" operator is same in python """
         return self._binop(base, ast.Pow(), exponent)
 
-    def prefixoperator(self, expr, py_target_type):
+    def prefixoperator(self, expr, py_target_type) -> ast.Call:
+        """ Helper function for generating a function call """
         expr = self.to_python(expr)
         return call_function(py_target_type, [expr])
 
-    def procedure(self, params, block):
+    def procedure(self, params, block) -> ast.Name:
+        """ Translated by defining a function in the statement before and using the functions name as translation
+
+        e.g.::
+
+            x := [procedure(a,b){...}]
+
+        is translated to::
+
+            def procedure_0_0(a,b):
+                ...
+            x = [procedure_0_0]
+        """
         proc_name = f"procedure_{self.state.level}_{self.state.procedure_counter}"
 
         self.state.add_before(self.proceduredefinition(
@@ -619,6 +753,7 @@ class Transpiler:
         return ast.Name(id=proc_name)
 
     def proceduredefinition(self, procedure, name):
+        """ TODO documentation"""
         py_name = escape_id(name)
         self.state.procedure_counter += 1
 
@@ -668,58 +803,80 @@ class Transpiler:
         self.state.procedures[py_name] = params
         return ast.FunctionDef(name=py_name, args=arguments, body=block, decorator_list=decorators, returns=None)
 
-    def product(self, left, right):
+    def product(self, left, right) -> ast.BinOp:
+        """ same in python """
         return self._binop(left, ast.Mult(), right)
 
-    def productassignment(self, assignable, right_hand_side):
+    def productassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ "*=" is same in python """
         return self._augassign(assignable, ast.Mult(), right_hand_side)
 
-    def productofmembers(self, expr):
+    def productofmembers(self, expr) -> ast.Call:
+        """ Translated by calling the function product with the expression as argument
+
+        e.g. */[1,2] -> product([1,2])
+        """
         return self._prefix_operator("product", expr)
 
-    def productofmembersbinary(self, left, right):
+    def productofmembersbinary(self, left, right) -> ast.Call:
+        """ Translated by calling the function setlx.product with the left and right side as arguments
+
+        e.g. 2 */[1,2] -> setlx.product([1,2], 2)
+        """
         [left, right] = self.to_python([left, right])
         return self.setlx_function("product", [right, left])
 
-    def quotient(self, left, right):
+    def quotient(self, left, right) -> ast.BinOp:
+        """ "/"-perator is same in python """
         return self._binop(left, ast.Div(), right)
 
-    def quotientassignment(self, assignable, right_hand_side):
+    def quotientassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ "/=" is same in python """
         return self._augassign(assignable, ast.Div(), right_hand_side)
 
-    def range(self, start, step, end):
-        start = self.to_python(start)
-        end = self.to_python(end)
+    def range(self, start, step, end) -> ast.Call:
+        """ translated with setlx._range function 
+
+        Step is calculated by substrating the second from the first expression.
+        e.g. [1,3..10] -> setlx._range(1, 10, 3-1)
+        """
+        [start, end] = self.to_python([start, end])
         range_params = [start, end]
 
         if step != None:
-            step = ast.BinOp(left=self.to_python(
+            # calculate step by substracting step from start
+            py_step = ast.BinOp(left=self.to_python(
                 step), op=ast.Sub(), right=start)
-            range_params.append(step)
+            range_params.append(py_step)
 
         return self.setlx_function("_range", range_params)
 
-    def readwriteparameter(self, id):
+    def readwriteparameter(self, id) -> ast.arg:
+        """ Translated as normal arugment (ast.arg) with "rw" annotation """
         py_id = self.to_python(id)
         return ast.arg(arg=py_id.id, annotation=ast.Str("rw"))
 
     def scan(self):
         raise NotSupported("scan is not supported")
 
-    def setlistconstructor(self, collection):
+    def setlistconstructor(self, collection) -> ast.Call:
+        """ Translated by calling setlx.Set(...) with collection as argument
+
+        e.g. {1,2,3} -> setlx.Set([1,2,3])
+        """
+        elts = []
         if collection == None:
-            return self.setlx_function("Set", [])
+            elts = []
         else:
             py_collection = self.to_python(collection)
             if isinstance(collection, Range):
-                return self.setlx_function("Set", [py_collection])
-            elif isinstance(collection, SetlIteration):
-                return self.setlx_function("Set", [py_collection.args[0]])
+                elts = [py_collection]
             else:
-                # unpack setlx.List object
-                return self.setlx_function("Set", [py_collection.args[0]])
+                elts = [py_collection.args[0]]
+        return self.setlx_function("Set", elts)
 
-    def setliteration(self, expr, iter_chain, condition):
+    def setliteration(self, expr, iter_chain, condition) -> ast.Call:
+        """ Translated to setlx.List with generator as argument"""
         iter_chain = self.to_python(iter_chain)
         expr = self.to_python(expr)
         condition = [self.to_python(condition)] if condition != None else []
@@ -727,35 +884,63 @@ class Transpiler:
         iter_chain[-1].ifs = condition
         return self.setlx_function("List", [ast.ListComp(elt=expr, generators=iter_chain)])
 
-    def setliterator(self, assignable, expression):
+    def setliterator(self, assignable, expression) -> ast.comprehension:
+        """ Translated with python equivalent which is a comprehension"""
         [assignable, expression] = self.to_python([assignable, expression])
         return ast.comprehension(target=assignable, iter=expression, ifs=[], is_async=0)
 
     def setlvector(self, values):
+        """ Translated by calling setlx.Vector constructor with values as argument
+
+        e.g. << 1 2 >> -> setlx.Vector([1,2]) 
+        """
         py_values = self.to_python(values)
         return self.setlx_function("Vector", py_values)
 
     def setlmatrix(self, vectors):
+        """ Translated by calling setlx.Matrix constructor with vectors as argument
+
+        e.g. << << 1 2 >> << 2 1 >> >> -> setlx.Matrix([[1,2],[2,1]]) 
+        """
         py_vec = [ast.List(elts=self.to_python(v.values)) for v in vectors]
         return self.setlx_function("Matrix", [ast.List(elts=py_vec)])
 
-    def setlxassert(self, condition, expr):
+    def setlxassert(self, condition, expr) -> ast.Assert:
+        """ Translated to Python Assert statement """
         [condition, expr] = self.to_python([condition, expr])
         return ast.Assert(test=condition, msg=expr)
 
-    def setlxbreak(self):
+    def setlxbreak(self) -> ast.Break:
+        """ Translated to Python Break statement """
         return ast.Break()
 
-    def setlxcontinue(self):
+    def setlxcontinue(self) -> ast.Continue:
+        """ Translated to Python Continue statement """
         return ast.Continue()
 
-    def setlxdouble(self, value):
+    def setlxdouble(self, value: str) -> ast.Num:
+        """ Translated as a Python number """
         return ast.Num(n=float(value))
 
-    def setlxfalse(self):
+    def setlxfalse(self) -> ast.NameConstant:
+        """ Translates "true" to "True" """
         return bool_false()
 
     def setlxfor(self, iteratorChain, condition, block):
+        """ Translates SetlX For to Python For
+
+        Python does not support a conditions in for loops
+        so they are translated as seperate if statement in loop.
+        e.g.::
+
+            for(x in list | x > 2){...}
+
+        translated to::
+
+            for x in list:
+                if x > 2:
+                    ...
+        """
         block = self.to_python(block)
         [assignable, iterator] = self.iterator_from_chain(iteratorChain)
         # add condition as if self.statement in branch
@@ -765,38 +950,47 @@ class Transpiler:
             block = [if_stmt]
         return ast.For(target=assignable, iter=iterator, body=block, orelse=[])
 
-    def setlxfraction(self, number):
-        num = int(number)
-        return ast.Num(n=num)
+    def setlxfraction(self, number: str) -> ast.Num:
+        """ Translated as a Python number """
+        return ast.Num(n=int(number))
 
-    def setlxin(self, left, right):
+    def setlxin(self, left, right) -> ast.Compare:
+        """ Translated with Python in keyword """
         return self._compare(left, ast.In(), right)
 
-    def setlxlist(self, cb):
-        if cb != None:
-            cb_py = self.to_python(cb)
-            if isinstance(cb, (ExplicitList, ExplicitListWithRest, SetlIteration)):
-                return cb_py
-            return self.setlx_function("List", [cb_py])
-        else:
-            return self.setlx_function("List", [])
+    def setlxlist(self, cb) -> ast.Call:
+        """ Translated by calling setlx.List(..) with list as argument
 
-    def setlxliteral(self, value):
+        e.g. [1,2,3] -> setlx.List([1,2,3])
+        """
+        elts = []
+        if cb != None:
+            elts = [self.to_python(cb)]
+            if isinstance(cb, (ExplicitList, ExplicitListWithRest, SetlIteration)):
+                return elts[0]
+        return self.setlx_function("List", elts)
+
+    def setlxliteral(self, value: str) -> ast.Str:
+        """ Translated with Python string, stripping the "'" at start and beginning """
         # cut " from start and end
         return ast.Str(s=value[1: -1])
 
-    def setlxnot(self, expr):
+    def setlxnot(self, expr) -> ast.UnaryOp:
+        """ Translated with Python not keyword """
         expr = self.to_python(expr)
         return ast.UnaryOp(op=ast.Not(), operand=expr)
 
-    def setlxom(self):
+    def setlxom(self) -> ast.NameConstant:
+        """ Translated with Python None """
         return ast.NameConstant(None)
 
-    def setlxreturn(self, expression):
+    def setlxreturn(self, expression) -> ast.Return:
+        """ Translated with Python return statement """
         expression = self.to_python(expression)
         return ast.Return(value=expression, decorator_list=[], returns=None)
 
     def setlxstring(self, string):
+        """ TODO documentation """
         value = string[1:-1]
         if len(value) == 0:
             # if the string is empty, so is the python string
@@ -817,7 +1011,7 @@ class Transpiler:
 
         slices = [value[i:j] for i, j in zip(
             indices, indices[1:]+[None]) if len(value[i:j]) > 0]
- 
+
         values = []
         for s in slices:
             if s[0] == "$":
@@ -848,29 +1042,44 @@ class Transpiler:
             return ast.JoinedStr(values=values)
 
     def setlxtrue(self):
+        """ Translates "true" to "True" """
         return bool_true()
 
     def setlxwhile(self, condition, block):
+        """ Translates while construct to python while """
         [py_condition, py_block] = self.to_python([condition, block])
         return ast.While(test=py_condition, body=py_block, orelse=[])
 
     def sum(self, left, right):
+        """ Translates SetlX plus operator with python plus operator """
         return self._binop(left, ast.Add(), right)
 
-    def sumassignment(self, assignable, right_hand_side):
+    def sumassignment(self, assignable, right_hand_side) -> ast.AugAssign:
+        """ Translates += statement with python += statement """
         return self._augassign(assignable, ast.Add(), right_hand_side)
 
-    def sumofmembers(self, expr):
+    def sumofmembers(self, expr) -> ast.Call:
+        """ Translated by calling the function sum with the expression as argument"""
         return self._prefix_operator("sum", expr)
 
-    def sumofmembersbinary(self, left, right):
+    def sumofmembersbinary(self, left, right) -> ast.Call:
+        """ Translated by calling the function setlx.sum with the left and right side as arguments"""
         [left, right] = self.to_python([left, right])
         return self.setlx_function("sum", [right, left])
 
-    def switch(self, case_list, default_branch):
+    def switch(self, case_list: list, default_branch) -> ast.If:
+        """ Switch is translated to a list of if statements 
+
+        A switch statement is translated to a list of if statements 
+        where every value is checked if "elif" and the the default branch
+        is represented by an else statement.
+
+        If there only is a default branch no if is needed so the 
+        translation of the default branch is returned
+        """
         if len(case_list) == 0:
             # in setlx try can standalone, in python not
-            return default_branch
+            return self.to_python(default_branch) or Block([])
 
         cond = self.to_python(case_list[0][0])
         blk = self.to_python(case_list[0][1])
@@ -885,7 +1094,35 @@ class Transpiler:
     def term(self):
         raise NotSupported("terms are not supported")
 
-    def trycatch(self, block, try_list):
+    def trycatch(self, block: list, try_list: list) -> ast.Try:
+        """ Translates a try catch construct 
+
+        The translation is best described by an example::
+
+            try{
+                throw("error");
+            } catchUsr(e){
+                print("user error: $e$")
+            } catchLng(e){
+                print("language error: $e$")
+            } catch(e){
+                print("error: $e$")
+            }
+
+        This is translated to::
+
+            try:
+                setlx.throw("error");
+            except setlx.UserExcetion as e:
+                e = setlx.unpack_error(e)
+                setlx.print(f"user error: {e}")
+            except Exception as e:
+                e = setlx.unpack_error(e)
+                setlx.print(f"user error: {e}")
+            except Exception as e:
+                e = setlx.unpack_error(e)
+                setlx.print(f"error: {e}")
+        """
         block = self.to_python(block)
         if len(try_list) == 0:
             return block
@@ -915,15 +1152,30 @@ class Transpiler:
         )
 
     def trycatchbranch(self, variable, block):
+        """ not reachable since the try-catch construct is translated as one """
         raise Exception("not reachable")
 
     def trycatchlngbranch(self, variable, block):
+        """ not reachable since the try-catch construct is translated as one """
         raise Exception("not reachable")
 
     def trycatchusrbranch(self, variable, block):
+        """ not reachable since the try-catch construct is translated as one """
         raise Exception("not reachable")
 
-    def variable(self, id, standalone):
+    def variable(self, id: str, standalone: bool):
+        """ Translates a variable
+
+        By default this is translated to a python variable (ast.Name),
+        but there are two special cases:
+
+        1.  If the variable is called "this" we need to translate it to the corresponding keyword which is "self".
+
+        2.  If the transpiler is in a class and the variable is a class attribute 
+            the variable needs to be prefixed with "self." to enable the attribute access in pythons
+
+        """
+
         if id == "this":
             return ast.Name(id="self")
 
@@ -939,23 +1191,44 @@ class Transpiler:
         return ast.Name(id=py_id)
 
     def variableignore(self):
+        """ Translates a ignored SetlX variable to a "_" python variable """
         return ast.Name(id="_")
 
     def setlx_access(self, name):
+        """ Generates a expression that accesses a variable from the setlx package """
         self.state.imports.add("setlx")
         return ast.Attribute(value=ast.Name(id="setlx"), attr=name)
 
-    def setlx_function(self, name, args):
+    def setlx_function(self, name: str, args: list) -> ast.Call:
+        """ Generates a expression that calls a given function from the setlx package """
         self.state.imports.add("setlx")
         return ast.Call(func=self.setlx_access(name), args=args, keywords=[])
 
-    def unpack_error(self, target):
+    def unpack_error(self, target) -> ast.Assign:
+        """ Generates a statement that unpacks the error object from a Exception
+
+        In SetlX every object can be thrown as a exception.
+        In Python all Exception musst be subclasses of Exception.
+        This statement unpacks the error that is inside a exception.
+        e.g.::
+
+            e = setlx.unpack_error(e)
+
+        """
         self.state.imports.add("setlx")
         unpack_call = self.setlx_function("unpack_error", [ast.Name(id='e')])
         self.state.variables.append(target.id)
         return ast.Assign(targets=[target], value=unpack_call)
 
-    def to_method(self, id, static):
+    def to_method(self, id: str, static: bool) -> ast.Assign:
+        """ Generates a statement that converts a static class function to a none static one
+
+        In SetlX static class functions can be called as instance methods.
+        To enable this in python, the static functions are overriden with 
+        a none static one in the init function.
+        This statement does the overriding
+        e.g. self.function = setlx.to_method(self,ClassName.function)
+        """
         args = [ast.Name(id="self")]
         if static:
             args.append(ast.Attribute(
@@ -976,12 +1249,12 @@ class Transpiler:
 
     def copy_params(self, params: list) -> ast.Assign:
         """ Creates the ast structure for deep copying procedure parameters
-        
+
         This structure is used to copy all parameters at the beginning of a function.
         e.g. For the parameters x,y,z the code looks like this::
 
             [x,y,z] = setlx.copy([x,y,z])
-        
+
         Parameters
         ----------
         params : list
@@ -994,6 +1267,7 @@ class Transpiler:
 
 class ParserErrorListener(ErrorListener):
     """ An ANTLR error listener that only raises syntax errors """
+
     def __init__(self):
         ErrorListener.__init__(self)
 
@@ -1004,7 +1278,7 @@ class ParserErrorListener(ErrorListener):
 
 def parse_input(input: InputStream) -> SetlXgrammarParser:
     """ Parses a input stream and returns the generated parser Object 
-    
+
     Only syntax errors in the code are thrown (see ParserErrorListener)
     """
     lexer = SetlXgrammarLexer(input)
