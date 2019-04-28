@@ -4,8 +4,8 @@
 .antlr
 .vscode
 *.egg-info
-examples/algorithms
-examples/SetlX
+# examples/algorithms
+# examples/setlx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

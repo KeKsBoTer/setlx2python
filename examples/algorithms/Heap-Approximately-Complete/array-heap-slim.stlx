@@ -1,0 +1,102 @@
+prioQueue := procedure() {
+    return [];
+};
+
+top := procedure(h) {
+    return h[1];
+};
+
+insert := procedure(rw h, p, v) {
+    h += [ [p, v] ];
+    upHeap(h, #h);
+};
+
+upHeap := procedure(rw h, i) {
+    if (i == 1) {
+        return;
+    }
+    up := parent(i);
+    [p1, v1] := h[i];
+    [p2, v2] := h[up];
+    if (p1 < p2) {
+        exchange(h, i, up);
+        upHeap(h, up);
+    }
+};
+
+remove := procedure(rw h) {
+    v1 := h[1][2];
+    v2 := h[#h][2];
+    h[ 1] := h[#h];
+    h[#h] := om;
+    downHeap(h, 1);
+};
+
+downHeap := procedure(rw h, i) {
+    l := left(i);
+    r := right(i);
+    if (l <= #h && r <= #h) {
+        [pl, vl] := h[l];
+        [pr, vr] := h[r];
+        [p,  v ] := h[i];
+        if (p <= pl && p <= pr) {
+            return;
+        } else if (p > pl && pl <= pr) {
+            exchange(h, l, i);
+            downHeap(h, l);
+        } else {
+            exchange(h, r, i);
+            downHeap(h, r);
+        }
+    } else if (l <= #h) {
+        [pl, vl] := h[l];
+        [p,  v ] := h[i];
+        if (pl < p) {
+            exchange(h, l, i);
+            downHeap(h, l);
+        }
+    }
+};
+
+exchange := procedure(rw h, i, j) {
+    [ h[i], h[j] ] := [ h[j], h[i] ];
+};
+
+parent := i |-> i \ 2;
+left   := i |-> 2 * i;
+right  := i |-> 2 * i + 1;
+
+toString := procedure(h, i, n) {
+    if (i > #h) {
+        return " " * n + "Nil";
+    }
+    [p, v] := h[i];
+    return toString(h, left(i), n + 4) + "\n" + 
+           " " * n + "<$v$ |-> $p$>\n" +
+           toString(h, right(i), n + 4);
+};
+
+demo := procedure() {
+    data := readFile("data.txt");
+    h := prioQueue();
+    for (line in data) {
+        [v, n] := split(line, ":");
+        p := int(removeWS(n));
+        print("insert($p$, $v$)");
+        insert(h, p, v);
+        print("$toString(h,1,0)$");
+    }
+    while (h != []) {
+        print("top(h) = $top(h)$");
+        remove(h);
+        print("$toString(h,1,0)$");
+    }        
+};
+
+removeWS := procedure(s) {
+    ws := { " ", "\t", "\n", "\r", "\v" };
+    return +/ [ s[i] : i in [1 .. #s] | s[i] notin ws ];
+};      
+
+demo();
+
