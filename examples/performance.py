@@ -7,7 +7,7 @@ import subprocess
 def loadTestSnippets(path):
     module_dir = os.path.dirname(__file__)
     tests_dir = os.path.join(module_dir, path)
-
+    print(tests_dir)
     files = os.listdir(path=tests_dir)
     setlx_files = [f for f in files if f.endswith(".stlx")]
     py_files = [f for f in files if f.endswith(".py")]
@@ -30,8 +30,8 @@ def measure():
     times = []
     with open("times.csv", "w+") as f:
         f.write("setlx file, setlx time, py file, py time \n")
-        for setlx_f, py_f in file_paths:
-            if "legendre" in setlx_f or "tic" in setlx_f or "" in setlx_f:
+        for setlx_f, py_f in file_paths[:20]:
+            if "legendre" in setlx_f or "tic" in setlx_f:
                 continue
             # python
             start = time.perf_counter()
