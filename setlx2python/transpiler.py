@@ -995,7 +995,8 @@ class Transpiler:
         if len(value) == 0:
             # if the string is empty, so is the python string
             return ast.Str(s="")
-        value = value.replace("\\n", "\n").replace("\\t", "\t")
+        value = value.replace("\\n", "\n").replace(
+            "\\t", "\t").replace("\\\"", "\"").replace("\\'", "s")
         # split string by expressions in string
         # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
         matches = re.finditer(r'\$(?!\\)[^$]+\$', value)
