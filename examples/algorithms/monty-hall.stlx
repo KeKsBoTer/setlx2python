@@ -1,0 +1,26 @@
+// This function solves the Monty Hall problem via simulation.
+// The number n is the number of simulations.
+calculateChances := procedure(n) {
+    successWoody := 0; // number of cars for stupid strategy
+    successSmart := 0; // number of cars for smart strategy
+    for (i in [1..n]) {
+        // The car is put here
+        car    := rnd({1..3});                       
+        // The door that is chosen
+        choice := rnd({1..3});                       
+        // The door opened by Monty Hall.
+        opened := rnd({1..3} - { choice, car });
+        // The remaining door.
+        last   := arb({1..3} - { choice, opened });
+        if (car == choice) {
+            successWoody += 1;
+        }
+        if (car == last) {
+            successSmart += 1;
+        }
+    }
+    print("The first  strategy wins $successWoody$ cars.");
+    print("The second strategy wins $successSmart$ cars.");
+};
+
+calculateChances(100000);

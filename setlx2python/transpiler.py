@@ -401,7 +401,7 @@ class Transpiler:
         return ast.Name(id=proc_name)
 
     def collectionaccess(self, params, callable) -> ast.Subscript:
-        """ Tranalated to Python SubScript 
+        """ Tranalated to Python Subscript 
 
         Three possible params described by the following examples:
         e.g.    collection[1] -> collection[1]
