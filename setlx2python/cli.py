@@ -2,7 +2,7 @@
 setlx2python
  
 Usage:
-  setlx2python [-c] <file>
+  setlx2python <file> [-o <output>]
   setlx2python -h | --help
   setlx2python --version
  
@@ -23,7 +23,7 @@ Help:
 import ast
 import sys
 from docopt import docopt
-from astor import to_source, string_repr
+import astor
 
 from antlr4 import FileStream, InputStream
 
@@ -31,13 +31,8 @@ from setlx2python.transpiler import Transpiler, NotSupported, parse_input
 from . import __version__ as VERSION
 
 
-def transpile(file=None, code=None):
-    if code != None:
-        input = InputStream(code)
-    elif file != None:
-        input = FileStream(file, encoding="utf-8")
-    else:
-        raise Exception("no file or code provided")
+def transpile(file):
+    input = FileStream(file, encoding="utf-8")
 
     try:
         parser = parse_input(input)
@@ -51,7 +46,6 @@ def transpile(file=None, code=None):
     code = ast.Module(body=body)
     return code
 
-
 def pretty_source(source):
     """ Prettify the source.
     """
@@ -60,9 +54,12 @@ def pretty_source(source):
 
 def main():
     options = docopt(__doc__, version=VERSION)
-    if options["-c"]:
-        ast_tree = transpile(code=options["<file>"])
-    else:
-        ast_tree = transpile(file=options["<file>"])
 
-    print(to_source(ast_tree, pretty_source=pretty_source))
+    # CLI parameters
+    input_file = options["<file>"]
+    output_file = options["<output>"]
+
+    python_ast = transpile(input_file)
+    code = astor.to_source(python_ast, pretty_source=pretty_source)
+    with open(output_file, "w") as f:
+      f.write(code)

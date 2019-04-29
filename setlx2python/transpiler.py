@@ -63,7 +63,7 @@ class Transpiler:
         if isinstance(node, list):
             return [self.to_python(n) for n in node]
         else:
-            name = node.__class__.__name__.lower()
+            name = type(node).__name__.lower()
             return getattr(self, name)(*list(node))
 
     def _prefix_operator(self, operation: str, expr) -> ast.Call:
@@ -400,7 +400,7 @@ class Transpiler:
 
         return ast.Name(id=proc_name)
 
-    def collectionaccess(self, params, callable) -> ast.SubScript:
+    def collectionaccess(self, params, callable) -> ast.Subscript:
         """ Tranalated to Python SubScript 
 
         Three possible params described by the following examples:
