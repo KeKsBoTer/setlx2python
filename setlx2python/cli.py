@@ -31,7 +31,15 @@ from setlx2python.transpiler import Transpiler, NotSupported, parse_input
 from . import __version__ as VERSION
 
 
-def transpile(file):
+def transpile(file: str) -> ast.Module:
+    """ translates a given setlx file to a python string
+
+    Parameters
+    ----------
+    file : str
+        The path to the setlx file
+
+    """
     input = FileStream(file, encoding="utf-8")
 
     try:
