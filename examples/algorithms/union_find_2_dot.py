@@ -16,7 +16,7 @@ def graph2Dot(Parent, file):
             graph += f'    n{p} -> ' + setlx.join(setlx.List([f'n{x}' for x in CL]), ',')
             graph += ';\n'
     for x in M:
-        graph += f'    n{x} [label = \\"{x}\\"];\n'
+        graph += f'    n{x} [label = "{x}"];\n'
     graph += '}\n'
     setlx.writeFile(f'{file}.dot', setlx.List([graph]))
     setlx.run(f'dot -Tpdf {file}.dot -o {file}.pdf')

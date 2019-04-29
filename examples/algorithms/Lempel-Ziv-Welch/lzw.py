@@ -84,7 +84,7 @@ class lzw(setlx.SetlXClass):
 def demo(s, w):
     [s, w] = setlx.copy([s, w])
     if len(s) < 1000:
-        setlx.print(f'now compressing \\"{s}\\"')
+        setlx.print(f'now compressing "{s}"')
     compressor = lzw(w)
     l = compressor.compress(s)
     if len(s) < 1000:

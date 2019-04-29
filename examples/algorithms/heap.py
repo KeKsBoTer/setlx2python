@@ -120,7 +120,7 @@ def graph2Dot(tree, file):
             graph += ';\n'
     for k in setlx.List(setlx._range(1, Heap.sNodeId)):
         node = NodeDict[k]
-        graph += f'    n{k} [label = \\"{node.mPriority}\\"];\n'
+        graph += f'    n{k} [label = "{node.mPriority}"];\n'
     graph += '}\n'
     setlx.writeFile(f'{file}.dot', setlx.List([graph]))
     setlx.run(f'dot -Tpdf {file}.dot -o {file}.pdf')

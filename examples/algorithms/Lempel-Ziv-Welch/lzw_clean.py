@@ -59,7 +59,7 @@ class lzw(setlx.SetlXClass):
 def demo(s):
     [s] = setlx.copy([s])
     if len(s) < 1000:
-        setlx.print(f'now compressing \\"{s}\\"')
+        setlx.print(f'now compressing "{s}"')
     compressor = lzw()
     l = compressor.compress(s)
     if len(s) < 1000:
@@ -74,7 +74,7 @@ def demo(s):
 
 
 while True:
-    s = setlx.read('enter string to encode (\\"stop\\" terminates loop): ')
+    s = setlx.read('enter string to encode ("stop" terminates loop): ')
     if s == 'stop':
         break
     demo(s)
