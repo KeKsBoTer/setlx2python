@@ -7,7 +7,6 @@ import subprocess
 def loadTestSnippets(path):
     module_dir = os.path.dirname(__file__)
     tests_dir = os.path.join(module_dir, path)
-    print(tests_dir)
     files = os.listdir(path=tests_dir)
     setlx_files = [f for f in files if f.endswith(".stlx")]
     py_files = [f for f in files if f.endswith(".py")]
@@ -29,9 +28,9 @@ def measure():
     file_paths = loadTestSnippets(algo_path)
     times = []
     with open("times.csv", "w+") as f:
-        f.write("setlx file, setlx time, py file, py time \n")
-        for setlx_f, py_f in file_paths[:20]:
-            if "legendre" in setlx_f or "tic" in setlx_f:
+        f.write("setlx file, setlx time in secs, py file, py time in secs \n")
+        for setlx_f, py_f in file_paths:
+            if "legendre" in setlx_f or "tic" in setlx_f or "monte-carlo-pi" in setlx_f:
                 continue
             # python
             start = time.perf_counter()
@@ -49,7 +48,7 @@ def measure():
                 continue
             backslash = '\\'
             f.write(
-                f"{setlx_f.split(backslash)[-1]},{py_time}s,{py_f.split(backslash)[-1]},{setlx_time}s\n")
+                f"{setlx_f.split(backslash)[-1]},{setlx_time},{py_f.split(backslash)[-1]},{py_time}\n")
             f.flush()
 
 
