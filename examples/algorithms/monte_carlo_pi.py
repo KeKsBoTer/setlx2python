@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def approximatePi(n):
+    [n] = setlx.copy([n])
     k = 0
     i = 0
     while i < n:
@@ -15,7 +15,6 @@ def approximatePi(n):
     return 4.0 * k / n
 
 
-@setlx.procedure
 def main():
     n = 10
     i = 7
@@ -29,4 +28,3 @@ def main():
 
 
 main()
-

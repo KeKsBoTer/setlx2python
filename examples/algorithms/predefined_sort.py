@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def computeTimes(a, b):
+    [a, b] = setlx.copy([a, b])
     n = setlx.copy(a)
     while n <= b:
         setlx.resetRandom()
@@ -12,10 +12,9 @@ def computeTimes(a, b):
             start = setlx.now()
             setlx.sort(l)
             stop = setlx.now()
-            time += stop - start
+            time += setlx.stop - start
         setlx.print(f'n = {n}, t = {(0.001 * time)}, {(time / (n * setlx.log(n)))}')
         n = setlx.ceil(n * 1.2)
 
 
 computeTimes(10, 500000)
-

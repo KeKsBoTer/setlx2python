@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def topoSort(T, D):
+    [T, D] = setlx.copy([T, D])
     Parents = setlx.Set([setlx.List([t, setlx.Set()]) for t in T])
     Children = setlx.Set([setlx.List([t, setlx.Set()]) for t in T])
     for [s, t] in D:
@@ -22,7 +22,6 @@ def topoSort(T, D):
     return Sorted
 
 
-@setlx.procedure
 def main():
     T = setlx.Set([5, 7, 3, 11, 8, 2, 9, 10])
     D = setlx.Set([setlx.List([5, 11]), setlx.List([7, 11]), setlx.List([7, 8]), setlx.List([3, 8]), setlx.List([3, 10]), setlx.List([11, 2]), setlx.List([11, 9]), setlx.List([11, 10]), setlx.List([8, 9])])
@@ -31,4 +30,3 @@ def main():
 
 
 main()
-

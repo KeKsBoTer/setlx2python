@@ -1,13 +1,11 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def sort(L: 'rw'):
     A = setlx.copy(L)
     mergeSort(L, A)
 
 
-@setlx.procedure
 def mergeSort(L: 'rw', A: 'rw'):
     n = 1
     while n < len(L):
@@ -18,8 +16,8 @@ def mergeSort(L: 'rw', A: 'rw'):
         n *= 2
 
 
-@setlx.procedure
 def merge(L: 'rw', start, middle, end, A: 'rw'):
+    [start, middle, end] = setlx.copy([start, middle, end])
     for i in setlx.List(setlx._range(start, end - 1)):
         A[i] = L[i]
     idx1 = setlx.copy(start)
@@ -44,7 +42,6 @@ def merge(L: 'rw', start, middle, end, A: 'rw'):
         idx2 += 1
 
 
-@setlx.procedure
 def demo():
     L = setlx.List([setlx.rnd(setlx.Set(setlx._range(1, 200))) for n in setlx.List(setlx._range(1, 20))])
     setlx.print(f'L = {L}')
@@ -52,8 +49,8 @@ def demo():
     setlx.print(f'L = {L}')
 
 
-@setlx.procedure
 def testSort(n, k):
+    [n, k] = setlx.copy([n, k])
     for i in setlx.List(setlx._range(1, n)):
         L = setlx.List([setlx.rnd(setlx.Set(setlx._range(1, 200))) for x in setlx.List(setlx._range(1, k))])
         C = setlx.copy(L)
@@ -64,14 +61,14 @@ def testSort(n, k):
     setlx.print('All tests passed!')
 
 
-@setlx.procedure
 def isOrdered(L):
+    [L] = setlx.copy([L])
     for i in setlx.List(setlx._range(1, len(L) - 1)):
         assert L[i] <= L[i + 1], f'test L[i] <= L[i+1] failed for i = {i}, L = {L}'
 
 
-@setlx.procedure
 def sameElements(L, S):
+    [L, S] = setlx.copy([L, S])
     assert setlx.collect(L) == setlx.collect(S), f'different elements in {L} and {S}'
 
 
@@ -79,8 +76,8 @@ demo()
 testSort(100, 20)
 
 
-@setlx.procedure
 def computeTimes(a, b):
+    [a, b] = setlx.copy([a, b])
     n = setlx.copy(a)
     while n <= b:
         setlx.resetRandom()
@@ -90,10 +87,9 @@ def computeTimes(a, b):
             start = setlx.now()
             sort(L)
             stop = setlx.now()
-            time += stop - start
+            time += setlx.stop - start
         setlx.print(f'n = {n}, t = {(0.001 * time)}, {(time / (n * setlx.log(n)))}, {(time / n ** 2.0)}')
         n = setlx.ceil(n * 1.2)
 
 
 computeTimes(10, 100000)
-

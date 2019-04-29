@@ -1,13 +1,13 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def swap(x, y, A: 'rw'):
+    [x, y] = setlx.copy([x, y])
     [A[x], A[y]] = setlx.List([A[y], A[x]])
 
 
-@setlx.procedure
 def sink(k, A: 'rw', n):
+    [k, n] = setlx.copy([k, n])
     while 2 * k <= n:
         j = 2 * k
         if j < n and A[j] > A[j + 1]:
@@ -18,7 +18,6 @@ def sink(k, A: 'rw', n):
         k = setlx.copy(j)
 
 
-@setlx.procedure
 def heapSort(A: 'rw'):
     n = len(A)
     for k in setlx.List(setlx._range(n // 2, 1, n // 2 - 1 - n // 2)):
@@ -29,7 +28,6 @@ def heapSort(A: 'rw'):
         sink(1, A, n)
 
 
-@setlx.procedure
 def main():
     S = setlx.Set(setlx._range(10, 99))
     A = setlx.List([setlx.rnd(S) for i in setlx.List(setlx._range(1, 20))])
@@ -39,4 +37,3 @@ def main():
 
 
 main()
-

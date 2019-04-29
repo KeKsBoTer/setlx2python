@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def approximateLn2(n):
+    [n] = setlx.copy([n])
     k = 0
     i = 0
     while i < n:
@@ -14,7 +14,6 @@ def approximateLn2(n):
     return 1.0 * k / n
 
 
-@setlx.procedure
 def main():
     n = 10
     i = 7
@@ -22,12 +21,11 @@ def main():
         p = approximateLn2(n)
         ln2 = setlx.log(2)
         blanks = ' ' * i
-        setlx.print(f'n = {blanks} {n}: p = {blanks} {p}, error = {(p - ln2)}\\n')
+        setlx.print(f'n = {blanks} {n}: p = {blanks} {p}, error = {(p - ln2)}\n        ')
         n *= 10
         i -= 1
 
 
 ln2 = approximateLn2(9 * 0.7 * 0.3 * 10 ** 6)
-setlx.print(f'ln(2) = {ln2}, error = {(ln2 - setlx.log(2))}\\n')
+setlx.print(f'ln(2) = {ln2}, error = {(ln2 - setlx.log(2))}\n')
 main()
-

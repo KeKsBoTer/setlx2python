@@ -1,13 +1,13 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def ord(c):
+    [c] = setlx.copy([c])
     return setlx.arb(setlx.Set([n for n in setlx.List(setlx._range(1, 127)) if c == setlx.char(n)]))
 
 
-@setlx.procedure
 def lessThan(s1, s2):
+    [s1, s2] = setlx.copy([s1, s2])
     if s1 == s2:
         return False
     if s1 == '':
@@ -24,4 +24,3 @@ def lessThan(s1, s2):
     r1 = s1[2:]
     r2 = s2[2:]
     return lessThan(r1, r2)
-

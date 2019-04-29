@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def power(m, n):
+    [m, n] = setlx.copy([m, n])
     if n == 0:
         return 1
     p = power(m, n // 2)
@@ -15,4 +15,3 @@ def power(m, n):
 for n in setlx.List(setlx._range(1, 64)):
     setlx.print(power(2, n))
     setlx.print(power(3, n))
-

@@ -1,9 +1,9 @@
-﻿import setlx
-setlx.load('union-find-oo.stlx')
+import setlx
+from union_find_oo import *
 
 
-@setlx.procedure
 def mst(V, E):
+    [V, E] = setlx.copy([V, E])
     uf = unionFind(V)
     Result = setlx.Set()
     for [w, [x, y]] in E:
@@ -16,8 +16,8 @@ def mst(V, E):
                 return Result
 
 
-@setlx.procedure
 def demoFile(fn):
+    [fn] = setlx.copy([fn])
     data = setlx.readFile(fn)
     Edges = setlx.Set()
     Nodes = setlx.Set()
@@ -30,4 +30,3 @@ def demoFile(fn):
 
 
 demoFile('tinyEWG.txt')
-

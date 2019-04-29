@@ -1,25 +1,25 @@
-﻿import setlx
+import setlx
 
 
-class lzw:
+class lzw(setlx.SetlXClass):
 
     @staticmethod
-    @setlx.procedure
     def compress(s, self=None):
+        [s] = setlx.copy([s])
         result = setlx.List()
         idx = 1
         while idx <= len(s):
             p = self.longestPrefix(s, idx)
             result += setlx.List([self.mDictionary[s[idx:p]]])
             if p < len(s):
-                mDictionary[s[idx:p + 1]] = self.mNextCode
+                self.mDictionary[s[idx:p + 1]] = setlx.copy(self.mNextCode)
                 self.mNextCode += 1
             idx = p + 1
         return result
 
     @staticmethod
-    @setlx.procedure
     def longestPrefix(s, i, self=None):
+        [s, i] = setlx.copy([s, i])
         oldK = setlx.copy(i)
         k = i + 1
         while k <= len(s) and self.mDictionary[s[i:k]] != None:
@@ -28,8 +28,8 @@ class lzw:
         return oldK
 
     @staticmethod
-    @setlx.procedure
     def uncompress(l, self=None):
+        [l] = setlx.copy([l])
         result = ''
         idx = 1
         code = l[idx]
@@ -41,26 +41,25 @@ class lzw:
             next = self.mInverse[code]
             if next == None:
                 next = old + old[1]
-            mInverse[self.mNextCode] = old + next[1]
+            self.mInverse[self.mNextCode] = old + next[1]
             self.mNextCode += 1
             old = setlx.copy(next)
         result += old
         return result
 
-    @setlx.procedure
     def __init__(self):
-        self.uncompress = setlx.to_method(self, lzw.uncompress)
-        self.longestPrefix = setlx.to_method(self, lzw.longestPrefix)
-        self.compress = setlx.to_method(self, lzw.compress)
-        self.mDictionary = mDictionary = setlx.Set([setlx.List([setlx.char(i), i]) for i in setlx.List(setlx._range(0, 127))])
-        self.mInverse = mInverse = setlx.Set([setlx.List([i, setlx.char(i)]) for i in setlx.List(setlx._range(0, 127))])
-        self.mNextCode = mNextCode = 128
+        self.uncompress = setlx.to_method(self, lzw.uncompress, True)
+        self.longestPrefix = setlx.to_method(self, lzw.longestPrefix, True)
+        self.compress = setlx.to_method(self, lzw.compress, True)
+        self.mDictionary = setlx.Set([setlx.List([setlx.char(i), i]) for i in setlx.List(setlx._range(0, 127))])
+        self.mInverse = setlx.Set([setlx.List([i, setlx.char(i)]) for i in setlx.List(setlx._range(0, 127))])
+        self.mNextCode = 128
 
 
-@setlx.procedure
 def demo(s):
+    [s] = setlx.copy([s])
     if len(s) < 1000:
-        setlx.print(f'now compressing \\"{s}\\')
+        setlx.print(f'now compressing \\"{s}\\"')
     compressor = lzw()
     l = compressor.compress(s)
     if len(s) < 1000:
@@ -71,7 +70,7 @@ def demo(s):
     if len(s) < 1000:
         setlx.print(f'{l} |-> {s2}')
     assert s == s2, 's == s2'
-    setlx.print('decompression correct\\n\\n')
+    setlx.print('decompression correct\n\n')
 
 
 while True:
@@ -81,8 +80,8 @@ while True:
     demo(s)
 
 
-@setlx.procedure
 def fileDemo(f):
+    [f] = setlx.copy([f])
     setlx.print(f'compressing file {f}')
     s = setlx.sum(setlx.readFile(f))
     demo(s)
@@ -90,4 +89,3 @@ def fileDemo(f):
 
 fileDemo('alice.txt')
 fileDemo('lzw.stlx')
-
