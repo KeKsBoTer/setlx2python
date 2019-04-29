@@ -1,8 +1,7 @@
-﻿import setlx
-setlx.load('counting-sort.stlx')
+import setlx
+from counting_sort import *
 
 
-@setlx.procedure
 def main():
     Lines = setlx.readFile('counting-sort-data.txt')
     Names = setlx.List()
@@ -13,17 +12,16 @@ def main():
     Names = fillNames(Names)
     for i in setlx.List(setlx._range(1, len(Lines))):
         setlx.print(f'{Names[i]}: {Grades[i]}')
-    setlx.print('\\nSorted List:')
+    setlx.print('\nSorted List:')
     [SortedNames, SortedGrades] = countingSort(Names, Grades)
     for i in setlx.List(setlx._range(1, len(Lines))):
         setlx.print(f'{SortedNames[i]}: {SortedGrades[i]}')
 
 
-@setlx.procedure
 def fillNames(Names):
+    [Names] = setlx.copy([Names])
     maxLength = setlx.max(setlx.List([len(s) for s in Names]))
     return setlx.List([(s + ' ' * (maxLength + 1 - len(s))) for s in Names])
 
 
 main()
-

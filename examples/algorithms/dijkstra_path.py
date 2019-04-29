@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def shortestPath(source, goal, edges):
+    [source, goal, edges] = setlx.copy([source, goal, edges])
     dist = setlx.Set([setlx.List([source, 0])])
     fringe = setlx.Set([setlx.List([0, source])])
     backEdge = setlx.Set()
@@ -16,11 +16,11 @@ def shortestPath(source, goal, edges):
             fringe -= setlx.Set([setlx.List([dist[v], v])])
             dist[v] = d + l
             fringe += setlx.Set([setlx.List([d + l, v])])
-            backEdge[v] = u
+            backEdge[v] = setlx.copy(u)
 
 
-@setlx.procedure
 def constructPath(source, goal, backEdge):
+    [source, goal, backEdge] = setlx.copy([source, goal, backEdge])
     if source == goal:
         return setlx.List([source])
     n = backEdge[goal]
@@ -32,4 +32,3 @@ s = 'a'
 g = 'f'
 sp = shortestPath(s, g, edges)
 setlx.print(f'shortest path from {s} to {g} is {sp}')
-

@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def countingSort(Names, Grades):
+    [Names, Grades] = setlx.copy([Names, Grades])
     assert len(Names) == len(Grades), f'{len(Names)} != {len(Grades)}'
     maxGrade = setlx.max(Grades)
     Counts = setlx.List([0]) * maxGrade
@@ -21,4 +21,3 @@ def countingSort(Names, Grades):
         SortedGrades[index] = Grades[i]
         Indices[g] += 1
     return setlx.List([SortedNames, SortedGrades])
-

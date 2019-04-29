@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def product(m, n):
+    [m, n] = setlx.copy([m, n])
     if n == 0:
         return 0
     p = product(m, n // 2)
@@ -13,4 +13,3 @@ def product(m, n):
 
 
 setlx.print(product(18, 37))
-

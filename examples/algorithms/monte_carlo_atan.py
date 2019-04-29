@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def approximatePi(n):
+    [n] = setlx.copy([n])
     k = 0
     i = 0
     while i < n:
@@ -14,7 +14,6 @@ def approximatePi(n):
     return 2 * (k / n + 1.0)
 
 
-@setlx.procedure
 def main():
     n = 10
     i = 7
@@ -22,13 +21,12 @@ def main():
         p = approximatePi(n)
         pi = setlx.mathConst('Pi')
         blanks = ' ' * i
-        setlx.print(f'n = {blanks} {n}: p = {blanks} {p}, error = {(p - pi)}\\n')
+        setlx.print(f'n = {blanks} {n}: p = {blanks} {p}, error = {(p - pi)}\n        ')
         n *= 10
         i -= 1
 
 
 pia = approximatePi(9 * 0.7 * 0.3 * 10 ** 6)
 pi = setlx.mathConst('Pi')
-setlx.print(f'pi = {pia}, error = {(pia - pi)}\\n')
+setlx.print(f'pi = {pia}, error = {(pia - pi)}\n')
 main()
-

@@ -63,7 +63,7 @@ class Transpiler:
         if isinstance(node, list):
             return [self.to_python(n) for n in node]
         else:
-            name = node.__class__.__name__.lower()
+            name = type(node).__name__.lower()
             return getattr(self, name)(*list(node))
 
     def _prefix_operator(self, operation: str, expr) -> ast.Call:
@@ -219,8 +219,11 @@ class Transpiler:
             cause=None
         )
 
-    def block(self, stmnts):
-        """ TODO documentation """
+    def block(self, stmnts: list) -> list:
+        """ converts a list of setlx statements to a list of python statements
+
+        This function converts a list of setlx statements line by line.
+        """
         # copy state variables to restore them after block translation
         variables = self.state.variables[:]
         self.state.variables = []
@@ -322,8 +325,40 @@ class Transpiler:
                        orelse=[],
                        finalbody=[])
 
-    def classconstructor(self, id, params, block, static_block):
-        """ TODO documentation """
+    def classconstructor(self, id: str, params: list, block: Block, static_block: Block) -> ast.ClassDef:
+        """ Creates the code for a python class based on a setlx class
+        
+        This class is inherits from setlx.SetlXClass.
+        The class body from setlx is packed into the __init__ function of the class.
+        The __init__ functions gets the parameters of the class.
+        The content of the static block is translated into the class body directly.
+        In the __init__ functions all static functions are converted into methods by using the function setlx.to_method(..)
+
+        e.g.::
+
+            class Test(x){
+                this.x = x;
+                static{
+                    name := "Test";
+                    y := procedure(a,b){
+                        ...
+                    };
+                }
+            }
+
+        is translated to::
+
+            class Test(setlx.SetlXClass):
+                name = "Test";
+                @staticmethod
+                def y(a,b, self=None):
+                    ...
+
+                def __init__(self,x):
+                    [x] = setlx.copy([x])
+                    self.x = x
+                    self.y = setlx.to_method(self,Test.y)
+        """
         static_block = static_block or Block([])  # convert None to empty list
 
         py_id = escape_id(id)
@@ -603,8 +638,28 @@ class Transpiler:
         """ same in SetlX and Python (\\=) """
         return self._augassign(assignable, ast.FloorDiv(), right_hand_side)
 
-    def iterator_from_chain(self, iter_chain):
-        """ TODO documentation """
+    def iterator_from_chain(self, iter_chain: list):
+        """ This function converts a list of iterators.
+
+        If the iterator chain only consists of one iterator, it can be converted to a python generator.
+        The function returns this as a python expression.
+        e.g.::
+
+            x*2 : x in a
+
+        is translated to::
+
+            x*2 for x in a 
+
+        In setlX iterators can be chained together like so::
+
+            [x,y]: x in a, y in b
+
+        this is translated via the function setlx.cartesian_product which creates a possible combinations::
+
+            [x,y] for (x,y) in setlx.cartesian_product(a,b)
+        
+        """
         if len(iter_chain) == 1:
             return self.to_python([iter_chain[0].assignable, iter_chain[0].expression])
 
@@ -752,8 +807,29 @@ class Transpiler:
 
         return ast.Name(id=proc_name)
 
-    def proceduredefinition(self, procedure, name):
-        """ TODO documentation"""
+    def proceduredefinition(self, procedure, name: str) -> ast.FunctionDef:
+        """ This function creates a function definition with the given name and the content of the given procedure
+
+        The function has the same params and block like the procedure.
+        If it is a class method, the parameter "self" is added as first parameter.
+        If it is a static class function the decorator "staticmethod" is used.   
+        If the function is a cached procedure the decorator setlx.cached_procedure is used to mimic this functionality.
+        At the beginning of the function all parameters that are not read-write-parameters are copied in order to make the 
+        functions call by value.
+        e.g.::
+
+            test := cachedProcedure(x,y, rw A){
+                ..
+            };
+
+        is translated to::
+
+            @setlx.cached_procedure
+            def test(x,y,A: 'rw'):
+                [x,y] = setlx.copy([x,y])
+                ...
+
+        """
         py_name = escape_id(name)
         self.state.procedure_counter += 1
 
@@ -785,6 +861,7 @@ class Transpiler:
             defaults.append(ast.NameConstant(value=None))
             decorators.insert(0, ast.Name(id="staticmethod"))
         elif self.state.class_context != None:
+            # add self.function_name = function name to make it a method
             self.state.class_context.variables.append(py_name)
             py_params.insert(0, ast.arg(arg="self", annotation=None))
 
@@ -797,6 +874,7 @@ class Transpiler:
 
         block = self.to_python(block)
         if len(value_params) > 0:
+            # deep copy parameters to allow call by value
             block.insert(0, self.copy_params(value_params))
 
         self.state.check_built_ins(py_name)
@@ -989,13 +1067,27 @@ class Transpiler:
         expression = self.to_python(expression)
         return ast.Return(value=expression, decorator_list=[], returns=None)
 
-    def setlxstring(self, string):
-        """ TODO documentation """
+    def setlxstring(self, string: str) -> ast.Str:
+        """ This function translates setlx to python strings
+        
+        This can be quite complicated due to the fact that setlx strings can include expressions.
+        In order to support this in python f-strings are beeing used.
+        Since the expressions are not recognized by the parser, we need to recognize the expressions in here.
+        e.g.::
+
+            "$x$ + $y$ = $x+y$"
+
+        is translated to::
+
+            f'{x} + {y} = {x+y}'
+
+        """
         value = string[1:-1]
         if len(value) == 0:
             # if the string is empty, so is the python string
             return ast.Str(s="")
-        value = value.replace("\\n", "\n").replace("\\t", "\t")
+        value = value.replace("\\n", "\n").replace(
+            "\\t", "\t").replace("\\\"", "\"").replace("\\'", "s")
         # split string by expressions in string
         # e.g. "test $x$ = $x$" => ["test","$x$"," = ","$x$"]
         matches = re.finditer(r'\$(?!\\)[^$]+\$', value)

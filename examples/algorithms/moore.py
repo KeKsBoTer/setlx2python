@@ -1,8 +1,8 @@
-﻿import setlx
+import setlx
 
 
-@setlx.procedure
 def shortestPath(source, Edges):
+    [source, Edges] = setlx.copy([source, Edges])
     Distance = setlx.Set([setlx.List([source, 0])])
     Fringe = setlx.Set([source])
     while Fringe != setlx.Set():
@@ -20,4 +20,3 @@ s = 'a'
 sp = shortestPath(s, Edges)
 for x in M:
     setlx.print(f'distance({s}, {x}) = {sp[x]}')
-

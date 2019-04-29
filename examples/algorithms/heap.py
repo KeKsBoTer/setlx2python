@@ -1,19 +1,18 @@
-﻿import setlx
+import setlx
 
 
-class Heap:
+class Heap(setlx.SetlXClass):
 
     @staticmethod
-    @setlx.procedure
     def top(self=None):
         return setlx.List([self.mPriority, self.mValue])
 
     @staticmethod
-    @setlx.procedure
     def insert(priority, value, self=None):
-        if isEmpty():
-            self.mPriority = priority
-            self.mValue = value
+        [priority, value] = setlx.copy([priority, value])
+        if self.isEmpty():
+            self.mPriority = setlx.copy(priority)
+            self.mValue = setlx.copy(value)
             self.mLeft = Heap()
             self.mRight = Heap()
             self.mCount = 1
@@ -24,15 +23,14 @@ class Heap:
                 self.mRight.insert(self.mPriority, self.mValue)
             else:
                 self.mLeft.insert(self.mPriority, self.mValue)
-            self.mPriority = priority
-            self.mValue = value
+            self.mPriority = setlx.copy(priority)
+            self.mValue = setlx.copy(value)
         elif self.mLeft.mCount > self.mRight.mCount:
             self.mRight.insert(priority, value)
         else:
             self.mLeft.insert(priority, value)
 
     @staticmethod
-    @setlx.procedure
     def remove(self=None):
         assert self.mCount > 0, 'mCount == 0'
         self.mCount -= 1
@@ -52,8 +50,8 @@ class Heap:
             self.mRight.remove()
 
     @staticmethod
-    @setlx.procedure
     def update(t, self=None):
+        [t] = setlx.copy([t])
         self.mPriority = t.mPriority
         self.mValue = t.mValue
         self.mLeft = t.mLeft
@@ -63,31 +61,30 @@ class Heap:
     f_str = lambda self=None: self.toString(0)
 
     @staticmethod
-    @setlx.procedure
     def toString(n, self=None):
-        if isEmpty():
+        [n] = setlx.copy([n])
+        if self.isEmpty():
             return ' ' * n + 'Nil'
         else:
-            return self.mLeft.toString(n + 4) + '\\n' + ' ' * n + '<' + self.mValue + ', ' + self.mPriority + '>\\n' + self.mRight.toString(n + 4)
+            return self.mLeft.toString(n + 4) + '\n' + ' ' * n + '<' + self.mValue + ', ' + self.mPriority + '>\n' + self.mRight.toString(n + 4)
 
-    @setlx.procedure
     def __init__(self):
-        self.toString = setlx.to_method(self, Heap.toString)
-        self.f_str = setlx.to_method(self, Heap.f_str)
-        self.isEmpty = setlx.to_method(self, Heap.isEmpty)
-        self.update = setlx.to_method(self, Heap.update)
-        self.remove = setlx.to_method(self, Heap.remove)
-        self.insert = setlx.to_method(self, Heap.insert)
-        self.top = setlx.to_method(self, Heap.top)
-        self.mPriority = mPriority = None
-        self.mValue = mValue = None
-        self.mLeft = mLeft = None
-        self.mRight = mRight = None
-        self.mCount = mCount = 0
+        self.toString = setlx.to_method(self, Heap.toString, True)
+        self.f_str = setlx.to_method(self, Heap.f_str, True)
+        self.isEmpty = setlx.to_method(self, Heap.isEmpty, True)
+        self.update = setlx.to_method(self, Heap.update, True)
+        self.remove = setlx.to_method(self, Heap.remove, True)
+        self.insert = setlx.to_method(self, Heap.insert, True)
+        self.top = setlx.to_method(self, Heap.top, True)
+        self.mPriority = None
+        self.mValue = None
+        self.mLeft = None
+        self.mRight = None
+        self.mCount = 0
 
 
-@setlx.procedure
 def heapSort(A):
+    [A] = setlx.copy([A])
     H = Heap()
     for x in A:
         H.insert(x, x)
@@ -99,7 +96,6 @@ def heapSort(A):
     return S
 
 
-@setlx.procedure
 def demoHeapSort():
     L = setlx.List([setlx.rnd(setlx.Set(setlx._range(1, 99))) for n in setlx.List(setlx._range(1, 50))])
     S = heapSort(L)
@@ -107,12 +103,12 @@ def demoHeapSort():
     setlx.print(S)
 
 
-@setlx.procedure
 def graph2Dot(tree, file):
+    [tree, file] = setlx.copy([tree, file])
     Heap.sNodeId = 0
-    graph = 'digraph G {\\n'
+    graph = 'digraph G {\n'
     graph += '    ordering = out;'
-    graph += '    node [shape = record];\\n'
+    graph += '    node [shape = record];\n'
     count = 0
     Children = setlx.Set()
     NodeDict = setlx.Set()
@@ -121,23 +117,22 @@ def graph2Dot(tree, file):
         L = Children[k]
         if L != None and L != setlx.List():
             graph += f'    n{k} -> ' + setlx.join(setlx.List([f'n{c}' for c in L]), ',')
-            graph += ';\\n'
+            graph += ';\n'
     for k in setlx.List(setlx._range(1, Heap.sNodeId)):
         node = NodeDict[k]
-        graph += f'    n{k} [label = \\"{node.mPriority}\\"];\\n'
-    graph += '}\\n'
+        graph += f'    n{k} [label = "{node.mPriority}"];\n'
+    graph += '}\n'
     setlx.writeFile(f'{file}.dot', setlx.List([graph]))
     setlx.run(f'dot -Tpdf {file}.dot -o {file}.pdf')
     setlx.run(f'open {file}.pdf')
 
 
-@setlx.procedure
 def assignIds(H: 'rw', count: 'rw', NodeDict: 'rw', Children: 'rw'):
     if H.mCount == 0:
         return
     Heap.sNodeId += 1
     H.mNodeId = Heap.sNodeId
-    NodeDict[H.mNodeId] = H
+    NodeDict[H.mNodeId] = setlx.copy(H)
     assignIds(H.mLeft, count, NodeDict, Children)
     assignIds(H.mRight, count, NodeDict, Children)
     L = setlx.List()
@@ -145,8 +140,7 @@ def assignIds(H: 'rw', count: 'rw', NodeDict: 'rw', Children: 'rw'):
         L += setlx.List([H.mLeft.mNodeId])
     if H.mRight.mCount > 0:
         L += setlx.List([H.mRight.mNodeId])
-    Children[H.mNodeId] = L
+    Children[H.mNodeId] = setlx.copy(L)
 
 
 demoHeapSort()
-

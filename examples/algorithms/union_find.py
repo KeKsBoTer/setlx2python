@@ -1,9 +1,9 @@
-﻿import setlx
-setlx.load('union-find-2-dot.stlx')
+import setlx
+from union_find_2_dot import *
 
 
-@setlx.procedure
 def unionFind(M, R):
+    [M, R] = setlx.copy([M, R])
     Parent = setlx.Set([setlx.List([x, x]) for x in M])
     Height = setlx.Set([setlx.List([x, 1]) for x in M])
     count = 1
@@ -14,25 +14,24 @@ def unionFind(M, R):
         rootY = find(y, Parent)
         if rootX != rootY:
             if Height[rootX] < Height[rootY]:
-                Parent[rootX] = rootY
+                Parent[rootX] = setlx.copy(rootY)
             elif Height[rootX] > Height[rootY]:
-                Parent[rootY] = rootX
+                Parent[rootY] = setlx.copy(rootX)
             else:
-                Parent[rootY] = rootX
+                Parent[rootY] = setlx.copy(rootX)
                 Height[rootX] += 1
     graph2Dot(Parent, 'union-find-example')
     Roots = setlx.Set([x for x in M if Parent[x] == x])
     return setlx.Set([setlx.Set([y for y in M if find(y, Parent) == root]) for root in Roots])
 
 
-@setlx.procedure
 def find(x, Parent):
+    [x, Parent] = setlx.copy([x, Parent])
     if Parent[x] == x:
         return x
     return find(Parent[x], Parent)
 
 
-@setlx.procedure
 def demo():
     n = 9
     M = setlx.Set(setlx._range(1, n))
@@ -43,4 +42,3 @@ def demo():
 
 
 demo()
-
