@@ -2,7 +2,7 @@
 setlx2python
  
 Usage:
-  setlx2python <file> [-o <output>]
+  setlx2python [--c] <file> [-o <output>] 
   setlx2python -h | --help
   setlx2python --version
  
@@ -31,7 +31,7 @@ from setlx2python.transpiler import Transpiler, NotSupported, parse_input
 from . import __version__ as VERSION
 
 
-def transpile(file: str) -> ast.Module:
+def transpile(file: str, is_string: bool) -> ast.Module:
     """ translates a given setlx file to a python string
 
     Parameters
@@ -40,7 +40,10 @@ def transpile(file: str) -> ast.Module:
         The path to the setlx file
 
     """
-    input = FileStream(file, encoding="utf-8")
+    if not is_string:
+        input = FileStream(file, encoding="utf-8")
+    else:
+        input = InputStream(file)
 
     try:
         parser = parse_input(input)
@@ -53,6 +56,7 @@ def transpile(file: str) -> ast.Module:
 
     code = ast.Module(body=body)
     return code
+
 
 def pretty_source(source):
     """ Prettify the source.
@@ -67,7 +71,10 @@ def main():
     input_file = options["<file>"]
     output_file = options["<output>"]
 
-    python_ast = transpile(input_file)
+    python_ast = transpile(input_file, options["--c"])
     code = astor.to_source(python_ast, pretty_source=pretty_source)
-    with open(output_file, "w") as f:
-      f.write(code)
+    if options["-o"]:
+        with open(output_file, "w") as f:
+            f.write(code)
+    else:
+        print(code)
