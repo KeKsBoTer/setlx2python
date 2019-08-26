@@ -33,7 +33,7 @@ def loadTestSnippets(path):
 def gen_code(setlx_file, py_file):
 
     try:
-        gen_tree = transpile(setlx_file)
+        gen_tree = transpile(setlx_file,False)
     except Exception as e:
         TestCase.fail(f"cannot transpile {setlx_file}:{str(e)}")
 
