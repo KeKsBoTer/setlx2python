@@ -1,6 +1,6 @@
 import ast
 from collections import namedtuple
-from setlx import built_ins
+from setlx.built_ins import built_ins
 
 
 class ImportList:

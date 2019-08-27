@@ -1,0 +1,21 @@
+A := { 1, 2, 3 };
+B := { 2, 3, 4 };
+// computing the union 
+C := A + B;
+print(A, " + ", B, " = ", C);
+// computing the intersection 
+C := A * B;
+print(A, " * ", B, " = ", C);
+// computing the set difference 
+C := A - B;
+print(A, " - ", B, " = ", C);
+// computing the power set
+C := pow(A);
+print("2 ** ", A, " = ", C);
+// testing the inclusion relation 
+print("(", A, " <= ", B, ") = ", (A <= B)); 
+// test whether 1 is in A 
+print("1 in ", A, " = ", 1 in A);
+// compute the cartesian product
+C := A >< B;
+print(A, " >< ", B, " = ", C);

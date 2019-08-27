@@ -1,0 +1,9 @@
+a := "a";
+b := "b"; 
+U := { a, b };  // the universe
+product := { [[a, a], a],  [[a, b], b],  [[b, a], b],  [[b, b], a] };
+equals := { [ x, x ] : x in U };
+J := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
+S := [ U, J ];
+I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+

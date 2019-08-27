@@ -1,0 +1,69 @@
+FAILED Algorithms/union-find-tree.stlx
+FAILED Algorithms/permutation.stlx PASSED (random)
+FAILED Algorithms/monte-carlo-atan.stlx PASSED (random)
+FAILED Algorithms/map-array.stlx PASSED (None in List)
+FAILED Algorithms/monte-carlo-pi.stlx PASSED (random)
+FAILED Algorithms/predefined-sort.stlx PASSED (random)
+FAILED Algorithms/exercise-11.stlx PASSED (output format)
+FAILED Algorithms/map-trivial.stlx FIXED backslash in f-string
+FAILED Algorithms/union-find-oo.stlx
+FAILED Algorithms/heap.stlx
+FAILED Algorithms/merge-sort-nr.stlx PASSED (random)
+FAILED Algorithms/monte-carlo-ln2.stlx PASSED (random)
+FAILED Algorithms/union-find.stlx 
+FAILED Algorithms/topological-sorting.stlx
+FAILED Algorithms/dijkstra-path.stlx PASSED (output format)
+FAILED Algorithms/kruskal.stlx
+FAILED Algorithms/monty-hall.stlx FIXED (setlx prefix)
+FAILED Algorithms/BinaryTree/binary-tree.stlx
+FAILED Logik/queens-search.stlx 
+FAILED Logik/allValuations.stlx PASSED (output format)
+FAILED Logik/primes-recursive.stlx
+FAILED Logik/wolf-goat-cabbage.stlx PASSED (output format)
+FAILED Logik/transitive-closure.stlx 
+FAILED Logik/primes-for.stlx
+FAILED Logik/fibonacci-combinatorics.stlx
+FAILED Logik/ggt-loop.stlx  (incorrect timeout)
+FAILED Logik/evaluateOld.stlx
+FAILED Logik/transitive-recursive.stlx
+FAILED Logik/buggy-function.stlx
+FAILED Logik/simple-tuple.stlx PASSED (output format)
+FAILED Logik/solve.stlx PASSED (precision)
+FAILED Logik/function.stlx 
+FAILED Logik/ggt-fast.stlx PASSED (incorrect timeout)
+FAILED Logik/poker-triple.stlx
+FAILED Logik/simple.stlx PASSED (output format)
+FAILED Logik/primes-eratosthenes.stlx
+FAILED Logik/primes-sieve.stlx
+PASSED Algorithms/product.stlx
+PASSED Algorithms/power-naive.stlx
+PASSED Algorithms/heap-sort.stlx
+PASSED Algorithms/gcd.stlx
+PASSED Algorithms/moore.stlx
+PASSED Algorithms/test-counting-sort.stlx
+PASSED Algorithms/power.stlx
+PASSED Algorithms/dijkstra.stlx
+PASSED Algorithms/legendre.stlx
+PASSED Algorithms/stack.stlx
+PASSED Algorithms/union-find-naive.stlx
+PASSED Algorithms/AVL-Tree/string-compare.stlx
+PASSED Algorithms/Lempel-Ziv-Welch/lzw-clean.stlx
+PASSED Algorithms/BinaryTree/string-compare.stlx
+PASSED Logik/sum-recursive.stlx
+PASSED Logik/sort.stlx
+PASSED Logik/fixpoint.stlx
+PASSED Logik/find-path.stlx
+PASSED Logik/queens-backtrack.stlx
+PASSED Logik/quone.stlx
+PASSED Logik/gruppen.stlx
+PASSED Logik/primes-tuple.stlx
+PASSED Logik/primes-while.stlx
+PASSED Logik/primes-slim.stlx
+PASSED Logik/quine.stlx
+PASSED Logik/sum.stlx
+PASSED Logik/primes-forall.stlx
+PASSED Logik/min-sort.stlx
+PASSED Logik/path-cyclic.stlx
+PASSED Logik/arb.stlx
+PASSED Logik/from.stlx
+PASSED Logik/switch.stlx

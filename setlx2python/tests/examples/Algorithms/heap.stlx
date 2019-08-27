@@ -1,0 +1,126 @@
+class Heap() {
+    mPriority    := om;
+    mValue       := om;
+    mLeft        := om;
+    mRight       := om;
+    mCount       := 0;
+    
+    static {
+        top := procedure() {
+            return [mPriority, mValue];
+        };
+        insert := procedure(priority, value) {
+            if (isEmpty()) {
+                this.mPriority := priority;
+                this.mValue    := value;
+                this.mLeft     := Heap();
+                this.mRight    := Heap();
+                this.mCount    := 1;
+                return;
+            }
+            this.mCount += 1;
+            if (priority < mPriority) {                         
+                if (mLeft.mCount > mRight.mCount) {
+                    mRight.insert(mPriority, mValue);
+                } else {
+                    mLeft.insert(mPriority, mValue);
+                }
+                this.mPriority := priority;
+                this.mValue    := value;
+            } else {
+                if (mLeft.mCount > mRight.mCount) { 
+                    mRight.insert(priority, value);
+                } else {
+                    mLeft.insert(priority, value);
+                }
+            }
+        };
+        remove := procedure() {
+            assert(mCount > 0, "mCount == 0");
+            this.mCount -= 1;
+            if (mLeft.isEmpty()) { 
+                update(mRight); 
+                return;
+            } 
+            if (mRight.isEmpty()) { 
+                update(mLeft ); 
+                return;
+            }
+            if (mLeft.mPriority < mRight.mPriority) {
+                this.mPriority := mLeft.mPriority;
+                this.mValue    := mLeft.mValue;
+                mLeft.remove();
+            } else {
+                this.mPriority := mRight.mPriority;
+                this.mValue    := mRight.mValue;
+                mRight.remove();
+            }
+        };
+        update := procedure(t) {
+            this.mPriority := t.mPriority;
+            this.mValue    := t.mValue;
+            this.mLeft     := t.mLeft;
+            this.mRight    := t.mRight;
+            this.mCount    := t.mCount;
+        };      
+        isEmpty := [] |-> mCount == 0;
+
+        f_str := [] |-> toString(0);
+        toString := procedure(n) {
+            if (isEmpty()) {
+                return " " * n + "Nil";
+            } else {
+                return mLeft.toString(n + 4) + "\n" + 
+                       " " * n + "<" + mValue + ", " + mPriority + ">\n" +
+                       mRight.toString(n + 4);
+            }
+        };
+    }
+}
+
+heapSort := procedure(A) {
+    H := Heap();    
+    for (x in A) {
+        H.insert(x, x);
+    }
+    S := [];
+    while (!H.isEmpty()) {
+        S += [ H.top()[1] ];
+        H.remove();
+    }
+    return S;
+};
+
+demoHeapSort := procedure() {
+    L := [ rnd({1 .. 99}) : n in [1 .. 50] ];
+    S := heapSort(L);
+    print(L);
+    print(S);
+};
+
+// This function assigns numbers to all nodes in the tree represented
+// by node.  The parameter count is the initial value of the counter.
+assignIds := procedure(rw H, rw count, rw NodeDict, rw Children) {
+    // do not assign node ids to empty nodes
+    if (H.mCount == 0) {
+        return;
+    }
+    Heap.sNodeId += 1;
+    H.mNodeId := Heap.sNodeId;  // dynamically add new member variable
+                                // (YES, we can do that!)
+    NodeDict[H.mNodeId] := H;
+    assignIds(H.mLeft , count, NodeDict, Children);
+    assignIds(H.mRight, count, NodeDict, Children);
+    L := [];
+    if (H.mLeft.mCount > 0) {
+        L += [ H.mLeft.mNodeId ];
+    }
+    if (H.mRight.mCount > 0) {
+        L += [ H.mRight.mNodeId ];
+    }
+    Children[H.mNodeId] := L;
+};
+
+demoHeapSort();
+    
+

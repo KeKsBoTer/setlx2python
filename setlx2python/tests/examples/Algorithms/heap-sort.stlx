@@ -1,0 +1,36 @@
+swap := procedure(x, y, rw A) {
+    [A[x], A[y]] := [A[y], A[x]];
+};
+sink := procedure(k, rw A, n) {
+    while (2 * k <= n) {
+        j := 2 * k;
+        if (j < n && A[j] > A[j+1]) {
+            j += 1;
+        }
+        if (A[k] <= A[j]) {
+            return;
+        }
+        swap(k, j, A);
+        k := j;
+    }
+};
+heapSort := procedure(rw A) {
+    n := #A;
+    for (k in [n\2, n\2-1 .. 1]) {
+        sink(k, A, n);
+    }
+    while (n > 1) {
+        swap(1, n, A);
+        n -= 1;
+        sink(1, A, n);
+    }
+};
+
+main := procedure() {
+    A := [85, 99, 86, 60, 49, 62, 74, 27, 49, 50, 51, 72, 18, 97, 73, 44, 44, 69, 84, 73];
+    print(A);
+    heapSort(A);
+    print(A);
+};
+
+main();

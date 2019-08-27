@@ -1,0 +1,15 @@
+sum := procedure(n) {
+    if (n == 0) { 
+        return 0;
+    }
+    return sum(n-1) + n;
+};
+n     := 20; 
+total := sum(n);
+if (n > 2) {
+    print("Sum 0 + 1 + 2 + ... + ", n, " = ", total);
+} else {
+    print(total);
+}
+
+

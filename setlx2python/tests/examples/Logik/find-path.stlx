@@ -1,0 +1,28 @@
+reachable := procedure(x, y, R) {
+    P := { [x] };
+    while (true) {
+        oldP  := P;
+        P     := P + pathProduct(P, R);
+        Found := { l : l in P | l[-1] == y };
+        if (Found != {}) {
+            return arb(Found);
+        }
+        if (P == oldP) {
+            return;
+        }
+    }
+};
+pathProduct := procedure(P, Q) {
+    return { join2(x, y) : x in P, y in Q | x[-1] == y[1] && noCycle(x, y) };
+};
+noCycle := procedure(L1, L2) {
+    return #({ x : x in L1 } * { x : x in L2 }) == 1;
+};
+join2 := procedure(p, q) {
+    return p + q[2..];
+};    
+R := { [1,2], [2,3], [1,3], [2,4], [5, 1], [4,5] };
+print( "R = ", R );
+P := reachable(1, 5, R);
+print( "P = ", P );
+

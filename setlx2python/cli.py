@@ -31,6 +31,7 @@ from setlx2python.transpiler import Transpiler, NotSupported, parse_input
 from . import __version__ as VERSION
 
 
+
 def transpile(file: str, is_string: bool) -> ast.Module:
     """ translates a given setlx file to a python string
 
@@ -45,17 +46,14 @@ def transpile(file: str, is_string: bool) -> ast.Module:
     else:
         input = InputStream(file)
 
-    try:
-        parser = parse_input(input)
-        tree = parser.block()
-        t = Transpiler(tree.blk)
-        body = t.transpile()
-    except (NotSupported, SyntaxError) as e:
-        print(e, file=sys.stderr)
-        sys.exit(2)
+    parser = parse_input(input)
+    tree = parser.block()
+    t = Transpiler(tree.blk)
+    body = t.transpile()
 
     code = ast.Module(body=body)
-    return code
+
+    return astor.to_source(code, pretty_source=pretty_source)
 
 
 def pretty_source(source):
@@ -71,8 +69,12 @@ def main():
     input_file = options["<file>"]
     output_file = options["<output>"]
 
-    python_ast = transpile(input_file, options["--c"])
-    code = astor.to_source(python_ast, pretty_source=pretty_source)
+    try:
+        code = transpile(input_file, options["--c"])
+    except (NotSupported, SyntaxError) as e:
+        print(e, file=sys.stderr)
+        sys.exit(2)
+
     if options["-o"]:
         with open(output_file, "w") as f:
             f.write(code)

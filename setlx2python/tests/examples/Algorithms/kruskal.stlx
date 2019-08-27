@@ -1,0 +1,62 @@
+// This class implements the union find algorithm.
+class unionFind(M) {
+    mParent := { [x, x] : x in M };
+    mHeight := { [x, 1] : x in M };
+    
+  static {
+    union := procedure(x, y) {
+        rootX := find(x);
+        rootY := find(y);
+        if (rootX != rootY) {
+            if (mHeight[rootX] < mHeight[rootY]) {
+                this.mParent[rootX] := rootY;  
+            } else if (mHeight[rootX] > mHeight[rootY]) {
+                this.mParent[rootY] := rootX;  
+            } else {
+                this.mParent[rootY] := rootX;  
+                this.mHeight[rootX] += 1;
+            }
+        }
+    };
+    find := procedure(x) {
+        p := mParent[x]; 
+        if (p == x) {
+            return x;
+        }
+        return find(p);
+    };
+  }
+}
+
+// V is the set of nodes, E is a set of weighted edges
+mst := procedure(V, E) {
+    uf     := unionFind(V);
+    Result := {};
+    for([w, [x, y]] in E) {
+        rx := uf.find(x);
+        ry := uf.find(y);
+        if (rx != ry) {
+            Result += { [w, [x, y]] };
+            uf.union(rx, ry);
+            if (#Result == #V - 1) {
+                return Result;
+            }
+        }
+    }        
+};
+demoFile := procedure(fn) {
+    data  := readFile(fn);
+    Edges := {};
+    Nodes := {};
+    for (line in data) {
+        [x, y, weight] := split(line, " ");
+        Edges += { [double(weight), [int(x), int(y)]] };
+        Nodes += { int(x), int(y) };
+    }
+    tree := mst(Nodes, Edges);
+    print(tree);
+};
+
+demoFile("tinyEWG.txt");
+
+

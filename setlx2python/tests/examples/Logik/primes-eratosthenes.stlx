@@ -1,0 +1,16 @@
+startTime := now();
+n := 10000;
+primes := [1 .. n];
+for (i in [2 .. floor(sqrt(n))]) {
+    if (primes[i] == 0) {
+        continue;
+    }
+    j := i;
+    while (i * j <= n) {
+        primes[i * j] := 0;
+        j += 1;
+    }
+}
+stopTime := now();
+print({ i : i in [2 .. n] | primes[i] != 0 });
+print("computation took $stopTime - startTime$ milliseconds");

@@ -1,0 +1,95 @@
+//load("graph-2-dot.stlx");
+// Es war einmal ein Bauer, der wollte mit einem wolf, einer goat und
+// einer Kiste cabbage über einen Fluss übersetzen.  In dem Boot war aber
+// nicht genug Platz für alles, der Bauer konnte maximal ein Tiere oder 
+// das Gemüse mitnehmen.  Er konnte aber auch wolf und goat nicht 
+// alleine lassen, denn dann hätte der wolf die goat gefressen.
+// Ebensowenig konnte er die goat mit dem cabbage alleine lassen, denn
+// dann hätte die goat den cabbage gefressen.
+
+// Check wether there is a path from x to y in R and compute it.
+findPath := procedure(x, y, r) {
+    p := { [x] };
+    while (true) {
+        oldP  := p;
+        p     := p + pathProduct(p, r);
+        found := { l : l in p | l[-1] == y };
+        if (found != {}) {
+            return arb(found);
+        }
+        if (p == oldP) {
+            return;
+        }
+    }
+};
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+join := procedure(p, q) {
+    return p + q[2..];
+};
+pathProduct := procedure(p, q) {
+    return { join(x,y) : x in p, y in q | x[-1] == y[1] && noCycle(x,y) };
+};
+noCycle := procedure(l1, l2) {
+    return #({ x : x in l1 } * { x : x in l2 }) == 1;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Problem specific code                                                      //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+problem := procedure(S) {
+    return !("farmer" in S)                                     && 
+           ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
+};
+
+All := { "farmer", "wolf", "goat", "cabbage" };
+P   := { S : S in pow(All) | !problem(S) && !problem(All - S) };
+R1  := { [S, S - B]: S in P, B in pow(S)
+                   | S - B in P && "farmer" in B && #B <= 2
+       };
+R2  := { [y, x] : [x, y] in R1 };
+R   := R1 + R2;
+
+start := All;
+goal  := {};
+
+path  := findPath(start, goal, R);
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Display code                                                               //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+mkPair := S |=> [S, All - S];
+graph  := { [mkPair(s1), mkPair(s2)] : [s1, s2] in R1 };
+// graph2Dot(graph, mkPair(start), mkPair(goal), "wolf-goat-cabbage");
+
+// Print the path.
+printPath := procedure(path, all) {
+    for (i in [1 .. #path]) {
+        [s1, s2] := mkPair(path[i]);
+        if (#s1 == 0 || #s2 == 0) {
+            print(s1, 33 * " ", s2);
+        } else {
+            print(s1, 35 * " ", s2);
+        }
+        if (i == #path) { 
+            break;
+        }
+        [t1, t2] := mkPair(path[i+1]);        
+        if ("farmer" in s1) {
+            b := s1 - t1;
+            print("                         >>>> ", b, " >>>> " );
+        } else {
+            b := s2 - t2;
+            print("                         <<<< ", b, " <<<< " );
+        }
+    }
+};
+
+print("");
+printPath(path, all);
