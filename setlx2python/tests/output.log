@@ -1,0 +1,2886 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.7.4, pytest-4.3.0, py-1.8.0, pluggy-0.9.0
+rootdir: /Users/simon/Various/setlx2python, inifile:
+plugins: timeout-1.3.3
+collected 77 items
+
+test_examples.py s.F.FFF..FFF.FFFFFFFF...F.FF...FFF.FF.F.F.F..FF....F..F [ 71%]
+F.F.F..FF...FFFFFF.FF                                                    [ 98%]
+test_transpiler.py s                                                     [100%]
+
+=================================== FAILURES ===================================
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find-tree.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R = [223 chars] 7\ntake union of 9 and 8\nP = {{1, 2, 3, 4, 5, 6, 7, 8, 9}}\n' != 'R = [223 chars] 7\ntake union of 9 and 8\nP = {{9}}\n'
+E     R = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7], [9, 8]]
+E     take union of 2 and 1
+E     take union of 3 and 2
+E     take union of 4 and 3
+E     take union of 5 and 4
+E     take union of 6 and 5
+E     take union of 7 and 6
+E     take union of 8 and 7
+E     take union of 9 and 8
+E   - P = {{1, 2, 3, 4, 5, 6, 7, 8, 9}}
+E   + P = {{9}}
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/permutation.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '[9, 2, 4, 5, 10, 8, 1, 6, 7, 3]\n[3, 8, 2,[1604 chars]5]\n' != '[6, 8, 7, 3, 10, 2, 5, 9, 4, 1]\n[9, 4, 8,[1604 chars]9]\n'
+E   - [9, 2, 4, 5, 10, 8, 1, 6, 7, 3]
+E   - [3, 8, 2, 10, 9, 5, 4, 7, 6, 1]
+E   - [6, 10, 7, 1, 5, 9, 8, 3, 2, 4]
+E   - [7, 9, 3, 1, 10, 5, 8, 2, 4, 6]
+E   - [4, 6, 7, 10, 8, 2, 9, 5, 3, 1]
+E   - [2, 5, 9, 8, 1, 3, 4, 6, 10, 7]
+E   - [8, 4, 1, 7, 10, 9, 3, 6, 5, 2]
+E   - [7, 8, 5, 9, 3, 4, 6, 1, 10, 2]
+E   - [8, 3, 1, 7, 4, 5, 9, 6, 10, 2]
+E   - [7, 3, 2, 4, 1, 8, 6, 10, 9, 5]
+E   - [10, 4, 3, 6, 7, 1, 8, 5, 9, 2]
+E   - [3, 9, 6, 10, 4, 2, 1, 8, 7, 5]
+E   - [9, 3, 10, 5, 6, 2, 8, 4, 7, 1]
+E   - [5, 9, 4, 8, 1, 2, 7, 3, 10, 6]
+E   - [10, 9, 6, 7, 2, 5, 1, 8, 4, 3]
+E   - [3, 4, 5, 7, 2, 1, 10, 9, 6, 8]
+E   - [10, 5, 9, 6, 8, 7, 3, 1, 2, 4]
+E   - [9, 2, 1, 10, 3, 8, 5, 6, 7, 4]
+E   - [2, 1, 10, 4, 8, 9, 3, 7, 6, 5]
+E   - [2, 3, 7, 6, 5, 9, 4, 8, 10, 1]
+E   - [9, 7, 6, 10, 3, 2, 1, 5, 8, 4]
+E   - [3, 2, 6, 4, 5, 10, 8, 7, 1, 9]
+E   - [8, 10, 4, 6, 9, 3, 5, 7, 1, 2]
+E   - [9, 8, 3, 2, 10, 4, 7, 6, 5, 1]
+E   - [8, 2, 7, 6, 9, 5, 4, 10, 1, 3]
+E   - [1, 7, 3, 4, 5, 10, 8, 6, 9, 2]
+E   - [9, 2, 10, 8, 3, 1, 4, 5, 7, 6]
+E   - [4, 3, 6, 7, 8, 2, 9, 10, 5, 1]
+E   - [9, 3, 4, 2, 6, 1, 10, 8, 5, 7]
+E   - [8, 6, 1, 10, 4, 7, 9, 3, 5, 2]
+E   - [3, 8, 6, 4, 7, 9, 2, 5, 1, 10]
+E   - [10, 8, 9, 2, 7, 1, 4, 5, 6, 3]
+E   - [5, 3, 8, 10, 6, 4, 7, 2, 9, 1]
+E   - [1, 8, 2, 3, 9, 5, 7, 10, 6, 4]
+E   - [3, 9, 7, 6, 4, 10, 5, 1, 8, 2]
+E   - [7, 4, 3, 1, 2, 10, 8, 9, 5, 6]
+E   - [1, 6, 8, 4, 9, 10, 7, 3, 5, 2]
+E   - [10, 6, 1, 5, 4, 9, 8, 7, 2, 3]
+E   - [8, 10, 6, 9, 2, 3, 4, 5, 7, 1]
+E   - [7, 5, 10, 1, 2, 4, 6, 8, 9, 3]
+E   - [7, 1, 9, 8, 2, 3, 6, 5, 4, 10]
+E   - [9, 10, 3, 8, 7, 1, 5, 2, 4, 6]
+E   - [10, 5, 9, 8, 1, 3, 7, 4, 2, 6]
+E   - [6, 2, 3, 10, 8, 1, 4, 5, 9, 7]
+E   - [4, 8, 6, 10, 7, 5, 9, 3, 2, 1]
+E   ?  ^     ^      ^        ^ ---
+E   + [6, 8, 7, 3, 10, 2, 5, 9, 4, 1]
+E   ?  ^     ^ +++     ^        ^
+E   + [9, 4, 8, 2, 3, 1, 6, 10, 7, 5]
+E   - [9, 6, 5, 2, 10, 1, 3, 7, 8, 4]
+E   - [4, 8, 9, 2, 5, 6, 3, 7, 10, 1]
+E   - [1, 9, 10, 8, 7, 5, 2, 3, 6, 4]
+E   - [5, 6, 4, 8, 9, 3, 1, 10, 7, 2]
+E   - [7, 6, 10, 9, 1, 8, 3, 2, 4, 5]
+E   ?     ^      ^     ^  ^        ^
+E   + [7, 8, 10, 3, 1, 5, 6, 2, 4, 9]
+E   ?     ^      ^     ^  ^        ^
+E   + [1, 2, 6, 10, 3, 7, 9, 5, 4, 8]
+E   + [5, 2, 7, 9, 8, 3, 10, 4, 6, 1]
+E   + [6, 1, 7, 10, 2, 3, 8, 9, 4, 5]
+E   + [10, 9, 8, 3, 2, 4, 1, 6, 5, 7]
+E   + [8, 1, 2, 10, 5, 6, 9, 4, 7, 3]
+E   + [8, 2, 3, 10, 7, 6, 1, 5, 9, 4]
+E   + [9, 7, 2, 3, 8, 6, 1, 5, 4, 10]
+E   + [2, 3, 6, 1, 7, 8, 9, 5, 10, 4]
+E   + [8, 4, 3, 9, 7, 5, 2, 6, 10, 1]
+E   + [3, 1, 6, 9, 4, 5, 2, 7, 10, 8]
+E   + [1, 10, 3, 8, 5, 7, 4, 6, 2, 9]
+E   + [4, 3, 8, 1, 9, 5, 2, 6, 7, 10]
+E   + [1, 3, 2, 5, 7, 4, 8, 10, 9, 6]
+E   + [7, 10, 6, 5, 4, 3, 1, 9, 8, 2]
+E   + [3, 6, 9, 8, 7, 2, 10, 1, 5, 4]
+E   + [4, 9, 3, 5, 10, 2, 6, 7, 1, 8]
+E   + [1, 4, 3, 9, 6, 7, 8, 5, 2, 10]
+E   + [10, 2, 3, 1, 6, 8, 5, 7, 4, 9]
+E   + [2, 10, 5, 1, 8, 4, 3, 6, 9, 7]
+E   + [7, 4, 3, 8, 2, 1, 10, 6, 5, 9]
+E   + [6, 9, 5, 10, 8, 3, 1, 7, 4, 2]
+E   + [10, 3, 4, 7, 8, 6, 2, 1, 5, 9]
+E   + [9, 3, 4, 5, 10, 6, 7, 2, 1, 8]
+E   + [5, 4, 2, 3, 6, 9, 10, 7, 1, 8]
+E   + [8, 2, 1, 9, 6, 5, 3, 4, 7, 10]
+E   + [8, 1, 9, 10, 6, 2, 4, 7, 3, 5]
+E   + [2, 10, 3, 8, 1, 5, 7, 4, 6, 9]
+E   + [9, 7, 6, 4, 8, 5, 10, 1, 2, 3]
+E   + [10, 1, 5, 8, 9, 7, 2, 4, 3, 6]
+E   + [2, 5, 9, 10, 7, 4, 6, 8, 1, 3]
+E   + [4, 1, 2, 3, 6, 9, 8, 7, 10, 5]
+E   + [10, 9, 6, 8, 4, 7, 3, 5, 2, 1]
+E   + [3, 4, 6, 1, 7, 5, 2, 10, 8, 9]
+E   + [8, 2, 4, 3, 5, 6, 1, 9, 7, 10]
+E   + [9, 1, 6, 3, 7, 8, 10, 5, 2, 4]
+E   + [8, 10, 2, 7, 1, 6, 5, 9, 4, 3]
+E   + [3, 10, 5, 9, 7, 4, 2, 1, 6, 8]
+E   + [4, 5, 9, 6, 7, 10, 2, 1, 8, 3]
+E   + [9, 6, 8, 3, 7, 10, 4, 1, 5, 2]
+E   + [5, 6, 7, 9, 8, 1, 2, 10, 3, 4]
+E   + [5, 2, 7, 10, 3, 8, 4, 9, 1, 6]
+E   + [7, 5, 3, 4, 10, 1, 8, 6, 9, 2]
+E   + [10, 5, 3, 9, 8, 1, 4, 7, 6, 2]
+E   + [5, 3, 1, 6, 2, 8, 4, 9, 10, 7]
+E   + [9, 7, 5, 2, 8, 10, 4, 1, 6, 3]
+E   + [1, 3, 5, 7, 9, 10, 6, 8, 2, 4]
+E   + [1, 6, 10, 3, 8, 2, 7, 4, 5, 9]
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-atan.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'pi = 3.1405238095238097, error = -0.00106884406598[342 chars]\n\n' != 'pi = 3.1410825396825395, error = -0.00051011390725[397 chars]  \n'
+E   - pi = 3.1405238095238097, error = -0.0010688440659833987
+E   + pi = 3.1410825396825395, error = -0.0005101139072536398
+E     
+E   - n =         10: p =         3.4, error = 0.2584073464102068
+E   ?                               ^               ^^  --- - ---
+E   + n =         10: p =         3.0, error = -0.14159265358979312
+E   ?                               ^          +  +++++ +++  ^ +
+E   +         
+E   - 
+E   - n =        100: p =        2.94, error = -0.20159265358979317
+E   - 
+E   - n =       1000: p =       3.176, error = 0.03440734641020704
+E   ?              -               ^^             ^^           ^^
+E   + n =        100: p =        3.2199999999999998, error = 0.07840734641020664
+E   ?    +               +         + ^^^^^^^^^^^^^^             ^^           ^^
+E   - 
+E   +         
+E   - n =      10000: p =      3.1390000000000002, error = -0.0025926535897928815
+E   ?              -             ^^^            ^              ^^             ^^^
+E   + n =       1000: p =       3.0700000000000003, error = -0.07159265358979283
+E   ?    +               +        ^^            ^^              ^^             ^
+E   - 
+E   +         
+E   + n =      10000: p =      3.158, error = 0.016407346410206802
+E   +         
+E   - n =     100000: p =     3.13728, error = -0.004312653589793047
+E   ?                             ^ -               ^^^           ^
+E   + n =     100000: p =     3.13952, error = -0.0020726535897930276
+E   ?                             ^^                ^^^           ^ +
+E   - 
+E   +
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/map-array.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'find[141 chars]s = []\n' != 'find[141 chars]s = [None, None, None, None, None, None, None,[16 chars]e]\n'
+E     find(1) = 1
+E     find(2) = 4
+E     find(3) = 9
+E     find(4) = 16
+E     find(5) = 25
+E     find(6) = 36
+E     find(7) = 49
+E     find(8) = 64
+E     find(9) = 81
+E     find(10) = 100
+E   - squares = []
+E   + squares = [None, None, None, None, None, None, None, None, None, None]
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-pi.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'n = [19 chars]     2.4, error = -0.7415926535897932\nn =    [302 chars]-4\n' != 'n = [19 chars]     3.2, error = 0.05840734641020706\nn =    [304 chars]77\n'
+E   - n =         10: p =         2.4, error = -0.7415926535897932
+E   ?                              --          -     ^^  ---------
+E   + n =         10: p =         3.2, error = 0.05840734641020706
+E   ?                             ++             +++++ +++  ^ +++
+E   - n =        100: p =        3.24, error = 0.0984073464102071
+E   ?                               ^            ^^             -
+E   + n =        100: p =        3.28, error = 0.1384073464102067
+E   ?                               ^            ^^            +
+E   - n =       1000: p =       3.164, error = 0.02240734641020703
+E   ?                             ^ -              ^^^  --------
+E   + n =       1000: p =       3.096, error = -0.04559265358979303
+E   ?                             ^^           +   ++++ ^^^^^^ +
+E   - n =      10000: p =      3.114, error = -0.027592653589793237
+E   ?                             ^               ^^^           ^
+E   + n =      10000: p =      3.1404, error = -0.0011926535897930357
+E   ?                             ^^               ^^^           ^ +
+E   + n =     100000: p =     3.143, error = 0.001407346410206678
+E   - n =     100000: p =     3.13972, error = -0.0018726535897930496
+E   ?    -               -         ^^                 --          ^^^
+E   + n =    1000000: p =    3.139984, error = -0.0016086535897930077
+E   ?              +              ^^^                ++           ^^^
+E   - n =    1000000: p =    3.1409, error = -6.926535897933128E-4
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/predefined-sort.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'n = 10, t = 0.002, 0.08685889638065035\nn[2273 chars]-5\n' != ''
+E   - n = 10, t = 0.002, 0.08685889638065035
+E   - n = 12, t = 0.0, 0.0
+E   - n = 15, t = 0.0, 0.0
+E   - n = 18, t = 0.0, 0.0
+E   - n = 22, t = 0.0, 0.0
+E   - n = 27, t = 0.0, 0.0
+E   - n = 33, t = 0.001, 0.00866665659099013
+E   - n = 40, t = 0.001, 0.00677712576704542
+E   - n = 48, t = 0.0, 0.0
+E   - n = 58, t = 0.001, 0.004246181824387835
+E   - n = 70, t = 0.0, 0.0
+E   - n = 84, t = 0.001, 0.0026868097791517137
+E   - n = 101, t = 0.0, 0.0
+E   - n = 122, t = 0.0, 0.0
+E   - n = 147, t = 0.001, 0.0013631525865028164
+E   - n = 177, t = 0.0, 0.0
+E   - n = 213, t = 0.001, 8.756910714135529E-4
+E   - n = 256, t = 0.001, 7.044409379340642E-4
+E   - n = 308, t = 0.0, 0.0
+E   - n = 370, t = 0.001, 4.5703920334965457E-4
+E   - n = 444, t = 0.001, 3.694745852977119E-4
+E   - n = 533, t = 0.001, 2.988239556941849E-4
+E   - n = 640, t = 0.001, 2.4181810655945026E-4
+E   - n = 768, t = 0.0, 0.0
+E   - n = 922, t = 0.001, 1.588795888642032E-4
+E   - n = 1107, t = 0.0, 0.0
+E   - n = 1329, t = 0.001, 1.0461991111493936E-4
+E   - n = 1595, t = 0.001, 8.501569995657457E-5
+E   - n = 1914, t = 0.002, 1.3827430382894586E-4
+E   - n = 2297, t = 0.001, 5.62514861652518E-5
+E   - n = 2757, t = 0.002, 9.157226591998563E-5
+E   - n = 3309, t = 0.002, 7.457826755640102E-5
+E   - n = 3971, t = 0.004, 1.2155550999959103E-4
+E   - n = 4766, t = 0.004, 9.909696447673864E-5
+E   - n = 5720, t = 0.005, 1.0103487647099853E-4
+E   - n = 6864, t = 0.006, 9.894966696259009E-5
+E   - n = 8237, t = 0.007, 9.42532239223052E-5
+E   - n = 9885, t = 0.006, 6.598491174880721E-5
+E   - n = 11862, t = 0.01, 8.986457666873276E-5
+E   - n = 14235, t = 0.017, 1.248752726853203E-4
+E   - n = 17082, t = 0.024, 1.4416369199074844E-4
+E   - n = 20499, t = 0.029, 1.4249440318748859E-4
+E   - n = 24599, t = 0.046, 1.849564230709344E-4
+E   - n = 29519, t = 0.04, 1.3165133378369138E-4
+E   - n = 35423, t = 0.043000000000000003, 1.158842062357547E-4
+E   - n = 42508, t = 0.042, 9.270975077707064E-5
+E   - n = 51010, t = 0.075, 1.356393166697806E-4
+E   - n = 61212, t = 0.041, 6.076912711832798E-5
+E   - n = 73455, t = 0.061, 7.411716037207835E-5
+E   - n = 88146, t = 0.075, 7.472378735212275E-5
+E   - n = 105776, t = 0.13, 1.0623250647595716E-4
+E   - n = 126932, t = 0.137, 9.184585977198177E-5
+E   - n = 152319, t = 0.183, 1.0067478690318612E-4
+E   - n = 182783, t = 0.317, 1.4314040027038044E-4
+E   - n = 219340, t = 0.23700000000000002, 8.785827222843184E-5
+E   - n = 263208, t = 0.496, 1.5098842385076667E-4
+E   - n = 315850, t = 0.33, 8.250792656466431E-5
+E   - n = 379020, t = 0.326, 6.695911809385268E-5
+E   - n = 454824, t = 0.353, 5.957509213834293E-5
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/exercise-11.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'a0 = 1, 1, 1, 1\na1 = 4, 2, 2, 4\na2 = 16, 4, 4, 1[166 chars]52\n' != 'a0 = 1, 1.0, 1.0, 1.0\na1 = 4, 2.0, 2.0, 4.0\na2 =[226 chars].0\n'
+E   - a0 = 1, 1, 1, 1
+E   + a0 = 1, 1.0, 1.0, 1.0
+E   ?          ++   ++   ++
+E   - a1 = 4, 2, 2, 4
+E   + a1 = 4, 2.0, 2.0, 4.0
+E   ?          ++   ++   ++
+E   - a2 = 16, 4, 4, 16
+E   + a2 = 16, 4.0, 4.0, 16.0
+E   ?           ++   ++    ++
+E   - a3 = 56, 7, 7, 56
+E   + a3 = 56, 7.0, 7.0, 56.0
+E   ?           ++   ++    ++
+E   - a4 = 176, 11, 11, 176
+E   + a4 = 176, 11.0, 11.0, 176.0
+E   ?             ++    ++     ++
+E   - a5 = 512, 16, 16, 512
+E   + a5 = 512, 16.0, 16.0, 512.0
+E   ?             ++    ++     ++
+E   - a6 = 1408, 22, 22, 1408
+E   + a6 = 1408, 22.0, 22.0, 1408.0
+E   ?              ++    ++      ++
+E   - a7 = 3712, 29, 29, 3712
+E   + a7 = 3712, 29.0, 29.0, 3712.0
+E   ?              ++    ++      ++
+E   - a8 = 9472, 37, 37, 9472
+E   + a8 = 9472, 37.0, 37.0, 9472.0
+E   ?              ++    ++      ++
+E   - a9 = 23552, 46, 46, 23552
+E   + a9 = 23552, 46.0, 46.0, 23552.0
+E   ?               ++    ++       ++
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/map-trivial.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'telefonBuch = {["anton", 345], ["gustav",[271 chars]78\n' != ''
+E   - telefonBuch = {["anton", 345], ["gustav", 678], ["hugo", 123]}
+E   - telefonBuch.find("hugo")   = 123
+E   - telefonBuch.find("anton")  = 345
+E   - telefonBuch.find("gustav") = 678
+E   - telefonBuch = {["anton", 345], ["gustav", 678]}
+E   - telefonBuch.find("hugo")   = om
+E   - telefonBuch.find("anton")  = 345
+E   - telefonBuch.find("gustav") = 678
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find-oo.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R = [35 chars], 7], [5, 8], [7, 9]}\nP = {{1, 4, 7, 9}, {2, 6}, {3, 5, 8}}\n' != 'R = [35 chars], 7], [5, 8], [7, 9]}\n'
+E     R = {[1, 4], [1, 9], [2, 6], [3, 5], [4, 7], [5, 8], [7, 9]}
+E   - P = {{1, 4, 7, 9}, {2, 6}, {3, 5, 8}}
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/heap.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '[20, 15, 69, 31, 81, 36, 84, 77, 64, 63, 5,[349 chars]8]\n' != '[21, 52, 34, 62, 5, 29, 63, 18, 77, 77, 25,[347 chars]7]\n'
+E   - [20, 15, 69, 31, 81, 36, 84, 77, 64, 63, 5, 34, 59, 52, 28, 20, 86, 5, 55, 36, 75, 33, 13, 28, 23, 45, 51, 89, 85, 57, 17, 20, 45, 6, 31, 93, 94, 55, 58, 56, 92, 50, 29, 98, 75, 91, 7, 77, 36, 97]
+E   - [5, 5, 6, 7, 13, 15, 17, 20, 20, 20, 23, 28, 28, 29, 31, 31, 33, 34, 36, 36, 36, 45, 45, 50, 51, 52, 55, 55, 56, 57, 58, 59, 63, 64, 69, 75, 75, 77, 77, 81, 84, 85, 86, 89, 91, 92, 93, 94, 97, 98]
+E   + [21, 52, 34, 62, 5, 29, 63, 18, 77, 77, 25, 36, 96, 2, 36, 17, 45, 66, 25, 97, 23, 59, 6, 30, 19, 8, 81, 30, 84, 95, 36, 35, 66, 54, 32, 63, 93, 24, 58, 31, 85, 51, 35, 8, 76, 50, 95, 72, 32, 34]
+E   + [2, 5, 6, 8, 8, 17, 18, 19, 21, 23, 24, 25, 25, 29, 30, 30, 31, 32, 32, 34, 34, 35, 35, 36, 36, 36, 45, 50, 51, 52, 54, 58, 59, 62, 63, 63, 66, 66, 72, 76, 77, 77, 81, 84, 85, 93, 95, 95, 96, 97]
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/merge-sort-nr.stlx] _
+test_examples.py:47: in test_snippet
+    return_code = p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-ln2.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'ln(2) = 0.692842328042328, error = -3.048525176172489[331 chars]\n\n' != 'ln(2) = 0.693036507936508, error = -0.000110672623437[370 chars]  \n'
+E   - ln(2) = 0.692842328042328, error = -3.0485251761724896E-4
+E   + ln(2) = 0.693036507936508, error = -0.00011067262343733564
+E     
+E     n =         10: p =         0.6, error = -0.09314718055994531
+E   - 
+E   +         
+E   - n =        100: p =        0.67, error = -0.023147180559945246
+E   ?                              -           -    ^  ^^^  ------
+E   + n =        100: p =        0.72, error = 0.026852819440054687
+E   ?                               +              ^^^^^ + ^^    ++
+E   - 
+E   +         
+E   - n =       1000: p =       0.689, error = -0.00414718055994534
+E   ?                              -           -    ----     ------
+E   + n =       1000: p =       0.695, error = 0.001852819440054665
+E   ?                               +                ++++++++  +++
+E   - 
+E   +         
+E   - n =      10000: p =      0.7005, error = 0.007352819440054725
+E   ?                            ^^^               ^
+E   + n =      10000: p =      0.6985, error = 0.0053528194400547235
+E   ?                            ^^^               ^              +
+E   - 
+E   +         
+E   - n =     100000: p =     0.69269, error = -4.571805599452583E-4
+E   ?                              --          ^^ ^^ -  ^^   ^ - ---
+E   + n =     100000: p =     0.6942, error = 0.001052819440054753
+E   ?                             +           ^ ^^   ^^^  +++ ^^
+E   - 
+E   +
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R = [39 chars], [7, 6], [8, 7], [9, 8]]\nP = {{1, 2, 3, 4, 5, 6, 7, 8, 9}}\n' != 'R = [39 chars], [7, 6], [8, 7], [9, 8]]\n'
+E     R = [[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7], [9, 8]]
+E   - P = {{1, 2, 3, 4, 5, 6, 7, 8, 9}}
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/topological-sorting.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '[7, 3, 5, 8, 11, 10, 2, 9]\n' != ''
+E   - [7, 3, 5, 8, 11, 10, 2, 9]
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/merge-sort-array.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'L = [148, 118, 149, 18, 54, 151, 138, 27, 54, [45 chars]2]\n' != 'L = [31, 159, 116, 195, 135, 18, 68, 48, 50, 1[45 chars]1]\n'
+E   - L = [148, 118, 149, 18, 54, 151, 138, 27, 54, 80, 28, 58, 5, 15, 130, 150, 113, 108, 198, 22]
+E   + L = [31, 159, 116, 195, 135, 18, 68, 48, 50, 117, 87, 139, 25, 181, 112, 93, 48, 41, 185, 61]
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/dijkstra-path.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'shortest path from a to f is ["a", "b", "d", "e", "f"]\n' != "shortest path from a to f is ['a', 'b', 'd', 'e', 'f']\n"
+E   - shortest path from a to f is ["a", "b", "d", "e", "f"]
+E   ?                               ^ ^  ^ ^  ^ ^  ^ ^  ^ ^
+E   + shortest path from a to f is ['a', 'b', 'd', 'e', 'f']
+E   ?                               ^ ^  ^ ^  ^ ^  ^ ^  ^ ^
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/kruskal.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '{[0.16, [0, 7]], [0.17, [2, 3]], [0.19, [[68 chars]]}\n' != ''
+E   - {[0.16, [0, 7]], [0.17, [2, 3]], [0.19, [1, 7]], [0.26, [0, 2]], [0.28, [5, 7]], [0.35, [4, 5]], [0.4, [6, 2]]}
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monty-hall.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'The first  strategy wins 33013 cars.\nThe second strategy wins 66987 cars.\n' != 'The first  strategy wins 33316 cars.\nThe second strategy wins 0 cars.\n'
+E   - The first  strategy wins 33013 cars.
+E   ?                            ^ ^
+E   + The first  strategy wins 33316 cars.
+E   ?                            ^ ^
+E   - The second strategy wins 66987 cars.
+E   ?                          ^^^^^
+E   + The second strategy wins 0 cars.
+E   ?                          ^
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/AVL-Tree/avl-tree.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'insert(Manuel Bareiss, 214060644204)\nins[2379 chars]en: ' != ''
+E   - insert(Manuel Bareiss, 214060644204)
+E   - insert(Christian Bickel, 344000666444)
+E   - insert(Fabian Brechlin, 114000030004)
+E   - insert(Eva Bubeck, 444064605303)
+E   - insert(Sebastian Eckard, 004400606204)
+E   - insert(Nils Engelbach, 444060606444)
+E   - insert(Tobias Gross, 424061646204)
+E   - insert(Michael Gruetzmacher, 004002506240)
+E   - insert(Julius Hoffmann, 444465653404)
+E   - insert(Martin Hoffmann, 204000505404)
+E   - insert(Cora Jahke, 444002446444)
+E   - insert(Marc Jegliewski, 444000565400)
+E   - insert(Daniel Koelbel, 444466666240)
+E   - insert(Dominic Kossinna, 114000300200)
+E   - insert(Thomas Lange, 334006666306)
+E   - insert(Jannik Lenz, 414042606204)
+E   - insert(Marcel Mayer, 110000000000)
+E   - insert(Gianni Montalto, 404000666444)
+E   - insert(Tobias Mueller, 134030262000)
+E   - insert(Kevin Poggemann, 344460606400)
+E   - insert(Marcel Ruff, 204010006004)
+E   - insert(Sebastian Wahl, 334460666004)
+E   -                 Nil
+E   -             <Christian Bickel |-> 344000666444>
+E   -                 Nil
+E   -         <Cora Jahke |-> 444002446444>
+E   -                 Nil
+E   -             <Daniel Koelbel |-> 444466666240>
+E   -                     Nil
+E   -                 <Dominic Kossinna |-> 114000300200>
+E   -                     Nil
+E   -     <Eva Bubeck |-> 444064605303>
+E   -                 Nil
+E   -             <Fabian Brechlin |-> 114000030004>
+E   -                     Nil
+E   -                 <Gianni Montalto |-> 404000666444>
+E   -                     Nil
+E   -         <Jannik Lenz |-> 414042606204>
+E   -                 Nil
+E   -             <Julius Hoffmann |-> 444465653404>
+E   -                     Nil
+E   -                 <Kevin Poggemann |-> 344460606400>
+E   -                     Nil
+E   - <Manuel Bareiss |-> 214060644204>
+E   -                     Nil
+E   -                 <Marc Jegliewski |-> 444000565400>
+E   -                     Nil
+E   -             <Marcel Mayer |-> 110000000000>
+E   -                     Nil
+E   -                 <Marcel Ruff |-> 204010006004>
+E   -                     Nil
+E   -         <Martin Hoffmann |-> 204000505404>
+E   -                 Nil
+E   -             <Michael Gruetzmacher |-> 004002506240>
+E   -                 Nil
+E   -     <Nils Engelbach |-> 444060606444>
+E   -                 Nil
+E   -             <Sebastian Eckard |-> 004400606204>
+E   -                     Nil
+E   -                 <Sebastian Wahl |-> 334460666004>
+E   -                     Nil
+E   -         <Thomas Lange |-> 334006666306>
+E   -                 Nil
+E   -             <Tobias Gross |-> 424061646204>
+E   -                     Nil
+E   -                 <Tobias Mueller |-> 134030262000>
+E   -                     Nil
+E   - zu loeschenden Schl�ssel eingeben:
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Heap-Approximately-Complete/array-heap.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'insert(0, aaaaaa)\n' != ''
+E   - insert(0, aaaaaa)
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Heap-Approximately-Complete/array-heap-slim.stlx] _
+test_examples.py:47: in test_snippet
+    return_code = p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Lempel-Ziv-Welch/lzw.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'unco[43 chars]odes b\n97 codes a\nadding 128 |-> ba\n98 code[726 chars]\n\n' != 'unco[43 chars]odes None\n'
+E     uncompressing [98, 97, 98, 128, 129, 130]
+E   - 98 codes b
+E   ?          ^
+E   + 98 codes None
+E   ?          ^^^^
+E   - 97 codes a
+E   - adding 128 |-> ba
+E   - 98 codes b
+E   - adding 129 |-> ab
+E   - 128 codes ba
+E   - adding 130 |-> bb
+E   - 129 codes ab
+E   - adding 131 |-> baa
+E   - 130 codes bb
+E   - adding 132 |-> abb
+E   - [98, 97, 98, 128, 129, 130] |-> babbaabbb
+E   - now compressing "babbaabbb"
+E   - 98 codes b
+E   - adding ba |-> 128
+E   - 97 codes a
+E   - adding ab |-> 129
+E   - 98 codes b
+E   - adding bb |-> 130
+E   - 128 codes ba
+E   - adding baa |-> 131
+E   - 129 codes ab
+E   - adding abb |-> 132
+E   - 130 codes bb
+E   - babbaabbb |-> [98, 97, 98, 128, 129, 130]
+E   - size of dictionary: 133
+E   - bits needed: 48
+E   - compression factor: 1.3125
+E   - 98 codes b
+E   - 97 codes a
+E   - adding 128 |-> ba
+E   - 98 codes b
+E   - adding 129 |-> ab
+E   - 128 codes ba
+E   - adding 130 |-> bb
+E   - 129 codes ab
+E   - adding 131 |-> baa
+E   - 130 codes bb
+E   - adding 132 |-> abb
+E   - [98, 97, 98, 128, 129, 130] |-> babbaabbb
+E   - decompression correct
+E   - 
+E   -
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/HashTable/hashTable.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'insert(Adrian Gayl, 8)\n\n1: {["Adrian Ga[28871 chars]\n\n' != ''
+E   - insert(Adrian Gayl, 8)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {}
+E   - 3: {}
+E   - 
+E   - 
+E   - insert(Benjamin Salchow, 24)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"]}
+E   - 2: {}
+E   - 3: {}
+E   - 
+E   - 
+E   - insert(Bereket Bahta, 1)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"]}
+E   - 2: {}
+E   - 3: {["Bereket Bahta", "1"]}
+E   - 
+E   - 
+E   - insert(Christian Hilb, 13)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"]}
+E   - 2: {["Christian Hilb", "13"]}
+E   - 3: {["Bereket Bahta", "1"]}
+E   - 
+E   - 
+E   - insert(Christian Kahlau, 14)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"]}
+E   - 2: {["Christian Hilb", "13"]}
+E   - 3: {["Bereket Bahta", "1"], ["Christian Kahlau", "14"]}
+E   - 
+E   - 
+E   - insert(David Randler, 22)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"], ["David Randler", "22"]}
+E   - 2: {["Christian Hilb", "13"]}
+E   - 3: {["Bereket Bahta", "1"], ["Christian Kahlau", "14"]}
+E   - 
+E   - 
+E   - insert(Ephraim Petry, 19)
+E   - 
+E   - 1: {["Adrian Gayl", "8"], ["Benjamin Salchow", "24"], ["David Randler", "22"]}
+E   - 2: {["Christian Hilb", "13"], ["Ephraim Petry", "19"]}
+E   - 3: {["Bereket Bahta", "1"], ["Christian Kahlau", "14"]}
+E   - 
+E   - 
+E   - insert(Erwin Stamm, 26)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Felix Buedel, 4)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Florian Harr, 9)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Giorgio Pirri, 20)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"], ["Giorgio Pirri", "20"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Jan Forster, 7)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"], ["Jan Forster", "7"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"], ["Giorgio Pirri", "20"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Janis Knigge, 16)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Janis Knigge", "16"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"], ["Jan Forster", "7"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"], ["Giorgio Pirri", "20"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Josia Nathaniel, 18)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"], ["Josia Nathaniel", "18"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Janis Knigge", "16"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"], ["Jan Forster", "7"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"], ["Giorgio Pirri", "20"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Kai Brennenstuhl, 3)
+E   - 
+E   - 1: {["Adrian Gayl", "8"]}
+E   - 2: {["David Randler", "22"], ["Josia Nathaniel", "18"], ["Kai Brennenstuhl", "3"]}
+E   - 3: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Janis Knigge", "16"]}
+E   - 4: {["Christian Kahlau", "14"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Florian Harr", "9"], ["Jan Forster", "7"]}
+E   - 6: {["Christian Hilb", "13"], ["Ephraim Petry", "19"], ["Giorgio Pirri", "20"]}
+E   - 7: {}
+E   - 
+E   - 
+E   - insert(Lars Probst, 21)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"]}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Lucas Bader, 0)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"]}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Marcel Dorner, 5)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"]}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Marius Erlen, 6)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"]}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Markus Kohls, 17)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"]}
+E   - 3: {}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Matthias Harrer, 10)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Nick Herrmannsdoerfer, 11)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Patrick Robinson, 23)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {["Patrick Robinson", "23"]}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Petra Wolf, 27)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {["Patrick Robinson", "23"]}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"]}
+E   - 10: {["Kai Brennenstuhl", "3"], ["Petra Wolf", "27"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Rene Kienzle, 15)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {["Patrick Robinson", "23"]}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"], ["Rene Kienzle", "15"]}
+E   - 10: {["Kai Brennenstuhl", "3"], ["Petra Wolf", "27"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Sebastian Simon, 25)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {["Patrick Robinson", "23"]}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {["Sebastian Simon", "25"]}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"], ["Rene Kienzle", "15"]}
+E   - 10: {["Kai Brennenstuhl", "3"], ["Petra Wolf", "27"]}
+E   - 11: {}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Stefan Blum, 2)
+E   - 
+E   - 1: {["Christian Kahlau", "14"]}
+E   - 2: {["David Randler", "22"], ["Ephraim Petry", "19"], ["Matthias Harrer", "10"]}
+E   - 3: {["Patrick Robinson", "23"]}
+E   - 4: {["Markus Kohls", "17"]}
+E   - 5: {["Benjamin Salchow", "24"], ["Felix Buedel", "4"], ["Lucas Bader", "0"], ["Nick Herrmannsdoerfer", "11"]}
+E   - 6: {["Christian Hilb", "13"], ["Giorgio Pirri", "20"], ["Josia Nathaniel", "18"], ["Marius Erlen", "6"]}
+E   - 7: {["Sebastian Simon", "25"]}
+E   - 8: {["Florian Harr", "9"]}
+E   - 9: {["Marcel Dorner", "5"], ["Rene Kienzle", "15"]}
+E   - 10: {["Kai Brennenstuhl", "3"], ["Petra Wolf", "27"]}
+E   - 11: {["Stefan Blum", "2"]}
+E   - 12: {["Adrian Gayl", "8"], ["Janis Knigge", "16"], ["Lars Probst", "21"]}
+E   - 13: {["Bereket Bahta", "1"], ["Erwin Stamm", "26"], ["Jan Forster", "7"]}
+E   - 
+E   - 
+E   - insert(Stefan Hessler, 12)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {["Benjamin Salchow", "24"]}
+E   - 17: {["Christian Hilb", "13"]}
+E   - 18: {["Bereket Bahta", "1"], ["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Adrian Gayl", "8"], ["Marius Erlen", "6"]}
+E   - 31: {["Christian Kahlau", "14"], ["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Adrian Gayl)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {["Benjamin Salchow", "24"]}
+E   - 17: {["Christian Hilb", "13"]}
+E   - 18: {["Bereket Bahta", "1"], ["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Christian Kahlau", "14"], ["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Benjamin Salchow)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {["Christian Hilb", "13"]}
+E   - 18: {["Bereket Bahta", "1"], ["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Christian Kahlau", "14"], ["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Bereket Bahta)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {["Christian Hilb", "13"]}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Christian Kahlau", "14"], ["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Christian Hilb)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Christian Kahlau", "14"], ["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Christian Kahlau)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["David Randler", "22"], ["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(David Randler)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Ephraim Petry", "19"], ["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Ephraim Petry)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {["Erwin Stamm", "26"]}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Erwin Stamm)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {["Felix Buedel", "4"]}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Felix Buedel)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {["Florian Harr", "9"]}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Florian Harr)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {["Giorgio Pirri", "20"]}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Giorgio Pirri)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {["Jan Forster", "7"]}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Jan Forster)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {["Janis Knigge", "16"]}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Janis Knigge)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {["Josia Nathaniel", "18"]}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Josia Nathaniel)
+E   - 
+E   - 1: {["Kai Brennenstuhl", "3"], ["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Kai Brennenstuhl)
+E   - 
+E   - 1: {["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Lars Probst", "21"], ["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Lars Probst)
+E   - 
+E   - 1: {["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {["Lucas Bader", "0"]}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Lucas Bader)
+E   - 
+E   - 1: {["Marcel Dorner", "5"]}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Marcel Dorner)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {["Marius Erlen", "6"]}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Marius Erlen)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Markus Kohls", "17"], ["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Markus Kohls)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Matthias Harrer", "10"], ["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Matthias Harrer)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {["Nick Herrmannsdoerfer", "11"]}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Nick Herrmannsdoerfer)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Patrick Robinson", "23"], ["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Patrick Robinson)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {["Petra Wolf", "27"]}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Petra Wolf)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {["Rene Kienzle", "15"]}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Rene Kienzle)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {["Sebastian Simon", "25"]}
+E   - 
+E   - 
+E   - delete(Sebastian Simon)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {["Stefan Blum", "2"]}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {}
+E   - 
+E   - 
+E   - delete(Stefan Blum)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {["Stefan Hessler", "12"]}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {}
+E   - 
+E   - 
+E   - delete(Stefan Hessler)
+E   - 
+E   - 1: {}
+E   - 2: {}
+E   - 3: {}
+E   - 4: {}
+E   - 5: {}
+E   - 6: {}
+E   - 7: {}
+E   - 8: {}
+E   - 9: {}
+E   - 10: {}
+E   - 11: {}
+E   - 12: {}
+E   - 13: {}
+E   - 14: {}
+E   - 15: {}
+E   - 16: {}
+E   - 17: {}
+E   - 18: {}
+E   - 19: {}
+E   - 20: {}
+E   - 21: {}
+E   - 22: {}
+E   - 23: {}
+E   - 24: {}
+E   - 25: {}
+E   - 26: {}
+E   - 27: {}
+E   - 28: {}
+E   - 29: {}
+E   - 30: {}
+E   - 31: {}
+E   - 
+E   -
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/BinaryTree/binary-tree.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '\n        Nil\n    <andre |-> 342>\n     [839 chars]34\n' != ''
+E   - 
+E   -         Nil
+E   -     <andre |-> 342>
+E   -         Nil
+E   - <anton |-> 123>
+E   -             Nil
+E   -         <gustav |-> 789>
+E   -                 Nil
+E   -             <hubert |-> 432>
+E   -                 Nil
+E   -     <hugo |-> 345>
+E   -             Nil
+E   -         <jens |-> 234>
+E   -                 Nil
+E   -             <philipp |-> 342>
+E   -                     Nil
+E   -                 <rene |-> 345>
+E   -                     Nil
+E   - 
+E   - m.find("anton" ) = 123
+E   - m.find("hugo"  ) = 345
+E   - m.find("gustav") = 789
+E   - m.find("jens"  ) = 234
+E   - 
+E   -         Nil
+E   -     <andre |-> 342>
+E   -         Nil
+E   - <anton |-> 123>
+E   -             Nil
+E   -         <gustav |-> 789>
+E   -                 Nil
+E   -             <hubert |-> 432>
+E   -                 Nil
+E   -     <hugo |-> 345>
+E   -             Nil
+E   -         <jens |-> 234>
+E   -                 Nil
+E   -             <rene |-> 345>
+E   -                 Nil
+E   - 
+E   - m.find("anton" ) = 123
+E   - m.find("hugo"  ) = 345
+E   - m.find("gustav") = 789
+E   - m.find("jens"  ) = 234
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/queens-search.stlx] _
+test_examples.py:58: in test_snippet
+    p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/allValuations.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'n = 1:\ntesting {"x1"}\n{["x1", false]}\[4001 chars]]}\n' != "n = 1:\ntesting {'x1'}\n{['x1', False]}\[4001 chars]]}\n"
+E     n = 1:
+E   - testing {"x1"}
+E   ?          ^  ^
+E   + testing {'x1'}
+E   ?          ^  ^
+E   - {["x1", false]}
+E   ?   ^  ^  ^
+E   + {['x1', False]}
+E   ?   ^  ^  ^
+E   - {["x1", true]}
+E   ?   ^  ^  ^
+E   + {['x1', True]}
+E   ?   ^  ^  ^
+E     n = 2:
+E   - testing {"x1", "x2"}
+E   ?          ^  ^  ^  ^
+E   + testing {'x1', 'x2'}
+E   ?          ^  ^  ^  ^
+E   - {["x1", false], ["x2", false]}
+E   ?   ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False]}
+E   ?   ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true]}
+E   ?   ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True]}
+E   ?   ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false]}
+E   ?   ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False]}
+E   ?   ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true]}
+E   ?   ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True]}
+E   ?   ^  ^  ^       ^  ^  ^
+E     n = 3:
+E   - testing {"x1", "x2", "x3"}
+E   ?          ^  ^  ^  ^  ^  ^
+E   + testing {'x1', 'x2', 'x3'}
+E   ?          ^  ^  ^  ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^
+E     n = 4:
+E   - testing {"x1", "x2", "x3", "x4"}
+E   ?          ^  ^  ^  ^  ^  ^  ^  ^
+E   + testing {'x1', 'x2', 'x3', 'x4'}
+E   ?          ^  ^  ^  ^  ^  ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E     n = 5:
+E   - testing {"x1", "x2", "x3", "x4", "x5"}
+E   + testing {'x1', 'x2', 'x3', 'x4', 'x5'}
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", false], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', False], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", false], ["x3", true], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', False], ['x3', True], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", false], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', False], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", false], ["x2", true], ["x3", true], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', False], ['x2', True], ['x3', True], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", false], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', False], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", false], ["x3", true], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', False], ['x3', True], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", false], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', False], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", false], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', False], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", false], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', False], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^        ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", true], ["x5", false]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', True], ['x5', False]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   - {["x1", true], ["x2", true], ["x3", true], ["x4", true], ["x5", true]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+E   + {['x1', True], ['x2', True], ['x3', True], ['x4', True], ['x5', True]}
+E   ?   ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^       ^  ^  ^
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-recursive.stlx] _
+test_examples.py:47: in test_snippet
+    return_code = p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/wolf-goat-cabbage.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '\n{"cabbage", "farmer", "goat", "wolf"} [929 chars]"}\n' != "\n{'cabbage', 'farmer', 'goat', 'wolf'} [929 chars]'}\n"
+E     
+E   - {"cabbage", "farmer", "goat", "wolf"}                                 {}
+E   ?  ^       ^  ^      ^  ^    ^  ^    ^
+E   + {'cabbage', 'farmer', 'goat', 'wolf'}                                 {}
+E   ?  ^       ^  ^      ^  ^    ^  ^    ^
+E   -                          >>>> {"farmer", "goat"} >>>> 
+E   ?                                ^      ^  ^    ^
+E   +                          >>>> {'farmer', 'goat'} >>>> 
+E   ?                                ^      ^  ^    ^
+E   - {"cabbage", "wolf"}                                   {"farmer", "goat"}
+E   ?  ^       ^  ^    ^                                     ^      ^  ^    ^
+E   + {'cabbage', 'wolf'}                                   {'farmer', 'goat'}
+E   ?  ^       ^  ^    ^                                     ^      ^  ^    ^
+E   -                          <<<< {"farmer"} <<<< 
+E   ?                                ^      ^
+E   +                          <<<< {'farmer'} <<<< 
+E   ?                                ^      ^
+E   - {"cabbage", "farmer", "wolf"}                                   {"goat"}
+E   ?  ^       ^  ^      ^  ^    ^                                     ^    ^
+E   + {'cabbage', 'farmer', 'wolf'}                                   {'goat'}
+E   ?  ^       ^  ^      ^  ^    ^                                     ^    ^
+E   -                          >>>> {"farmer", "wolf"} >>>> 
+E   ?                                ^      ^  ^    ^
+E   +                          >>>> {'farmer', 'wolf'} >>>> 
+E   ?                                ^      ^  ^    ^
+E   - {"cabbage"}                                   {"farmer", "goat", "wolf"}
+E   ?  ^       ^                                     ^      ^  ^    ^  ^    ^
+E   + {'cabbage'}                                   {'farmer', 'goat', 'wolf'}
+E   ?  ^       ^                                     ^      ^  ^    ^  ^    ^
+E   -                          <<<< {"farmer", "goat"} <<<< 
+E   ?                                ^      ^  ^    ^
+E   +                          <<<< {'farmer', 'goat'} <<<< 
+E   ?                                ^      ^  ^    ^
+E   - {"cabbage", "farmer", "goat"}                                   {"wolf"}
+E   ?  ^       ^  ^      ^  ^    ^                                     ^    ^
+E   + {'cabbage', 'farmer', 'goat'}                                   {'wolf'}
+E   ?  ^       ^  ^      ^  ^    ^                                     ^    ^
+E   -                          >>>> {"cabbage", "farmer"} >>>> 
+E   ?                                ^       ^  ^      ^
+E   +                          >>>> {'cabbage', 'farmer'} >>>> 
+E   ?                                ^       ^  ^      ^
+E   - {"goat"}                                   {"cabbage", "farmer", "wolf"}
+E   ?  ^    ^                                     ^       ^  ^      ^  ^    ^
+E   + {'goat'}                                   {'cabbage', 'farmer', 'wolf'}
+E   ?  ^    ^                                     ^       ^  ^      ^  ^    ^
+E   -                          <<<< {"farmer"} <<<< 
+E   ?                                ^      ^
+E   +                          <<<< {'farmer'} <<<< 
+E   ?                                ^      ^
+E   - {"farmer", "goat"}                                   {"cabbage", "wolf"}
+E   ?  ^      ^  ^    ^                                     ^       ^  ^    ^
+E   + {'farmer', 'goat'}                                   {'cabbage', 'wolf'}
+E   ?  ^      ^  ^    ^                                     ^       ^  ^    ^
+E   -                          >>>> {"farmer", "goat"} >>>> 
+E   ?                                ^      ^  ^    ^
+E   +                          >>>> {'farmer', 'goat'} >>>> 
+E   ?                                ^      ^  ^    ^
+E   - {}                                 {"cabbage", "farmer", "goat", "wolf"}
+E   ?                                     ^       ^  ^      ^  ^    ^  ^    ^
+E   + {}                                 {'cabbage', 'farmer', 'goat', 'wolf'}
+E   ?                                     ^       ^  ^      ^  ^    ^  ^    ^
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/transitive-closure.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R = [103 chars]4], [2, 3], [2, 4], [2, 5], [4, 5]}\n{[1, 2], [190 chars]]}\n' != 'R = [103 chars]4], [1, 5], [2, 2], [2, 3], [2, 4], [2, 5], [4[228 chars]]}\n'
+E     R = {[1, 2], [1, 3], [2, 3], [2, 4], [4, 5]}
+E     Computing the transitive closure of R:
+E   - {[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [2, 5], [4, 5]}
+E   - {[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [4, 5]}
+E   + {[1, 2], [1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 4], [2, 5], [4, 2], [4, 3], [4, 4], [4, 5]}
+E   ?                                      ++++++++                       ++++++++++++++++++++++++
+E   - {[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [4, 5]}
+E   + {[1, 2], [1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 4], [2, 5], [4, 2], [4, 3], [4, 4], [4, 5]}
+E   ?                                      ++++++++                       ++++++++++++++++++++++++
+E   - R+ = {[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [4, 5]}
+E   + R+ = {[1, 2], [1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 4], [2, 5], [4, 2], [4, 3], [4, 4], [4, 5]}
+E   ?                                           ++++++++                       ++++++++++++++++++++++++
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-for.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, [7169 chars]ds\n' != ''
+E   - {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973}
+E   - computation took 253 milliseconds
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/fibonacci-combinatorics.stlx] _
+test_examples.py:58: in test_snippet
+    p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/ggt-loop.stlx] _
+test_examples.py:47: in test_snippet
+    return_code = p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/evaluateOld.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'evaluate([["p", "->", "q"], "->", [["p",[397 chars]se\n' != "evaluate([['p', '->', 'q'], '->', [['p',[752 chars]ne\n"
+E   - evaluate([["p", "->", "q"], "->", [["p", "->", ["-", "q"]], "->", "q"]], {["p", true], ["q", true]}) = true
+E   - evaluate([["p", "->", "q"], "->", [["p", "->", ["-", "q"]], "->", "q"]], {["p", true], ["q", false]}) = true
+E   - evaluate([["p", "->", "q"], "->", [["p", "->", ["-", "q"]], "->", "q"]], {["p", false], ["q", true]}) = true
+E   - evaluate([["p", "->", "q"], "->", [["p", "->", ["-", "q"]], "->", "q"]], {["p", false], ["q", false]}) = false
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']]): syntax error 
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']], {['p', True], ['q', True]}) = None
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']]): syntax error 
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']], {['p', True], ['q', False]}) = None
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']]): syntax error 
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']], {['p', False], ['q', True]}) = None
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']]): syntax error 
+E   + evaluate([['p', '->', 'q'], '->', [['p', '->', ['-', 'q']], '->', 'q']], {['p', False], ['q', False]}) = None
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/transitive-recursive.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R = [119 chars] [2, 3], [2, 4], [2, 5], [4, 5]}\n' != 'R = [119 chars] [2, 2], [2, 3], [2, 4], [2, 5], [4, 2], [4, 3[16 chars]]}\n'
+E     R = {[1, 2], [1, 3], [2, 3], [2, 4], [4, 5]}
+E     Computing the transitive closure of R:
+E   - R+ = {[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [4, 5]}
+E   + R+ = {[1, 2], [1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 4], [2, 5], [4, 2], [4, 3], [4, 4], [4, 5]}
+E   ?                                           ++++++++                       ++++++++++++++++++++++++
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/buggy-function.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'R[1] = om\nR[2] = om\n( R[1], R[2] ) = {}\nR(1) = {1, 4}\nR(2) = {}\n' != 'R[1] = 1\nR[2] = None\n( R[1], R[2] ) = {None, 1}\nR(1) = {1, 4}\nR(2) = {}\n'
+E   - R[1] = om
+E   ?        ^^
+E   + R[1] = 1
+E   ?        ^
+E   - R[2] = om
+E   ?         ^
+E   + R[2] = None
+E   ?        + ^^
+E   - ( R[1], R[2] ) = {}
+E   + ( R[1], R[2] ) = {None, 1}
+E   ?                   +++++++
+E     R(1) = {1, 4}
+E     R(2) = {}
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/simple-tuple.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '[1, [125 chars], 6, om, om, om, om, 42]\nd = [3, 4, 5]\nx = 2[17 chars]42\n' != '[1, [125 chars], 6, None, None, None, None, 42]\nd = [3, 4, 5[25 chars]42\n'
+E     [1, 2, 3] + [2, 3, 4, 5, 6] = [1, 2, 3, 2, 3, 4, 5, 6]
+E     # {5, 6, 7} = 3
+E     # [1, 2, 3] = 3
+E     [2, 3, 4, 5, 6][3] = 4
+E   - b = [2, 3, 4, 5, 6, om, om, om, om, 42]
+E   ?                      ^   ^   ^   ^
+E   + b = [2, 3, 4, 5, 6, None, None, None, None, 42]
+E   ?                     + ^^  + ^^  + ^^  + ^^
+E     d = [3, 4, 5]
+E     x = 2, y = 1
+E     b[-1] = 42
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/solve.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '1.0\[133 chars]267077\n0.7504177617637605\n0.7314040424225098[1000 chars]03\n' != '1.0\[133 chars]267079\n0.7504177617637604\n0.7314040424225099[998 chars]03\n'
+E     1.0
+E     0.5403023058681398
+E     0.8575532158463934
+E     0.6542897904977791
+E     0.7934803587425656
+E     0.7013687736227565
+E     0.7639596829006542
+E   - 0.7221024250267077
+E   ?                  ^
+E   + 0.7221024250267079
+E   ?                  ^
+E   - 0.7504177617637605
+E   ?                  ^
+E   + 0.7504177617637604
+E   ?                  ^
+E   - 0.7314040424225098
+E   ?                  ^
+E   + 0.7314040424225099
+E   ?                  ^
+E     0.7442373549005569
+E     0.7356047404363473
+E   - 0.7414250866101092
+E   ?                  ^
+E   + 0.7414250866101093
+E   ?                  ^
+E   - 0.7375068905132428
+E   ?                  ^
+E   + 0.7375068905132427
+E   ?                  ^
+E   - 0.7401473355678757
+E   ?                  ^
+E   + 0.7401473355678758
+E   ?                  ^
+E   - 0.7383692041223232
+E   ?                  ^
+E   + 0.7383692041223231
+E   ?                  ^
+E     0.7395672022122561
+E   - 0.7387603198742113
+E   ?                  ^
+E   + 0.7387603198742112
+E   ?                  ^
+E   - 0.7393038923969059
+E   ?                 ^^
+E   + 0.739303892396906
+E   ?                 ^
+E   - 0.7389377567153445
+E   ?                  ^
+E   + 0.7389377567153443
+E   ?                  ^
+E   - 0.7391843997714936
+E   ?                  ^
+E   + 0.7391843997714937
+E   ?                  ^
+E     0.7390182624274122
+E     0.7391301765296711
+E     0.7390547907469174
+E     0.7391055719265363
+E     0.7390713652989449
+E     0.7390944073790913
+E     0.739078885994992
+E   - 0.7390893414033927
+E   ?                  ^
+E   + 0.7390893414033928
+E   ?                  ^
+E   - 0.7390822985224024
+E   ?                  ^
+E   + 0.7390822985224023
+E   ?                  ^
+E     0.7390870426953322
+E     0.7390838469650002
+E     0.7390859996481299
+E     0.7390845495752126
+E     0.7390855263619245
+E     0.7390848683867142
+E     0.7390853116067619
+E     0.7390850130484203
+E   - 0.7390852141609171
+E   ?                  -
+E   + 0.739085214160917
+E     0.739085078689123
+E     0.7390851699445544
+E   - 0.7390851084737987
+E   ?                  ^
+E   + 0.7390851084737986
+E   ?                  ^
+E   - 0.7390851498812394
+E   ?                  ^
+E   + 0.7390851498812395
+E   ?                  ^
+E     0.7390851219886894
+E     0.7390851407774467
+E     0.7390851281211138
+E     0.7390851366465718
+E     0.7390851309037207
+E   - 0.7390851347721744
+E   ?                  ^
+E   + 0.7390851347721743
+E   ?                  ^
+E     0.7390851321663374
+E     0.7390851339216605
+E     0.7390851327392538
+E     0.7390851335357372
+E     0.7390851329992164
+E   - 0.7390851333606233
+E   ?                  ^
+E   + 0.7390851333606232
+E   ?                  ^
+E     0.7390851331171753
+E     0.7390851332811648
+E     0.7390851331706995
+E     0.7390851332451103
+E     x = 0.7390851332451103
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/function.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: 'Q[3]   = 9\nQ[5]   = 7\ndom(Q) = {1, 2, 3, 4, 5, 6[159 chars]]}\n' != 'Q[3]   = None\nQ[5]   = None\ndom(Q) = {1, 2, 3, 4[178 chars]]}\n'
+E   - Q[3]   = 9
+E   ?          ^
+E   + Q[3]   = None
+E   ?          ^^^^
+E   - Q[5]   = 7
+E   ?          ^
+E   + Q[5]   = None
+E   ?          ^^^^
+E     dom(Q) = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+E   - rng(Q) = {1, 4, 7, 9, 16, 36, 49, 64, 81, 100}
+E   + rng(Q) = {1, 4, 7, 9, 16, 25, 36, 49, 64, 81, 100}
+E   ?                           ++++
+E   - Q      = {[1, 1], [2, 4], [3, 9], [4, 16], [5, 7], [6, 36], [7, 49], [8, 64], [9, 81], [10, 100]}
+E   + Q      = {[1, 1], [2, 4], [3, 9], [4, 16], [5, 7], [5, 25], [6, 36], [7, 49], [8, 64], [9, 81], [10, 100]}
+E   ?                                                    +++++++++
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/ggt-fast.stlx] _
+test_examples.py:47: in test_snippet
+    return_code = p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/poker-triple.stlx] _
+test_examples.py:58: in test_snippet
+    p.wait(120)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:990: in wait
+    return self._wait(timeout=timeout)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/subprocess.py:1618: in _wait
+    time.sleep(delay)
+E   Failed: Timeout >120.0s
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/simple.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '{1, [190 chars]}) = false\n1 in {1, 2, 3} = true\n{1, 2, 3} >[84 chars]]}\n' != '{1, [190 chars]}) = False\n1 in {1, 2, 3} = True\n{1, 2, 3} >[84 chars])}\n'
+E     {1, 2, 3} + {2, 3, 4} = {1, 2, 3, 4}
+E     {1, 2, 3} * {2, 3, 4} = {2, 3}
+E     {1, 2, 3} - {2, 3, 4} = {1}
+E     2 ** {1, 2, 3} = {{}, {1}, {1, 2}, {1, 2, 3}, {1, 3}, {2}, {2, 3}, {3}}
+E   - ({1, 2, 3} <= {2, 3, 4}) = false
+E   ?                            ^
+E   + ({1, 2, 3} <= {2, 3, 4}) = False
+E   ?                            ^
+E   - 1 in {1, 2, 3} = true
+E   ?                  ^
+E   + 1 in {1, 2, 3} = True
+E   ?                  ^
+E   - {1, 2, 3} >< {2, 3, 4} = {[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]}
+E   ?                           ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^
+E   + {1, 2, 3} >< {2, 3, 4} = {(1, 2), (1, 3), (1, 4), (2, 2), (2, 3), (2, 4), (3, 2), (3, 3), (3, 4)}
+E   ?                           ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^  ^    ^
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-eratosthenes.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, [7169 chars]ds\n' != ''
+E   - {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973}
+E   - computation took 165 milliseconds
+_ test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-sieve.stlx] _
+test_examples.py:65: in test_snippet
+    TestCase.assertEqual(TestCase(), setlx_output, python_output)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:852: in assertEqual
+    assertion_func(first, second, msg=msg)
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:1233: in assertMultiLineEqual
+    self.fail(self._formatMessage(msg, standardMsg))
+/usr/local/Cellar/python/3.7.4/Frameworks/Python.framework/Versions/3.7/lib/python3.7/unittest/case.py:693: in fail
+    raise self.failureException(msg)
+E   AssertionError: '453\n{2, 3, 5, 7, 11, 13, 17, 19, 23, 29,[773 chars]7}\n' != ''
+E   - 453
+E   - {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997}
+=========================== short test summary info ============================
+SKIPPED [1] /Users/simon/Various/setlx2python/setlx2python/tests/test_examples.py:64: <Skipped instance>
+SKIPPED [1] setlx2python/tests/test_transpiler.py:66: got empty parameter set ['files'], function test_snippet at /Users/simon/Various/setlx2python/setlx2python/tests/test_transpiler.py:65
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find-tree.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/permutation.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-atan.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/map-array.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-pi.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/predefined-sort.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/exercise-11.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/map-trivial.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find-oo.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/heap.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/merge-sort-nr.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monte-carlo-ln2.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/topological-sorting.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/merge-sort-array.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/dijkstra-path.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/kruskal.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/monty-hall.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/AVL-Tree/avl-tree.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Heap-Approximately-Complete/array-heap.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Heap-Approximately-Complete/array-heap-slim.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Lempel-Ziv-Welch/lzw.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/HashTable/hashTable.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/BinaryTree/binary-tree.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/queens-search.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/allValuations.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-recursive.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/wolf-goat-cabbage.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/transitive-closure.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-for.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/fibonacci-combinatorics.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/ggt-loop.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/evaluateOld.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/transitive-recursive.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/buggy-function.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/simple-tuple.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/solve.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/function.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/ggt-fast.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/poker-triple.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/simple.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-eratosthenes.stlx]
+FAILED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-sieve.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/product.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/power-naive.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/heap-sort.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/gcd.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/moore.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/test-counting-sort.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/power.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/dijkstra.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/legendre.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/stack.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/union-find-naive.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/AVL-Tree/string-compare.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/Lempel-Ziv-Welch/lzw-clean.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Algorithms/BinaryTree/string-compare.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/sum-recursive.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/sort.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/fixpoint.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/find-path.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/queens-backtrack.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/quone.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/gruppen.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-tuple.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-while.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-slim.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/quine.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/sum.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/primes-forall.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/min-sort.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/path-cyclic.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/arb.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/from.stlx]
+PASSED test_examples.py::test_snippet[/Users/simon/Various/setlx2python/setlx2python/tests/examples/Logik/switch.stlx]
+============== 43 failed, 32 passed, 2 skipped in 1153.58 seconds ==============
